@@ -8,12 +8,12 @@ const path = require('path');
 const GridFsStorage = require('multer-gridfs-storage');
 const multer = require('multer');
 const ObjectId = mongoose.Types.ObjectId;
+const URI = require('./../../config/keys').URI;
 
 const router = express.Router();
 
 
 // Connexion
-const URI = 'mongodb+srv://Alex3:Alex3@cluster0-pbmzu.mongodb.net/furniture-loan?retryWrites=true&w=majority';
 
 // const conn = mongoose.createConnection(URI, { useNewUrlParser: true, useUnifiedTopology: true });
 mongoose.connect( URI, { dbName: 'furniture-loan', useNewUrlParser: true, useUnifiedTopology: true }, ()=> console.log('connected to DB'));

@@ -4,12 +4,14 @@ const mongoose = require('mongoose');
 const User = require('../../../model/User');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const passport = require('passport');
+const key = require('../../config/keys').secret;
+const URI = require('../../config/keys').URI;
 
 const router = express.Router();
 
 
 // Connexion
-const URI = 'mongodb+srv://Alex3:Alex3@cluster0-pbmzu.mongodb.net/furniture-loan?retryWrites=true&w=majority';
 
 mongoose.connect( URI, { dbName: 'furniture-loan', useNewUrlParser: true, useUnifiedTopology: true }, ()=> console.log('connected to DB'));
 mongoose.connection.on('connected', () => {
@@ -92,6 +94,42 @@ router.post('/register', function (req, res) {
   });
 });
 
+
+router.post('/login', function (req, res) {
+  console.log(req.body);
+  let mail = req.body.mail;
+  let pswd = req.body.pswd;
+  console.log(mail);
+  console.log(pswd);
+  User.findOne({ mail: mail }).then(user => {
+    console.log(user);
+    if (!user) {
+      return res.status(404).json({
+        err: 'Cet email nest pas associe a un compte'
+      });
+    } else {
+      bcrypt.compare(pswd, user.pswd).then(isMatch =>{
+        if (isMatch) {
+          const payload = {
+            _id: user._id,
+            mail: user.mail
+          }
+          jwt.sign(payload, key, { expiresIn: 604800 }, (err, token) =>  {
+            res.status(200).json({
+              success: true,
+              token: `Bearer ${token}`,
+              msg: "You are logged in"
+            })
+          });
+        } else {
+          return res.status(404).json({
+            err: 'Le mot de passe est erroné'
+          });
+        }
+      })
+    }
+  });
+});
 // Delete Post
 
 router.delete('/:user_id', function (req, res) {
