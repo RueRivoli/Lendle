@@ -3,11 +3,11 @@ const mongoose = require('mongoose');
 const UserSchema = mongoose.Schema({
     firstname: {
         type: String,
-        required: true
+        required: false
     },
     lastname: {
         type: String,
-        required: true
+        required: false
     },
     mail: {
         type: String,
@@ -19,23 +19,23 @@ const UserSchema = mongoose.Schema({
     },
     address: {
         type: String,
-        required: true
+        required: false
     },
     city: {
         type: String,
-        required: true
+        required: false
     },
     usurer: {
         type: Boolean,
-        required: true
+        default: true
     },
     borrower: {
         type: Boolean,
-        required: true
+        required: false
     },
     description: {
         type: String,
-        required: true
+        required: false
     },
     subscription: {
         type: Date,

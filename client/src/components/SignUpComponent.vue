@@ -26,21 +26,21 @@
                     </el-row>
                     <el-row>
                         <el-col :span="8" :offset="8">
-                            <el-form-item label="" prop="name">
+                            <el-form-item label="" prop="email">
                                 <el-input type="email" size="mini" placeholder="Email"  v-model="registration.email" required></el-input>
                             </el-form-item>
                         </el-col>
                     </el-row>
                     <el-row>
                         <el-col :span="8" :offset="8">
-                            <el-form-item label="" prop="type">
+                            <el-form-item label="" prop="password">
                                 <el-input type="text" size="mini" placeholder="Mot de passe" v-model="registration.password" required></el-input>
                             </el-form-item>
                         </el-col>
                     </el-row>
                     <el-row>
                         <el-col :span="8" :offset="8">
-                            <el-form-item label="" prop="type" style="margin-bottom: 30px;">
+                            <el-form-item label="" prop="passwordConfirmed" style="margin-bottom: 30px;">
                                 <el-input type="text" size="mini" placeholder="Confirmez le mot de passe" v-model="registration.passwordConfirmed" required></el-input>
                             </el-form-item>
                         </el-col>
@@ -71,20 +71,72 @@
 
 <script>
 import NavComponent from './NavComponent';
+import UserService from '../UserService';
 
 export default {
   name: 'SignUpComponent',
   components: { NavComponent },
   data() {
+      var validatePass = (rule, value, callback) => {
+      if (value === '') {
+        callback(new Error('Veuillez entrer le mot de passe'))
+      } else {
+        if (this.registration.passwordConfirmed !== '') {
+          this.$refs.registration.validateField('passwordConfirmed')
+        }
+        callback()
+      }
+    }
+    var validatePass2 = (rule, value, callback) => {
+      if (value === '') {
+        callback(new Error('Veuillez entrer à nouveau le mot de passe'))
+      } else if (value !== this.registration.password) {
+        callback(new Error('Les deux entrées ne correspondent pas!'))
+      } else {
+        callback()
+      }
+    }
       return {
           registration: {
               email: '',
               password: '',
               passwordConfirmed: ''
-          }
+          },
+        rulesRegistration: {
+            email: [
+                { required: true, message: 'Please input your email', trigger: 'blur' },
+                { min: 3, max: 50, message: 'Length should be between 3 and 20', trigger: 'blur' },
+                { type: 'email', message: 'Please write a correct email', trigger: 'blur' }
+            ],
+            password: [
+                { required: true, message: 'Please enter a password', trigger: 'blur' },
+                 { validator: validatePass, trigger: 'blur' },
+                { pattern: '^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[-+!*$@%_])([a-zA-Z0-9-+!*$@%_]{6,30})$',
+                    message: 'Between 6 and 30 characters, at least one uppercase, one lowercase, one figure, a special character among -+!*$@%_',
+                    trigger: 'blur' }
+                ],
+            passwordConfirmed: [
+                { required: true, message: 'Please confirm the password', trigger: 'blur' },
+                { validator: validatePass2, trigger: 'blur' },
+                { pattern: '^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[-+!*$@%_])([a-zA-Z0-9-+!*$@%_]{6,30})$',
+                    message: 'Between 6 and 30 characters, at least one uppercase, one lowercase, one figure, a special character among -+!*$@%_',
+                    trigger: 'blur' }
+                ],
+            },
         }
     },
     methods: {
+        async submitForm() {
+            console.log(this.registration);
+            this.$refs['registration'].validate((valid) => {
+            if (!valid) {
+                console.log('error submit!!')
+            return false
+            }
+        });
+        var result = await UserService.insertUser(this.registration);
+        console.log(result);
+    }
   }
 }
 </script>
@@ -97,9 +149,9 @@ export default {
   background-color:#7490B8 !important;
 }
 
-.el-form-item {
-    margin-bottom: 0px;
-}
+// .el-form-item {
+//     margin-bottom: 0px;
+// }
 
 .line-thru {
     display: block;
