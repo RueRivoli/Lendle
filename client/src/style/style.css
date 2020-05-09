@@ -1,0 +1,63 @@
+/* Fonts */
+
+@font-face {
+    font-family: 'Gagalin';
+    /* src: url('webfont.eot'); /* IE9 Compat Modes */
+    /* src: url('webfont.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */
+    /* url('webfont.woff2') format('woff2'), /* Super Modern Browsers */
+    /* url('webfont.woff') format('woff'), Pretty Modern Browsers */
+    src: url('./font/Gagalin-Regular.ttf')  format('truetype'), /* Safari, Android, iOS */
+         url('./font/Gagalin-Regular.otf');
+  }
+
+.pointer{
+    cursor: pointer;
+  }
+
+/* flex */
+
+.flex{
+    display:flex;
+}
+
+.column{
+    flex-direction: column;
+}
+
+.sp-around{
+    justify-content: space-around;
+}
+
+.f-auto{
+    flex:auto;
+}
+
+/* margin */
+
+
+
+.m-l-5{
+
+}
+
+.m-l-10{
+
+}
+
+.m-l-20{
+    
+}
+
+.margin-auto{
+  margin: auto;
+}
+
+.lendle{
+    font-family: 'Gagalin';
+    color: #1E969D;
+    text-align: center;
+    font-style:oblique;
+    font-weight:bold;
+    font-size:25px !important;
+}
+

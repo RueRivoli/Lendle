@@ -1,0 +1,18 @@
+Partie Serveur
+
+port 5000
+
+Dossier Server, Model
+
+Express.js
+MongoDB Atlas pour la base de données (Alex3/Alex3)
+
+---------------------------------
+
+Partie Client
+port 8080
+axios permet l’api de requêtes sur la BD
+FurnitService.js est l’api
+
+Vue JS
+Element UI
