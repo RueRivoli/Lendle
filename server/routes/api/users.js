@@ -29,6 +29,12 @@ router.get('/', function (req, res) {
   });
 });
 
+router.get('/profile', passport.authenticate('jwt', { session: false}),
+  (req, res) => {
+    return res.json(req.user)
+  }
+);
+
 
 // Add User
 
