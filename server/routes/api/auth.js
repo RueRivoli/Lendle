@@ -58,51 +58,9 @@ router.get('/profile', function(req, res, next) {
 //    });
 //   });
 
-function verifyToken(req, res, next) {
-  const bearerHeader = req.headers['authorization'];
-  console.log(req.headers);
-  if (typeof bearerHeader !== 'undefined') {
-    const bearer = bearerHeader.split(' ');
-    const bearerToken = bearer[1];
-    console.log(bearerToken);
-    req.token = bearerToken;
-    next();
-  }
-  else {
-    return res.status(403).json({
-      err: 'Don t find token'
-    });
-  }
-}
-
-// Add User
-
-router.post('/', function (req, res) {
-  console.log(req);
-  var user = new User();
-  user.firstname = req.body.firstname;
-  user.lastname = req.body.lastname;
-  user.mail = req.body.mail;
-  user.pswd = req.body.pswd;
-  user.address = req.body.address;
-  user.city = req.body.city;
-  user.usurer = req.body.usurer;
-  user.borrower = req.body.borrower;
-  user.description = req.body.description;
-  user.subscription = new Date();
-  console.log(user);
-  user.save(function (err) {
-    if (err) {
-      console.log('EORROR');
-      res.send(err);
-    }
-    res.send('Bravo, vous avez été ajouté');
-  });
-});
 
 
 router.post('/register', function (req, res) {
-  console.log(req.body);
   let {
     email,
     password,
@@ -116,7 +74,7 @@ router.post('/register', function (req, res) {
   User.findOne({ mail: email }).then(user => {
     if (user) {
       return res.status(404).json({
-        err: 'This email is already used'
+        err: 'Cet email est deja utilisé'
       });
     }
   });
@@ -127,12 +85,11 @@ router.post('/register', function (req, res) {
   bcrypt.genSalt(10, (err, salt) => {
     bcrypt.hash(user.pswd, salt, (err, hash) => {
       if (err) throw err;
-      console.log(hash);
       user.pswd = hash;
       user.save().then(user => {
         return res.status(201).json({
           success: true,
-          msg: "User is now registered"
+          msg: "Vous êtes enregistré"
         });
       })
     })
@@ -141,9 +98,13 @@ router.post('/register', function (req, res) {
 
 
 router.post('/login', function (req, res) {
+  console.log('LLOFIN');
   let mail = req.body.email;
   let pswd = req.body.password;
+  console.log(mail);
+  console.log(pswd);
   User.findOne({ mail: mail }).then(user => {
+    console.log(user);
     if (!user) {
       return res.status(404).json({
         err: 'Cet email nest pas associe a un compte'
@@ -169,17 +130,6 @@ router.post('/login', function (req, res) {
         }
       })
     }
-  });
-});
-
-
-
-router.delete('/:user_id', function (req, res) {
-  Post.deleteOne( { _id: req.params.user_id } , function (err) {
-    if (err) {
-      res.send(err);
-    }
-    res.send('Bravo, cet utilisateur a été supprimé');
   });
 });
 

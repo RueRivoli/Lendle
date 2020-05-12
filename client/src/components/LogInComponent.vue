@@ -3,24 +3,9 @@
         <nav-component :displayTitles="false" style="border-bottom: 1px solid #dfe0e6"></nav-component>
             <el-form ref="registration" name="registration" style="width:100%;margin-top:15vh;" :model="registration" :rules="rulesRegistration" label-position="top" label-width="130px" enctype="multipart/form-data">
                     <el-row>
-                        <el-col class="flex sp-around" :span="8" :offset="8">
-                            <el-button type="info" value="submit" style="margin-top:5px;background-color:#6C7076;" size="mini">Connectez-vous avec Gmail</el-button>
-                        </el-col>
-                    </el-row>
-                    <el-row>
-                        <el-col class="flex sp-around" :span="8" :offset="8">
-                            <el-button id="fb" type="danger" value="submit"  style="margin-top:5px;background-color:#4773B0;" size="mini">Connectez-vous avec Facebook</el-button>
-                        </el-col>
-                    </el-row>
-                    <el-row>
-                        <el-col :span="8" :offset="8">
-                            <strong class="line-thru">ou</strong>
-                        </el-col>
-                    </el-row>
-                    <el-row>
                         <el-col :span="8" :offset="8">
                             <div style="text-align:center;font-size:12px;">
-                                Inscrivez-vous avec votre adresse email
+                                Loggez-vous avec votre adresse email
                             </div>
                         </el-col>
                     </el-row>
@@ -39,20 +24,6 @@
                         </el-col>
                     </el-row>
                     <el-row>
-                        <el-col :span="8" :offset="8">
-                            <el-form-item label="" prop="passwordConfirmed" style="margin-bottom: 30px;">
-                                <el-input type="text" size="mini" placeholder="Confirmez le mot de passe" v-model="registration.passwordConfirmed" required></el-input>
-                            </el-form-item>
-                        </el-col>
-                    </el-row>
-                    <el-row>
-                        <el-col :span="8" :offset="8">
-                            <div style="text-align:center;font-size:12px;">
-                                En cliquant sur le bouton d'inscription, vous acceptez les <span class="pointer green">conditions générales d'utilisation </span> de Lendle. 
-                            </div>
-                        </el-col>
-                    </el-row>
-                    <el-row>
                         <el-col class="flex sp-around" :span="8" :offset="8">
                             <el-button type="primary" value="submit" @click="submitForm()" style="margin-top:5px;" size="mini" round>Submit</el-button>
                         </el-col>
@@ -60,7 +31,7 @@
                     <el-row>
                         <el-col :span="8" :offset="8">
                             <div style="text-align:center;font-size:12px;margin-top:5px;">
-                                Vous avez déjà un compte ? <span class="pointer green">Connexion</span>
+                                Vous avez oublié votre <span class="pointer green">mot de passe ?</span>
                             </div>
                         </el-col>
                     </el-row>
@@ -74,7 +45,7 @@ import NavComponent from './NavComponent';
 import AuthService from '../AuthService';
 
 export default {
-  name: 'SignUpComponent',
+  name: 'LogInComponent',
   components: { NavComponent },
   data() {
       var validatePass = (rule, value, callback) => {
@@ -87,20 +58,10 @@ export default {
         callback()
       }
     }
-    var validatePass2 = (rule, value, callback) => {
-      if (value === '') {
-        callback(new Error('Veuillez entrer à nouveau le mot de passe'))
-      } else if (value !== this.registration.password) {
-        callback(new Error('Les deux entrées ne correspondent pas!'))
-      } else {
-        callback()
-      }
-    }
       return {
           registration: {
               email: '',
-              password: '',
-              passwordConfirmed: ''
+              password: ''
           },
         rulesRegistration: {
             email: [
@@ -114,28 +75,26 @@ export default {
                 { pattern: '^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[-+!*$@%_])([a-zA-Z0-9-+!*$@%_]{6,30})$',
                     message: 'Between 6 and 30 characters, at least one uppercase, one lowercase, one figure, a special character among -+!*$@%_',
                     trigger: 'blur' }
-                ],
-            passwordConfirmed: [
-                { required: true, message: 'Please confirm the password', trigger: 'blur' },
-                { validator: validatePass2, trigger: 'blur' },
-                { pattern: '^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[-+!*$@%_])([a-zA-Z0-9-+!*$@%_]{6,30})$',
-                    message: 'Between 6 and 30 characters, at least one uppercase, one lowercase, one figure, a special character among -+!*$@%_',
-                    trigger: 'blur' }
-                ],
+                ]
             },
         }
     },
     methods: {
         async submitForm() {
+            console.log(this.registration);
             this.$refs['registration'].validate((valid) => {
               if (!valid) {
-                return false
-            }
-        });
-        var result = await AuthService.insertUser(this.registration);
-        if (result.success) {
-            this.$router.push({ name: 'LogIn'});
-        }
+                console.log('error submit!!')
+              return false
+             }
+       });
+        var result = await AuthService.logUser(this.registration);
+        console.log(result);
+        if (result) {
+            this.$router.push({ name: 'ProfileComponent' });
+        } 
+        console.log('RESULT');
+        console.log(result);
     }
   }
 }

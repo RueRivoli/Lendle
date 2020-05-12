@@ -25,10 +25,12 @@ app.use(passport.initialize());
 
 const furnits = require('./routes/api/furnits');
 const users = require('./routes/api/users');
+const auth = require('./routes/api/auth');
+
 
 app.use('/api/furnits', furnits);
-
-app.use('/api/users', users);
+app.use('/api/auth', auth);//register login 
+app.use('/api/users', passport.authenticate('jwt', {session: false}), users);//profile...
 
 
 const port = process.env.PORT || 5000;
