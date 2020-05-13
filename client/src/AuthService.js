@@ -9,12 +9,15 @@ class AuthService {
         return new Promise(function(resolve, reject) {
             try {
                 return axios.post(url_register, user).then(function (response) {
+                    console.log(response);
                     resolve(response.data);
                 }).catch(function (error) {
+                    console.log('RET');
                     console.log(error);
                     reject(error);
                 });
             } catch(err) {
+                console.log(err);
                 reject(err);
             }
         })

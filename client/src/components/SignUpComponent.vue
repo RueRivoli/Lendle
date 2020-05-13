@@ -127,14 +127,14 @@ export default {
     },
     methods: {
         async submitForm() {
-            this.$refs['registration'].validate((valid) => {
-              if (!valid) {
-                return false
-            }
-        });
+        //     this.$refs['registration'].validate((valid) => {
+        //       if (!valid) {
+        //         return false
+        //     }
+        // });
         var result = await AuthService.insertUser(this.registration);
         if (result.success) {
-            this.$router.push({ name: 'LogIn'});
+            this.$router.push({ name: 'LogIn', params: { comeFromSignUp: true }});
         }
     }
   }

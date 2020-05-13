@@ -2,11 +2,18 @@ const express = require('express');
 const mongodb = require('mongodb'); //mongodb driver
 const mongoose = require('mongoose');
 const User = require('../../../model/User');
+const Token = require('../../../model/Token');
 const bcrypt = require('bcryptjs');
+const crypto = require('crypto');
 const jwt = require('jsonwebtoken');
 const passport = require('passport');
 const key = require('../../config/keys').secret;
 const URI = require('../../config/keys').URI;
+const api_key = require('../../config/keys').api_key; 
+// To send mails
+const nodemailer = require("nodemailer");
+const sgMail = require('@sendgrid/mail');
+require('dotenv').config();
 
 const router = express.Router();
 
@@ -58,6 +65,28 @@ router.get('/profile', function(req, res, next) {
 //    });
 //   });
 
+// function sendMail(mail, host, hash, function (res, err) => {
+//   let api_key = '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';
+//   // sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+
+//   let link="http://"+host+"/verify?id=" + hash;
+//   console.log(link);
+//   sgMail.setApiKey(api_key);
+//   const msg = {
+//     to: mail,
+//     from: 'flgallois@gmail.com',
+//     subject: 'Confirm your email address',
+//     html: 'Hello,<br><br><br><br>Please Click on the link to <strong>verify your email</strong>.<br><br><br><a href='+link+'>Click here to verify</a>',
+//   };
+//   sgMail.send(msg, function(err, json){
+//     if(err) { 
+//       console.error(err.response.body);
+//       console.log('echec');
+//       return res.status(500).send({ msg: err.message });
+//     }
+//     return res.status(200).send('A verification email has been sent to ' + mail + '.');
+//   });
+// });
 
 
 router.post('/register', function (req, res) {
@@ -76,26 +105,62 @@ router.post('/register', function (req, res) {
       return res.status(404).json({
         err: 'Cet email est deja utilisé'
       });
+    } else {
+      let user = new User({ mail: email, pswd: password});
+      bcrypt.genSalt(10, (err, salt) => {
+        bcrypt.hash(user.pswd, salt, (err, hash) => {
+    
+          if (err) throw err;
+    
+          user.pswd = hash;
+          user.save().then(user => {
+    
+            let token = crypto.randomBytes(16).toString('hex');
+            let new_token = new Token({ _userId: user._id, token: token });
+    
+            new_token.save(function (err) {
+              if (err) {
+                User.remove({ _id: user._id});
+                return res.status(500).send({ msg: "Probleme à l'enregistrement" });
+              }
+              let host = req.get('host');
+              // let api_key = process.env.SENDGRID_API_KEY;
+              sgMail.setApiKey(api_key);
+              let link = "http://" + host + "/verify?id=" + token;
+              const msg = {
+                to: user.mail,
+                from: 'lendlecontact1@gmail.com',
+                subject: 'Confirm your email address',
+                html: 'Hello,<br><br><br><br>Please click on the link to <strong>verify your email</strong>.<br><br><br><a href=' + link + '>Click here to verify</a>',
+              };
+    
+              sgMail.send(msg, function (err) {
+                if (err) {
+                  console.log('eeee');
+                  User.remove({ _id: user._id});
+                  return res.status(500).send({ 
+                    msg: err.message 
+                  }); 
+                }
+                return res.status(201).json({
+                  success: true,
+                  msg: "Vous êtes enregistré"
+                });
+            });
+          });
+              
+          });
+        });
+        });
     }
   });
-  
-  let user = new User();
-  user.mail = email;
-  user.pswd = password;
-  bcrypt.genSalt(10, (err, salt) => {
-    bcrypt.hash(user.pswd, salt, (err, hash) => {
-      if (err) throw err;
-      user.pswd = hash;
-      user.save().then(user => {
-        return res.status(201).json({
-          success: true,
-          msg: "Vous êtes enregistré"
-        });
-      })
-    })
-  });
-});
 
+  });
+
+
+  router.post('/confirm', function (req, res) {
+    
+  });
 
 router.post('/login', function (req, res) {
   console.log('LLOFIN');

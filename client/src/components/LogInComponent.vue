@@ -1,7 +1,16 @@
 <template>
     <div>
         <nav-component :displayTitles="false" style="border-bottom: 1px solid #dfe0e6"></nav-component>
-            <el-form ref="registration" name="registration" style="width:100%;margin-top:15vh;" :model="registration" :rules="rulesRegistration" label-position="top" label-width="130px" enctype="multipart/form-data">
+        <div style="height:15vh;" >
+           <el-alert
+                v-if="$route.params.comeFromSignUp"
+                title="Avertissement"
+                type="warning"
+                description="Checkez vos mails et activez votre compte afin de vous connecter."
+                show-icon>
+            </el-alert>
+        </div>
+            <el-form ref="registration" name="registration" style="width:100%;" :model="registration" :rules="rulesRegistration" label-position="top" label-width="130px" enctype="multipart/form-data">
                     <el-row>
                         <el-col :span="8" :offset="8">
                             <div style="text-align:center;font-size:12px;">
@@ -78,6 +87,8 @@ export default {
                 ]
             },
         }
+    },
+    created() {
     },
     methods: {
         async submitForm() {
