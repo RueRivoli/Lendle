@@ -9,4 +9,4 @@ Axios
 
 MongoDB
 Express js
-
+SendGrid to send mails
