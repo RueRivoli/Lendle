@@ -6,6 +6,7 @@ import HomeComponent from './../components/HomeComponent';
 import SignUpComponent from './../components/SignUpComponent';
 import LogInComponent from './../components/LogInComponent';
 import ProfileComponent from './../components/ProfileComponent';
+import ReSendMailValidationComponent from './../components/ReSendMailValidationComponent';
 
 const routes = [
     { path: '/myfurnitures', name:'MyFurnit', component: MyFurnitComponent },
@@ -13,6 +14,7 @@ const routes = [
     { path: '/signup', name:'SignUp', component: SignUpComponent },
     { path: '/login', name:'LogIn', component: LogInComponent },
     { path: '/profile', name:'ProfileComponent', component: ProfileComponent },
+    { path: '/validation', name:'ReSendMailValidationComponent', component: ReSendMailValidationComponent },
     { path: '/', name:'Home', component: HomeComponent },
     { path: '/chat', name:'Chat', component: ChatComponent }
   ]

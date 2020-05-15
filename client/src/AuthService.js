@@ -5,18 +5,23 @@ const url = 'http://localhost:5000/api/auth';
 class AuthService {
 
     static insertUser(user) {
-        const url_register = url + '/register';
+        const url_signup = url + '/signup';
         return new Promise(function(resolve, reject) {
             try {
-                return axios.post(url_register, user).then(function (response) {
+                return axios.post(url_signup, user).then(function (response) {
                     console.log(response);
                     resolve(response.data);
                 }).catch(function (error) {
-                    console.log('RET');
-                    console.log(error);
+                    console.log('RET 1');
+                    if (error.response) {
+                        console.log(error.response.data);
+                        console.log(error.response.status);
+                        console.log(error.response.headers);
+                      }
                     reject(error);
                 });
             } catch(err) {
+                console.log('RET 2');
                 console.log(err);
                 reject(err);
             }
@@ -35,6 +40,24 @@ class AuthService {
                         localStorage.setItem('Authorization', token);
                         resolve(response.data.success);
                     }
+                    resolve(response);
+                }).catch(function (error) {
+                    console.log(error);
+                    reject(error);
+                });
+            } catch(err) {
+                reject(err);
+            }
+        })
+    }
+
+
+    static sendValidationUser(mail) {
+        const url_validation = url + '/validation';
+        return new Promise(function(resolve, reject) {
+            try {
+                return axios.post(url_validation, mail).then(function (response) {
+                    console.log(response);
                     resolve(response);
                 }).catch(function (error) {
                     console.log(error);

@@ -17,7 +17,8 @@ export default {
 
 <style lang="scss">
 #app {
-  font-family: Optima, Helvetica, Arial, sans-serif;
+  // font-family: Optima, Helvetica, Arial, sans-serif;
+  font-family: 'Gagalin';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   /* text-align: center; */
@@ -26,5 +27,9 @@ export default {
 
 body{
   margin: 0px;
+}
+
+.el-button{
+  font-family: 'Gagalin';
 }
 </style>

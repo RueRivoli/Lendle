@@ -4,12 +4,12 @@
             <el-form ref="registration" name="registration" style="width:100%;margin-top:15vh;" :model="registration" :rules="rulesRegistration" label-position="top" label-width="130px" enctype="multipart/form-data">
                     <el-row>
                         <el-col class="flex sp-around" :span="8" :offset="8">
-                            <el-button type="info" value="submit" style="margin-top:5px;background-color:#6C7076;" size="mini">Connectez-vous avec Gmail</el-button>
+                            <el-button value="submit" style="margin-top:5px;background-color:#6C7076;color:white;" size="mini">Créer un compte avec Gmail</el-button>
                         </el-col>
                     </el-row>
                     <el-row>
                         <el-col class="flex sp-around" :span="8" :offset="8">
-                            <el-button id="fb" type="danger" value="submit"  style="margin-top:5px;background-color:#4773B0;" size="mini">Connectez-vous avec Facebook</el-button>
+                            <el-button id="fb" value="submit"  style="margin-top:5px;background-color:#4773B0;color:white;" size="mini">Créer un compte avec Facebook</el-button>
                         </el-col>
                     </el-row>
                     <el-row>
@@ -34,14 +34,14 @@
                     <el-row>
                         <el-col :span="8" :offset="8">
                             <el-form-item label="" prop="password">
-                                <el-input type="text" size="mini" placeholder="Mot de passe" v-model="registration.password" required></el-input>
+                                <el-input type="text" size="mini" placeholder="Mot de passe" show-password="true" v-model="registration.password" required></el-input>
                             </el-form-item>
                         </el-col>
                     </el-row>
                     <el-row>
                         <el-col :span="8" :offset="8">
                             <el-form-item label="" prop="passwordConfirmed" style="margin-bottom: 30px;">
-                                <el-input type="text" size="mini" placeholder="Confirmez le mot de passe" v-model="registration.passwordConfirmed" required></el-input>
+                                <el-input type="text" size="mini" placeholder="Confirmez le mot de passe" show-password="true" v-model="registration.passwordConfirmed" required></el-input>
                             </el-form-item>
                         </el-col>
                     </el-row>
@@ -127,18 +127,29 @@ export default {
     },
     methods: {
         async submitForm() {
-        //     this.$refs['registration'].validate((valid) => {
-        //       if (!valid) {
-        //         return false
-        //     }
-        // });
-        var result = await AuthService.insertUser(this.registration);
-        if (result.success) {
-            this.$router.push({ name: 'LogIn', params: { comeFromSignUp: true }});
-        }
+            this.$refs['registration'].validate((valid) => {
+              if (!valid) {
+                return false
+            }
+            let context = this;
+            AuthService.insertUser(this.registration).then(function() {
+                context.$router.push({ name: 'LogIn', params: { checkMails: true }})
+            }).catch(function(error){
+                let msg = "Pb";
+                if (error.response.data.err) {
+                    msg = error.response.data.err;
+                }
+                context.$message({
+                    message: msg,
+                    type: 'warning'
+                });
+              }
+            );
+        });
     }
   }
 }
+
 </script>
 
 <style lang="scss" scoped>

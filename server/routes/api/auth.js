@@ -11,7 +11,6 @@ const key = require('../../config/keys').secret;
 const URI = require('../../config/keys').URI;
 const api_key = require('../../config/keys').api_key; 
 // To send mails
-const nodemailer = require("nodemailer");
 const sgMail = require('@sendgrid/mail');
 require('dotenv').config();
 
@@ -26,15 +25,6 @@ mongoose.connection.on('connected', () => {
 });
 
 
-router.get('/', function (req, res) {
-  User.find(function (err, usrs) {
-    if (err) {
-      console.log('err');
-      res.send(err);
-    }
-    res.json(usrs);
-  });
-});
 
 // router.get('/profile', passport.authenticate('jwt', { session: false}),
 //   (req, res) => {
@@ -65,31 +55,8 @@ router.get('/profile', function(req, res, next) {
 //    });
 //   });
 
-// function sendMail(mail, host, hash, function (res, err) => {
-//   let api_key = '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';
-//   // sgMail.setApiKey(process.env.SENDGRID_API_KEY);
-
-//   let link="http://"+host+"/verify?id=" + hash;
-//   console.log(link);
-//   sgMail.setApiKey(api_key);
-//   const msg = {
-//     to: mail,
-//     from: 'flgallois@gmail.com',
-//     subject: 'Confirm your email address',
-//     html: 'Hello,<br><br><br><br>Please Click on the link to <strong>verify your email</strong>.<br><br><br><a href='+link+'>Click here to verify</a>',
-//   };
-//   sgMail.send(msg, function(err, json){
-//     if(err) { 
-//       console.error(err.response.body);
-//       console.log('echec');
-//       return res.status(500).send({ msg: err.message });
-//     }
-//     return res.status(200).send('A verification email has been sent to ' + mail + '.');
-//   });
-// });
-
-
-router.post('/register', function (req, res) {
+//Sign up a user
+router.post('/signup', function (req, res) {
   let {
     email,
     password,
@@ -126,12 +93,12 @@ router.post('/register', function (req, res) {
               let host = req.get('host');
               // let api_key = process.env.SENDGRID_API_KEY;
               sgMail.setApiKey(api_key);
-              let link = "http://" + host + "/verify?id=" + token;
+              let link = "http://" + host + "/api/auth/confirm?token=" + token;
               const msg = {
                 to: user.mail,
                 from: 'lendlecontact1@gmail.com',
                 subject: 'Confirm your email address',
-                html: 'Hello,<br><br><br><br>Please click on the link to <strong>verify your email</strong>.<br><br><br><a href=' + link + '>Click here to verify</a>',
+                html: 'Hello,<br><br><br>Please click on the link to <strong>verify your email</strong>.<br><br><br><a href=' + link + '>Click here to verify</a>',
               };
     
               sgMail.send(msg, function (err) {
@@ -154,46 +121,137 @@ router.post('/register', function (req, res) {
         });
     }
   });
-
   });
 
 
-  router.post('/confirm', function (req, res) {
+
+  //if the user asks to receive a mail of validation again
+  router.post('/validation', function (req, res) {
+    let {
+      email
+    } = req.body;
+    console.log(req.body);
+    User.findOne({ mail: email }).then(user => {
+      if (!user) {
+        return res.status(404).json({
+          err: 'Vous nêtes pas inscrit'
+        });
+      } else {
+        let token = crypto.randomBytes(16).toString('hex');
+        let new_token = new Token({ _userId: user._id, token: token });
+        new_token.save(function (err) {
+          if (err) {
+            User.remove({ _id: user._id});
+            return res.status(500).send({ msg: "Probleme à l'enregistrement" });
+          }
+          let host = req.get('host');
+                // let api_key = process.env.SENDGRID_API_KEY;
+          sgMail.setApiKey(api_key);
+          let link = "http://" + host + "/api/auth/confirm?token=" + token;
+          const msg = {
+            to: email,
+            from: 'lendlecontact1@gmail.com',
+            subject: 'Confirm your email address',
+            html: 'Hello,<br><br><br>Please click on the link to <strong>verify your email</strong>.<br><br><br><a href=' + link + '>Click here to verify</a>',
+          };
+      
+        sgMail.send(msg, function (err) {
+          if (err) {
+            User.remove({ _id: user._id});
+            return res.status(500).send({ 
+              msg: err.message 
+            }); 
+          }
+          return res.status(201).json({
+            success: true,
+            msg: "Un mail vous a été envoyé"
+          });
+        });
+      });
+    }  
+    });
+});
+  
+
+// when a user clicks on the validation link in his mailbox
+  router.get('/confirm', function (req, res) {
+    const token = req.query.token;
+    Token.findOne({ token: token}).then(token => {
+      if (!token) {
+        return res.status(404).json({
+          err: 'Votre token a peut être expiré'
+        });
+      }
+      let user_id = token._userId;
+      User.findOne({ _id: user_id}).then(user => {
+        if (!user) {
+          return res.status(404).json({
+            err: 'Votre compte nest pas reconnu'
+          });
+        }
+        else{
+          if (user.isVerified) {
+
+            res.redirect('http://localhost:8080/#/login');
+          } else{
+            user.isVerified = true;
+            user.save(function(err) {
+              if (err) {
+                return res.status(404).json({
+                  err: 'Probleme de validation. Veuillez réessayer'
+                });
+              }
+            });
+            res.redirect('http://localhost:8080/#/login');
+            // res.send('<h4 style="text-align:center;margin-top:4vh;">Votre compte est validé</h4>');
+            // return res.status(201).json({
+            //   err: 'Votre compte est validé. Vous pouvez vous connecter'
+            // });
+          }
+        }
+        });
+      });
     
   });
 
 router.post('/login', function (req, res) {
-  console.log('LLOFIN');
   let mail = req.body.email;
   let pswd = req.body.password;
-  console.log(mail);
-  console.log(pswd);
   User.findOne({ mail: mail }).then(user => {
     console.log(user);
     if (!user) {
       return res.status(404).json({
+        type: 0,
         err: 'Cet email nest pas associe a un compte'
       });
     } else {
-      bcrypt.compare(pswd, user.pswd).then(isMatch => {
-        if (isMatch) {
-          const payload = {
-            _id: user._id,
-            mail: user.mail
+      if (!user.isVerified) {
+        return res.status(404).json({
+          type: 1,
+          err: 'Votre mail n a pas été validé. Regardez votre boîte mail'
+        });
+      } else {
+        bcrypt.compare(pswd, user.pswd).then(isMatch => {
+          if (isMatch) {
+            const payload = {
+              _id: user._id,
+              mail: user.mail
+            }
+            jwt.sign(payload, key, { expiresIn: 604800 }, (err, token) =>  {
+              res.status(200).json({
+                success: true,
+                token: `Bearer ${token}`,
+                msg: "Vous êtes connecté.e"
+              })
+            });
+          } else {
+            return res.status(404).json({
+              type: 0,
+              err: 'Le mot de passe est erroné'
+            });
           }
-          jwt.sign(payload, key, { expiresIn: 604800 }, (err, token) =>  {
-            res.status(200).json({
-              success: true,
-              token: `Bearer ${token}`,
-              msg: "Vous êtes connecté.e"
-            })
-          });
-        } else {
-          return res.status(404).json({
-            err: 'Le mot de passe est erroné'
-          });
-        }
-      })
+        })
+      }
     }
   });
 });

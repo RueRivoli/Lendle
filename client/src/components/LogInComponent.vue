@@ -3,7 +3,7 @@
         <nav-component :displayTitles="false" style="border-bottom: 1px solid #dfe0e6"></nav-component>
         <div style="height:15vh;" >
            <el-alert
-                v-if="$route.params.comeFromSignUp"
+                v-if="$route.params.checkMails || checkMails"
                 title="Avertissement"
                 type="warning"
                 description="Checkez vos mails et activez votre compte afin de vous connecter."
@@ -11,6 +11,29 @@
             </el-alert>
         </div>
             <el-form ref="registration" name="registration" style="width:100%;" :model="registration" :rules="rulesRegistration" label-position="top" label-width="130px" enctype="multipart/form-data">
+                    <el-row v-if="$route.params.checkMails || checkMails">
+                        <el-col :span="8" :offset="8">
+                            <div style="text-align:center;font-size:12px;margin-top:5px;">
+                                <span class="pointer green" @click="reSendMailValidation">Réenvoyer un mail de validation </span>
+                            </div>
+                        </el-col>
+                    </el-row>
+                    <br><br>
+                     <el-row>
+                        <el-col class="flex sp-around" :span="8" :offset="8">
+                            <el-button value="submit" style="margin-top:5px;background-color:#6C7076;color:white;" size="mini">Connectez-vous avec Gmail</el-button>
+                        </el-col>
+                    </el-row>
+                    <el-row>
+                        <el-col class="flex sp-around" :span="8" :offset="8">
+                            <el-button id="fb" value="submit"  style="margin-top:5px;background-color:#4773B0;color:white;" size="mini">Connectez-vous avec Facebook</el-button>
+                        </el-col>
+                    </el-row>
+                    <el-row>
+                        <el-col :span="8" :offset="8">
+                            <strong class="line-thru">ou</strong>
+                        </el-col>
+                    </el-row>
                     <el-row>
                         <el-col :span="8" :offset="8">
                             <div style="text-align:center;font-size:12px;">
@@ -28,13 +51,13 @@
                     <el-row>
                         <el-col :span="8" :offset="8">
                             <el-form-item label="" prop="password">
-                                <el-input type="text" size="mini" placeholder="Mot de passe" v-model="registration.password" required></el-input>
+                                <el-input type="text" size="mini" show-password="true" placeholder="Mot de passe" v-model="registration.password" required></el-input>
                             </el-form-item>
                         </el-col>
                     </el-row>
                     <el-row>
                         <el-col class="flex sp-around" :span="8" :offset="8">
-                            <el-button type="primary" value="submit" @click="submitForm()" style="margin-top:5px;" size="mini" round>Submit</el-button>
+                            <el-button type="primary" value="submit" show-password="true" @click="submitForm()" style="margin-top:5px;" size="mini" round>Submit</el-button>
                         </el-col>
                     </el-row>
                     <el-row>
@@ -72,6 +95,7 @@ export default {
               email: '',
               password: ''
           },
+          checkMails: false,
         rulesRegistration: {
             email: [
                 { required: true, message: 'Please input your email', trigger: 'blur' },
@@ -99,13 +123,25 @@ export default {
               return false
              }
        });
-        var result = await AuthService.logUser(this.registration);
-        console.log(result);
-        if (result) {
-            this.$router.push({ name: 'ProfileComponent' });
-        } 
-        console.log('RESULT');
-        console.log(result);
+        let context = this;
+        AuthService.logUser(this.registration).then(function() {
+            context.$router.push({ name: 'ProfileComponent' });
+        }).catch(function(err) {
+            if (err.response && err.response.data.type === 0) {
+                let msg = "Il y a une erreur dans la création du compte";
+              if (err.response.data.err) {
+                msg = err.response.data.err;
+                }
+                 context.$message({
+                    message: msg,
+                    type: 'warning'
+                });
+            }
+            else if (err.response && err.response.data.type === 1) context.checkMails = true;
+        })
+    },
+    reSendMailValidation() {
+        this.$router.push({ name: 'ReSendMailValidationComponent' });
     }
   }
 }
