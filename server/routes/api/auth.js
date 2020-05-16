@@ -37,6 +37,34 @@ router.get('/profile', function(req, res, next) {
   res.send(req.user);
 });
 
+passport.serializeUser(function(user, done) {
+  done(null, user.id);
+});
+
+passport.deserializeUser(function(id, done) {
+  User.findById(id).then((user))
+  done(null, user.id);
+});
+
+
+router.get('/google',
+  passport.authenticate('google', { scope: ['profile'] }),
+  function(req, res) {
+    res.redirect('/api/auth/google/callback');
+  });
+
+  router.get('/google/callback', 
+  passport.authenticate('google', { failureRedirect: '/login' }),
+    function(req, res) {
+      const payload = {
+        _id: req.user._id,
+        // username: req.user.username
+      };
+      req.session.user = payload;
+    res.redirect('/api/users/profile');
+    // console.log(req);
+    // res.send('GAPPe');
+  });
 // router.post('/profile', verifyToken, (req, res) => {
 //    jwt.verify(req.token, key, (err, authData) => {
 //      console.log(req.token);

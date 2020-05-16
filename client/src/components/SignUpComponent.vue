@@ -1,10 +1,9 @@
 <template>
     <div>
         <nav-component :displayTitles="false" style="border-bottom: 1px solid #dfe0e6"></nav-component>
-            <el-form ref="registration" name="registration" style="width:100%;margin-top:15vh;" :model="registration" :rules="rulesRegistration" label-position="top" label-width="130px" enctype="multipart/form-data">
                     <el-row>
                         <el-col class="flex sp-around" :span="8" :offset="8">
-                            <el-button value="submit" style="margin-top:5px;background-color:#6C7076;color:white;" size="mini">Créer un compte avec Gmail</el-button>
+                            <el-button value="submit" style="margin-top:5px;background-color:#6C7076;color:white;" size="mini" @click="signUpGoogle">Créer un compte avec Gmail</el-button>
                         </el-col>
                     </el-row>
                     <el-row>
@@ -17,6 +16,7 @@
                             <strong class="line-thru">ou</strong>
                         </el-col>
                     </el-row>
+                    <el-form ref="registration" name="registration" style="width:100%;margin-top:15vh;" :model="registration" :rules="rulesRegistration" label-position="top" label-width="130px" enctype="multipart/form-data">
                     <el-row>
                         <el-col :span="8" :offset="8">
                             <div style="text-align:center;font-size:12px;">
@@ -34,14 +34,14 @@
                     <el-row>
                         <el-col :span="8" :offset="8">
                             <el-form-item label="" prop="password">
-                                <el-input type="text" size="mini" placeholder="Mot de passe" show-password="true" v-model="registration.password" required></el-input>
+                                <el-input type="text" size="mini" placeholder="Mot de passe" :show-password="true" v-model="registration.password" required></el-input>
                             </el-form-item>
                         </el-col>
                     </el-row>
                     <el-row>
                         <el-col :span="8" :offset="8">
                             <el-form-item label="" prop="passwordConfirmed" style="margin-bottom: 30px;">
-                                <el-input type="text" size="mini" placeholder="Confirmez le mot de passe" show-password="true" v-model="registration.passwordConfirmed" required></el-input>
+                                <el-input type="text" size="mini" placeholder="Confirmez le mot de passe" :show-password="true" v-model="registration.passwordConfirmed" required></el-input>
                             </el-form-item>
                         </el-col>
                     </el-row>
@@ -146,6 +146,10 @@ export default {
               }
             );
         });
+    },
+    async signUpGoogle() {
+        let result = await AuthService.signUpGoogle();
+        console.log(result);
     }
   }
 }

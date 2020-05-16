@@ -11,11 +11,11 @@ const UserSchema = mongoose.Schema({
     },
     mail: {
         type: String,
-        required: true
+        required: false
     },
     pswd: {
         type: String,
-        required: true
+        required: false
     },
     address: {
         type: String,
@@ -44,7 +44,11 @@ const UserSchema = mongoose.Schema({
     subscription: {
         type: Date,
         default: Date.now
-    }
+    },
+    language: {
+        type: String,
+        required: false
+    },
 });
 
 module.exports = mongoose.model('Users', UserSchema);

@@ -51,6 +51,27 @@ class AuthService {
         })
     }
 
+    static signUpGoogle() {
+        const url_google = url + '/google';
+        return new Promise(function(resolve, reject) {
+            try {
+                return axios.get(url_google).then(function (response) {
+                    console.log(response);
+                    // if (response.data.success) {
+                    //     const token = response.data.token;
+                    //     localStorage.setItem('Authorization', token);
+                    //     resolve(response.data.success);
+                    // }
+                    resolve(response);
+                }).catch(function (error) {
+                    console.log(error);
+                    reject(error);
+                });
+            } catch(err) {
+                reject(err);
+            }
+        })
+    }
 
     static sendValidationUser(mail) {
         const url_validation = url + '/validation';
