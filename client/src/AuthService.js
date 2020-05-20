@@ -1,4 +1,5 @@
 import axios from 'axios';
+import VueCookies from 'vue-cookies'
 
 const url = 'http://localhost:5000/api/auth';
 
@@ -36,8 +37,11 @@ class AuthService {
                 return axios.post(url_login, user).then(function (response) {
                     console.log(response);
                     if (response.data.success) {
+                        console.log('CREATION du cookie');
                         const token = response.data.token;
-                        localStorage.setItem('Authorization', token);
+                        console.log('token');
+                        console.log(token);
+                        VueCookies.set('jwt' , token , "1h") 
                         resolve(response.data.success);
                     }
                     resolve(response);
@@ -55,7 +59,13 @@ class AuthService {
         const url_google = url + '/google';
         return new Promise(function(resolve, reject) {
             try {
+                // let config = {
+                //     headers: {
+                //         "Access-Control-Allow-Origin": "*"
+                //     }
+                // }
                 return axios.get(url_google).then(function (response) {
+                    console.log('RETOUR');
                     console.log(response);
                     // if (response.data.success) {
                     //     const token = response.data.token;
@@ -92,16 +102,17 @@ class AuthService {
 
     static getProfile() {
         // console.log(profile);
-        let url_login = url + '/profile'
+        let url_profile = url + '/profile'
         return new Promise(function(resolve, reject) {
             try {
-                let config = {
-                    headers: {
-                        'Content-Type': 'application/json;charset=UTF-8',
-                        "Authorization": localStorage.getItem('Authorization'),
-                    }
-                };
-                return axios.get(url_login, config).then(function (response) {
+                // let config = {
+                //     headers: {
+                //         'Content-Type': 'application/json;charset=UTF-8',
+                //         "Authorization": localStorage.getItem('Authorization'),
+                //         Cookie: "cookie1=value; cookie2=value; cookie3=value;"
+                //     }
+                // };
+                return axios.get(url_profile, { withCredentials: true }).then(function (response) {
                     console.log(response);
                     resolve(response);
                 }).catch(function (error) {

@@ -36,9 +36,13 @@ router.get('/', function (req, res) {
 //   }
 // );
 
-router.get('/profile', function(req, res, next) {
-  console.log('entrance');
-  res.send(req.user);
+router.get('/profile', function(req, res) {
+  console.log('AH OUAIS');
+  // console.log(req);
+  //res.json({RESULTAT: "/profile"});
+  return res.status(201).json({
+    message: 'All is ok'
+  });
 });
 
 // router.post('/profile', verifyToken, (req, res) => {

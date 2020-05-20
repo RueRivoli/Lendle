@@ -51,13 +51,13 @@
                     <el-row>
                         <el-col :span="8" :offset="8">
                             <el-form-item label="" prop="password">
-                                <el-input type="text" size="mini" show-password="true" placeholder="Mot de passe" v-model="registration.password" required></el-input>
+                                <el-input type="text" size="mini" :show-password="true" placeholder="Mot de passe" v-model="registration.password" required></el-input>
                             </el-form-item>
                         </el-col>
                     </el-row>
                     <el-row>
                         <el-col class="flex sp-around" :span="8" :offset="8">
-                            <el-button type="primary" value="submit" show-password="true" @click="submitForm()" style="margin-top:5px;" size="mini" round>Submit</el-button>
+                            <el-button type="primary" value="submit" :show-password="true" @click="submitForm()" style="margin-top:5px;" size="mini" round>Submit</el-button>
                         </el-col>
                     </el-row>
                     <el-row>
@@ -75,6 +75,7 @@
 <script>
 import NavComponent from './NavComponent';
 import AuthService from '../AuthService';
+import VueCookie from 'vue-cookie'
 
 export default {
   name: 'LogInComponent',
@@ -113,6 +114,7 @@ export default {
         }
     },
     created() {
+         VueCookie.set("jwt", 'gez78727', "1h");
     },
     methods: {
         async submitForm() {
@@ -123,6 +125,8 @@ export default {
               return false
              }
        });
+    //    this.$cookie.set('token', 'fzfzzffz', 1);
+    //    VueCookies.set('jwt', '1897878378', "1h");
         let context = this;
         AuthService.logUser(this.registration).then(function() {
             context.$router.push({ name: 'ProfileComponent' });

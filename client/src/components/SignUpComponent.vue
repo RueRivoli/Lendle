@@ -3,6 +3,7 @@
         <nav-component :displayTitles="false" style="border-bottom: 1px solid #dfe0e6"></nav-component>
                     <el-row>
                         <el-col class="flex sp-around" :span="8" :offset="8">
+                            <a href="http://localhost:5000/api/auth/google">CLIQUE ICI</a>
                             <el-button value="submit" style="margin-top:5px;background-color:#6C7076;color:white;" size="mini" @click="signUpGoogle">Créer un compte avec Gmail</el-button>
                         </el-col>
                     </el-row>

@@ -9,10 +9,13 @@ import moment from 'moment'
 import VueRouter from 'vue-router'
 import VueAuthenticate from 'vue-authenticate'
 import router from './router/routes.js'
+import VueCookie from 'vue-cookie'
 
 Vue.use(VueRouter)
 Vue.use(ElementUI, { locale })
 Vue.use(moment);
+Vue.use(VueCookie);
+// Vue.Prototype.$cookie = VueCookies;
 Vue.use(VueAuthenticate, {
   baseUrl: 'http://localhost:5000', // Your API domain
   

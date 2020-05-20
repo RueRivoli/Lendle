@@ -13,6 +13,7 @@ const api_key = require('../../config/keys').api_key;
 // To send mails
 const sgMail = require('@sendgrid/mail');
 require('dotenv').config();
+const ExtractJwt = require('passport-jwt').ExtractJwt;
 
 const router = express.Router();
 
@@ -34,37 +35,61 @@ mongoose.connection.on('connected', () => {
 // );
 
 router.get('/profile', function(req, res, next) {
-  res.send(req.user);
+  res.send("ALLO T AS PAS DE SCHAMPOING");
 });
 
 passport.serializeUser(function(user, done) {
+  console.log("SERIA");
+  console.log(user);
   done(null, user.id);
 });
 
 passport.deserializeUser(function(id, done) {
+  console.log("DESERIA");
+  console.log(id);
   User.findById(id).then((user))
-  done(null, user.id);
+  done(null, user);
 });
 
+//scope: ['profile', 'email']
 
 router.get('/google',
-  passport.authenticate('google', { scope: ['profile'] }),
-  function(req, res) {
-    res.redirect('/api/auth/google/callback');
-  });
+      passport.authenticate('google', {scope: [
+        'https://www.googleapis.com/auth/plus.login',
+        'https://www.googleapis.com/auth/plus.profile.emails.read'
+      ]  }));
 
   router.get('/google/callback', 
-  passport.authenticate('google', { failureRedirect: '/login' }),
+      passport.authenticate('google', { failureRedirect: '/login' }),
     function(req, res) {
+      console.log('REQ ET RES DU CALLBACK');
+      console.log(res);
+      // console.log(req);
+      res.setHeader('Access-Control-Allow-Origin', '*');
+      if (req.method === "OPTIONS") {
+        res.setHeader('Access-Control-Allow-Headers', 'Accept, Content-type');
+      }
       const payload = {
-        _id: req.user._id,
-        // username: req.user.username
-      };
-      req.session.user = payload;
-    res.redirect('/api/users/profile');
-    // console.log(req);
-    // res.send('GAPPe');
+        _id: req.session.passport.user,
+      }
+      jwt.sign(payload, key, { expiresIn: 604800 }, (err, token) =>  {
+        if (err) {
+          res.redirect('/api/users/profile');
+        } else {
+          console.log(token);
+          res.clearCookie('jwt');
+          console.log('COOKIE PARSER');
+          console.log(req.cookies);
+          res.cookie('jwt', token);
+          console.log(req.cookies);
+        }
+        res.header("Access-Control-Allow-Origin", "http://localhost:8080");
+        res.redirect('/api/users/profile');
+      });
+  
+    
   });
+
 // router.post('/profile', verifyToken, (req, res) => {
 //    jwt.verify(req.token, key, (err, authData) => {
 //      console.log(req.token);
@@ -82,6 +107,16 @@ router.get('/google',
 //      }
 //    });
 //   });
+
+
+router.get('/facebook',
+  passport.authenticate('facebook', { scope: 'email' })
+);
+
+router.get('/facebook/callback',
+  passport.authenticate('facebook', { successRedirect: '/api/users/profile',
+                                      failureRedirect: '/login' }));
+
 
 //Sign up a user
 router.post('/signup', function (req, res) {
@@ -266,9 +301,11 @@ router.post('/login', function (req, res) {
               mail: user.mail
             }
             jwt.sign(payload, key, { expiresIn: 604800 }, (err, token) =>  {
+              // res.redirect('/api/users/profile');
               res.status(200).json({
                 success: true,
-                token: `Bearer ${token}`,
+                // token: `Bearer ${token}`,
+                 token: `${token}`,
                 msg: "Vous êtes connecté.e"
               })
             });
