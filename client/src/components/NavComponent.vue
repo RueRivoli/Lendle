@@ -1,22 +1,23 @@
 <template>
     <nav style="border-bottom: 1px solid #dfe0e6">
         <ul role="menubar" class="" style="height: 50px;">
-            <li tabindex="0" v-bind:class="{ 'selected': displayLendle, 'MRIGHT': !displayTitles,'pointer': true, 'lendle': true }" @click="select(0)">LENDLE</li>
-            <li v-if="displayTitles" tabindex="0" v-bind:class="{ 'selected': displayLoanFurnit, 'pointer': true }" style="float:right;margin-right:5px;" @click="select(1)"> Prêter des meubles</li>
-            <li v-if="displayTitles" tabindex="0" v-bind:class="{ 'selected': displayFindFurnit, 'pointer': true }" style="float:right;margin-left:5px;" @click="select(2)">Trouver des meubles</li>
-            <div v-if="displayTitles" style="width:5%;"></div>
-            <div v-if="displayTitles">
-                <el-input
-                    placeholder="Chercher un meuble"
-                    prefix-icon="el-icon-search"
-                    size="mini"
-                    v-model="searchWord">
-                </el-input>
+            <li tabindex="0" class="mright" v-bind:class="{ 'selected': displayLendle, 'pointer': true, 'lendle': true }" @click="select(0)">LENDLE</li>
+            <!-- <li v-if="displayTitles" tabindex="0" v-bind:class="{ 'selected': displayLoanFurnit, 'pointer': true }" style="float:right;margin-right:5px;" @click="select(1)"> Prêter des meubles</li>
+            <li v-if="displayTitles" tabindex="0" v-bind:class="{ 'selected': displayFindFurnit, 'pointer': true }" style="float:right;margin-left:5px;" @click="select(2)">Trouver des meubles</li> -->
+            <div v-if="displayTitles" style="width:50%;"></div>
+            <div class="f-auto" v-if="displayTitles">
+                <el-button type="primary" size="mini" plain>J'ai des meubles</el-button>
             </div>
-            <div v-if="displayTitles" >
-                <li tabindex="0" class="pointer" style="float:right;margin-right: 10px;" v-if="displayTitles" >Mon compte</li>
+            <div class="f-auto" v-if="displayTitles">
+                <li tabindex="0" class="pointer" style="float:right;margin-right: 10px;" v-if="displayTitles" ><router-link to="/signup" tag="span">Connexion</router-link></li>
                 <span style="float:right;margin-right: 5px;" v-if="displayTitles" >|</span>
+                 <li tabindex="0" class="pointer" style="float:right;margin-right: 5px;" v-if="displayTitles" ><router-link to="/signup" tag="span">Inscription</router-link></li>
+            </div>
+             <!-- <div class="f-auto" v-if="displayTitles">
                 <li tabindex="0" class="pointer" style="float:right;margin-right: 5px;" v-if="displayTitles" ><router-link to="/signup" tag="span">Inscription</router-link></li>
+            </div> -->
+            <div class="f-auto" v-if="displayTitles" style="width:5%;">
+                <li tabindex="0" class="pointer" style="float:right;margin-right: 10px;"><router-link to="/help" tag="span">Aide</router-link></li>
             </div>
             <div class="f-auto" v-else style="width:5%;">
                 <li tabindex="0" class="pointer" style="float:right;margin-right: 10px;"><router-link to="/" tag="span">Retour</router-link></li>
@@ -60,14 +61,15 @@ export default {
 <style scoped>
 
 
-.MRIGHT{
-    margin-left: 48px;
+.mright{
+    margin-left: 18px;
 }
+
 ul {
   list-style-type: none;
   display: flex;
   flex-direction: row;
-  justify-content: space-between;
+  /* justify-content: space-between; */
   align-items:center;
   margin: 0;
   padding: 0;

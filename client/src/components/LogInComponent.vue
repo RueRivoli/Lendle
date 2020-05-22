@@ -128,8 +128,10 @@ export default {
     //    this.$cookie.set('token', 'fzfzzffz', 1);
     //    VueCookies.set('jwt', '1897878378', "1h");
         let context = this;
-        AuthService.logUser(this.registration).then(function() {
-            context.$router.push({ name: 'ProfileComponent' });
+        AuthService.logUser(this.registration).then(function(token) {
+            console.log('TOKEN');
+            console.log(token);
+            context.$router.push({ name: 'ProfileComponent' , params: { token }});
         }).catch(function(err) {
             if (err.response && err.response.data.type === 0) {
                 let msg = "Il y a une erreur dans la création du compte";

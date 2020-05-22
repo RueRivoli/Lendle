@@ -3,7 +3,7 @@
         <nav-component :displayTitles="false" style="border-bottom: 1px solid #dfe0e6"></nav-component>
                     <el-row>
                         <el-col class="flex sp-around" :span="8" :offset="8">
-                            <a href="http://localhost:5000/api/auth/google">CLIQUE ICI</a>
+                            <!-- <a href="http://localhost:5000/api/auth/google">CLIQUE ICI</a> -->
                             <el-button value="submit" style="margin-top:5px;background-color:#6C7076;color:white;" size="mini" @click="signUpGoogle">Créer un compte avec Gmail</el-button>
                         </el-col>
                     </el-row>
@@ -137,7 +137,9 @@ export default {
                 context.$router.push({ name: 'LogIn', params: { checkMails: true }})
             }).catch(function(error){
                 let msg = "Pb";
-                if (error.response.data.err) {
+                console.log(error);
+                console.log(error.response);
+                if (error.response && error.response.data.err) {
                     msg = error.response.data.err;
                 }
                 context.$message({

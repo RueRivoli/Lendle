@@ -7,8 +7,10 @@ class AuthService {
 
     static insertUser(user) {
         const url_signup = url + '/signup';
+        console.log('insertUser');
         return new Promise(function(resolve, reject) {
             try {
+                console.log(user);
                 return axios.post(url_signup, user).then(function (response) {
                     console.log(response);
                     resolve(response.data);
@@ -37,14 +39,12 @@ class AuthService {
                 return axios.post(url_login, user).then(function (response) {
                     console.log(response);
                     if (response.data.success) {
-                        console.log('CREATION du cookie');
                         const token = response.data.token;
-                        console.log('token');
-                        console.log(token);
                         VueCookies.set('jwt' , token , "1h") 
-                        resolve(response.data.success);
+                        resolve(token);
+                    } else {
+                        resolve(response);
                     }
-                    resolve(response);
                 }).catch(function (error) {
                     console.log(error);
                     reject(error);
@@ -57,6 +57,7 @@ class AuthService {
 
     static signUpGoogle() {
         const url_google = url + '/google';
+        console.log(url_google);
         return new Promise(function(resolve, reject) {
             try {
                 // let config = {
@@ -64,6 +65,7 @@ class AuthService {
                 //         "Access-Control-Allow-Origin": "*"
                 //     }
                 // }
+                console.log('AAABB');
                 return axios.get(url_google).then(function (response) {
                     console.log('RETOUR');
                     console.log(response);

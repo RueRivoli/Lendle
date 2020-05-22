@@ -4,10 +4,10 @@ const url = 'http://localhost:5000/api/users';
 
 class UserService {
 
-    static getProfile() {
+    static getProfile(token) {
         let url_profile = url + '/profile'
-        console.log('ENV VARIABLES');
-        console.log(process.env);
+        console.log('LE TOKEN');
+        console.log(token);
         return new Promise(function(resolve, reject) {
             try {
                 // let config = {

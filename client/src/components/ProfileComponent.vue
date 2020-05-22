@@ -8,7 +8,7 @@
                                Profile
                             </div>
                         </el-col>
-                    </el-row>
+                    </el-row>{{ $route.params.token}}
                     <el-row>
                         <el-col :span="8" :offset="8">
                             <el-form-item label="" prop="email">
