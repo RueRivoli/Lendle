@@ -221,7 +221,7 @@ export default {
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
-<style lang="scss">
+<style lang="scss" scoped>
 
 $color-primary: #1E969D;
 $color-success: #484538;

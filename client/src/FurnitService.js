@@ -29,6 +29,35 @@ class FurnitService {
         })
     }
 
+    //get all the furnits from a city and with a name (Homepage)
+    static getFurnit(furnit){
+        console.log('furnit of research');
+        console.log(furnit);
+        let furnit0 = {
+            params: {
+              type: furnit.name,
+              city: furnit.city
+            }
+        };
+        return new Promise(function(resolve, reject) {
+            try {
+                axios.get(url, furnit0).then(function (response) {
+                    // handle success
+                    const data = response.data;
+                    console.log(data);
+                    resolve(data);
+                  })
+                  .catch(function (error) {
+                    // handle error
+                    console.log(error);
+                  });
+            } catch(err) {
+                reject(err);
+            }
+        })
+    }
+
+
     static getImages(){
         return new Promise(function(resolve, reject) {
             try {
@@ -111,14 +140,7 @@ class FurnitService {
             }
         })
     }
-    // static getImages() {
-    //     const url0 = url + 'files/';
-    //     return axios.get(url0).then(function (response) {
-    //         console.log(response);
-    //     }).catch(function (error) {
-    //         console.log(error);
-    //     });
-    // }
+
 
     //create Furniture
     static insertFurniture(furnit) {

@@ -1,11 +1,9 @@
 <template>
     <el-container>
         <nav-component :displayTitles="true"></nav-component>
-         <el-container class="furnit" style="height:85vh;">
-            {{furniture.city }} : {{furniture.name }}  
-             <el-row style="width: 100%;height: 20vh;margin-top:18vh;">
+         <el-container style="height:85vh;"> 
+             <el-row style="width: 100%;height: 8vh;margin-top:2vh;">
               <el-col :span="8" :offset="8">
-                  <h3 class="title">Louer des meubles gratuitement près de chez vous</h3>
                     <el-form class="select" ref="furniture" name="furniture"  :inline="true" :model="furniture" :rules="rulesFurniture" enctype="multipart/form-data">
                          <el-input placeholder="Entrez un meuble" v-model="furniture.name" class="input-with-select">
                             <el-select placeholder="Ville" v-model="furniture.city" slot="prepend">
@@ -17,8 +15,15 @@
                         </el-input>
                     </el-form>
                 </el-col>
+            </el-row>{{ $route.params.furnits }}
+               <el-row v-for="(fnt, index) in furnitures" v-bind:key="index" style="width: 100%;height: 70vh;">
+                <el-col :span="6" :offset="2">
+                    <h4>{{ fnt.name }}</h4>
+                    - {{ fnt.loanstart/fnt.loanend }}
+                    - {{ fnt.city }}
+                </el-col>
             </el-row>
-           
+
         </el-container>
          
         <el-footer class="flex" style="background-color:#cfccc4; height: 200px;">
@@ -69,7 +74,7 @@ import NavComponent from './NavComponent';
 import FurnitService from '../FurnitService';
 
 export default {
-  name: 'HomeComponent',
+  name: 'SearchComponent',
   components: { NavComponent },
   data() {
       return {
@@ -97,11 +102,11 @@ export default {
               return false
              }
              console.log('valider');
-             let context = this;
+            //  let context = this;
               FurnitService.getFurnit(this.furniture).then(function(furnits) {
                 console.log('FURNITURE');
                 console.log(furnits);
-                context.$router.push({ name: 'Search', params: { furnits: furnits} });
+                // context.$router.push({ name: 'ProfileComponent' });
                 }).catch(function(err) {
                     console.log(err);
          });
@@ -113,13 +118,6 @@ export default {
 </script>
 
 <style>
-
-.furnit{
-    background: no-repeat right 50% url('./../assets/fauteuilrouge.png'),
-    no-repeat left 50% url('./../assets/fauteuilrouge.png');
-    /* url('./../assets/fatvert.jpg') no-repeat right top; */
-}
-
 
 .title{
     color: #851922;

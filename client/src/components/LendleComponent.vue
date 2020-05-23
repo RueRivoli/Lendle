@@ -1,6 +1,6 @@
 <template>
-<div>
-<el-container style="height:65vh;">
+    <div>
+        <el-container style="height:65vh;">
             <div class="slogan">
                 PRÊTEZ VOS MEUBLES A CEUX QUI EN CHERCHENT
             </div>

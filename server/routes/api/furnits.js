@@ -60,14 +60,44 @@ const upload1 = multer({ dest: './uploads' })
 const upload = multer({ storage });
 
 router.get('/', function (req, res) {
-  Furnit.find(function (err, furnits) {
-    if (err) {
-      console.log('err');
-      res.send(err);
+  let db = mongoose.connection.db;
+  let params = {};
+
+  if (req.query.type) params.type = req.query.type
+  if (req.query.city) params.city = req.query.city
+  console.log(params);
+  db.collection("furnits").find(params).toArray(function(err, furnits) {
+    if(err){
+      return res.json({ msg: 'erreur de requete'});
+      // return res.render('index', {
+      // title: 'Download Error', 
+      // message: 'Error retrieving furnits', 
+      // error: err.errmsg});
+    } else if(!furnits || furnits.length === 0){
+      //No data found
+      return res.json({ msg: 'pas de resultat'});
+      // return res.render('index', {
+      //   title: 'Download Error', 
+      //   message: 'No data found'});
+    } else {
+      return res.json({ furnits: furnits });
     }
-    res.json(furnits);
+    });
   });
-});
+
+// router.get('/', function (req, res) {
+//   Furnit.find(function (err, furnits) {
+//     if (err) {
+//       console.log('err');
+//       res.send(err);
+//     }
+//     res.json(furnits);
+//   });
+// });
+
+
+
+
 
 router.get('/files', function (req, res) {
   gfs.files.find().toArray(((err, files) => {
@@ -88,6 +118,7 @@ router.get('/files', function (req, res) {
     res.json({ files });
   }))
 });
+
 
 router.get('/files/:filename', function (req, res) {
   gfs.files.findOne({filename: req.params.filename}, (err, file) => {

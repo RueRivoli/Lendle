@@ -6,12 +6,12 @@
             <li v-if="displayTitles" tabindex="0" v-bind:class="{ 'selected': displayFindFurnit, 'pointer': true }" style="float:right;margin-left:5px;" @click="select(2)">Trouver des meubles</li> -->
             <div v-if="displayTitles" style="width:50%;"></div>
             <div class="f-auto" v-if="displayTitles">
-                <el-button type="primary" size="mini" plain>J'ai des meubles</el-button>
+                <el-button type="primary" size="mini" plain><router-link to="/intro/beARenter" tag="span">J'ai des meubles</router-link></el-button>
             </div>
             <div class="f-auto" v-if="displayTitles">
                 <li tabindex="0" class="pointer" style="float:right;margin-right: 10px;" v-if="displayTitles" ><router-link to="/signup" tag="span">Connexion</router-link></li>
                 <span style="float:right;margin-right: 5px;" v-if="displayTitles" >|</span>
-                 <li tabindex="0" class="pointer" style="float:right;margin-right: 5px;" v-if="displayTitles" ><router-link to="/signup" tag="span">Inscription</router-link></li>
+                 <li tabindex="0" class="pointer" style="float:right;margin-right: 5px;" v-if="displayTitles" ><router-link to="/login" tag="span">Inscription</router-link></li>
             </div>
              <!-- <div class="f-auto" v-if="displayTitles">
                 <li tabindex="0" class="pointer" style="float:right;margin-right: 5px;" v-if="displayTitles" ><router-link to="/signup" tag="span">Inscription</router-link></li>
