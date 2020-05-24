@@ -9,12 +9,12 @@
     </el-row>
       <el-form ref="furniture" name="furniture" :model="furniture" :rules="rulesFurniture" label-position="top" label-width="130px" enctype="multipart/form-data">
         <el-row>
-          <el-col :span="8">
+          <el-col :span="6">
             <el-form-item label="Nom du meuble" prop="name">
               <el-input type="text" size="mini" v-model="furniture.name" required></el-input>
             </el-form-item>
           </el-col>
-          <el-col :span="8" :offset="4">
+          <el-col :span="6" :offset="2">
             <el-form-item label="Type de meuble" prop="type">
               <el-select v-model="furniture.type" size="mini" placeholder="Type of furniture">
                 <el-option label="Table" value="table"></el-option>
@@ -23,6 +23,15 @@
                 <el-option label="Machine à laver" value="machinealaver"></el-option>
                 <el-option label="Armoire" value="armoire"></el-option>
                 <el-option label="Placard" value="placard"></el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="4" :offset="1">
+            <el-form-item label="Ville de location" prop="city">
+              <el-select v-model="furniture.city" size="mini" placeholder="City">
+                <el-option label="Lille" value="Lille"></el-option>
+                <el-option label="Lyon" value="Lyon"></el-option>
+                <el-option label="Paris" value="Paris"></el-option>
               </el-select>
             </el-form-item>
           </el-col>
@@ -100,9 +109,8 @@
 
 import AsideComponent from './AsideComponent';
 import FurnitService from '../FurnitService';
-// import FormData from 'form-data';
+import FormData from 'form-data';
 import moment from 'moment'
-// import axios from 'axios';
 
 export default {
   name: 'FurnitComponent',
@@ -131,6 +139,7 @@ export default {
       furniture: {
         name: '',
         type: '',
+        city: '',
         dateStart: '',
         dateEnd: '',
         description: '',
@@ -144,6 +153,9 @@ export default {
         type: [
           { required: true, message: 'Please select a type', trigger: 'change' }
         ],
+         city: [
+          { required: true, message: 'Please select a city', trigger: 'change' }
+        ],
         dateStart: [
           { type: 'date', required: true, message: 'Please input the start of the loan', trigger: 'blur' },
           { validator: validateDates, trigger: 'blur' }
@@ -152,9 +164,7 @@ export default {
           { type: 'date', required: true, message: 'Please input the end of the loan', trigger: 'blur' },
           { validator: validateDates, trigger: 'blur' }
         ],
-      },
-      posts: [],
-      text: ''
+      }
     }
   },
   async created() {
@@ -178,45 +188,36 @@ export default {
         this.$message.warning(`La limite est de 10 images, vous avez déjà choisi ${files.length} fichiers`);
     },
     async submitForm () {
-      let oData = new FormData(document.forms.namedItem("furniture"));
-      // console.log('oData');
-      // console.log(oData);
-      // for (var value of oData.values()) {
-      //     console.log(value); 
-      // }
-
-      
-      //  this.$refs['furniture'].validate((valid) => {
-      //    if (valid) {
-      //      this.$message.success(`Votre meuble a bien été crée`);
-      //    } else {
-      //     this.$message.warning(`Veuillez remplir correctement le formulaire`);
-      //      return false
-      //    }
-      // })
-
-      var picture_ids = await FurnitService.insertPicture(oData, {
-        headers: {
-        'Content-Type': `multipart/form-data;`
-          }
-        });
-      console.log(picture_ids);
-      this.furniture.picture_ids = picture_ids;
-      this.furniture.owner_id = '5eab3f5eef84ce1f98676228'; // a modifier prendre parametre de session 
-      console.log('This furniture ==>');
-      console.log(this.furniture);
-      var result = await FurnitService.insertFurniture(this.furniture);
-      console.log(result);
-    },
-    async createPost() {
-      await FurnitService.insertPost(this.text);
-      this.posts = await FurnitService.getPosts();
-    },
-    async deletePost(id) {
-      await FurnitService.deletePost(id);
-      this.posts = await FurnitService.getPosts();
-    }
-  }
+      let context = this;
+      this.$refs['furniture'].validate((valid) => {
+        if (valid) {
+          //create formData to send 
+          let fd = new FormData(document.forms.namedItem("furniture"));
+          // insert pictures uploaded into the db and return ids of the image
+          FurnitService.insertPicture(fd, {
+          headers: {
+            'Content-Type': `multipart/form-data;`
+            }
+          }).then(function(picture_ids) {
+            context.furniture.picture_ids = picture_ids;
+            context.furniture.owner_id = '5eab3f5eef84ce1f98676228';
+            console.log('CONTEXT FURNITRURE');
+            console.log(context.furniture);
+            FurnitService.insertFurniture(context.furniture).then(function(result) {
+              context.$message.success(result);
+              context.$router.push({ name: 'MyFurnit'});
+            }).catch(function(err) {
+              context.$message.warning(err);
+         });
+         }).catch(function(err) {
+             this.$message.warning(err);
+         });
+      } else {
+        context.$message.warning(`Veuillez remplir correctement le formulaire`);
+      }
+  });
+}
+}
 }
 </script>
 

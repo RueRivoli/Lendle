@@ -98,10 +98,11 @@ export default {
              }
              console.log('valider');
              let context = this;
-              FurnitService.getFurnit(this.furniture).then(function(furnits) {
+              FurnitService.getFurnit(this.furniture).then(function(furn) {
                 console.log('FURNITURE');
+                let furnits = furn.furnits;
                 console.log(furnits);
-                context.$router.push({ name: 'Search', params: { furnits: furnits} });
+                context.$router.push({ name: 'Search', params: { furnits } });
                 }).catch(function(err) {
                     console.log(err);
          });

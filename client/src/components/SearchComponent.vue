@@ -1,8 +1,9 @@
 <template>
     <el-container>
         <nav-component :displayTitles="true"></nav-component>
-         <el-container style="height:85vh;"> 
-             <el-row style="width: 100%;height: 8vh;margin-top:2vh;">
+        <el-container>
+            <el-header>
+                 <el-row style="width: 100%;height: 8vh;margin-top:2vh;">
               <el-col :span="8" :offset="8">
                     <el-form class="select" ref="furniture" name="furniture"  :inline="true" :model="furniture" :rules="rulesFurniture" enctype="multipart/form-data">
                          <el-input placeholder="Entrez un meuble" v-model="furniture.name" class="input-with-select">
@@ -15,16 +16,20 @@
                         </el-input>
                     </el-form>
                 </el-col>
-            </el-row>{{ $route.params.furnits }}
-               <el-row v-for="(fnt, index) in furnitures" v-bind:key="index" style="width: 100%;height: 70vh;">
-                <el-col :span="6" :offset="2">
+            </el-row>
+            </el-header>
+            <el-main style="height:120vh;">
+               <el-row  style="width: 100%;height: 20vh;">
+                <el-col v-for="(fnt, index) in furnits" v-bind:key="index" :span="6" :offset="2">
                     <h4>{{ fnt.name }}</h4>
-                    - {{ fnt.loanstart/fnt.loanend }}
-                    - {{ fnt.city }}
+                    <h6>{{ fnt.loanstart }}/ {{ fnt.loanend }}</h6>
+                    <h7>{{ fnt.city }}</h7>
                 </el-col>
             </el-row>
-
+            </el-main>
         </el-container>
+
+         
          
         <el-footer class="flex" style="background-color:#cfccc4; height: 200px;">
             <div class="margin-auto lendle" style="width:40vh;line-height:40px;font-size:40px;color:black;">Lendle</div>
@@ -78,10 +83,11 @@ export default {
   components: { NavComponent },
   data() {
       return {
-         furniture: {
+        furniture: {
             name: '',
-            city: '',
+            city: ''
         },
+        furnits: this.$route.params.furnits,
         rulesFurniture: {
             name: [
             { required: true, message: 'Sélectionner un meuble', trigger: 'blur' },
@@ -95,7 +101,6 @@ export default {
   },
     methods: {
         async submit () {
-            console.log(this.$refs['furniture']);
             this.$refs['furniture'].validate((valid) => {
               if (!valid) {
                 console.log('error submit!!')

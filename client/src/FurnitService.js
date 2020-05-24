@@ -118,14 +118,14 @@ class FurnitService {
                 }
             })
         }
-    // Create Post
-    
 
-
+    // when creating a furniture, insert image first in the database and return the id to the form
+    // to let it know the id of the pictures associated to this furniture
     static insertPicture(form, hd) {
         return new Promise(function(resolve, reject) {
             try {
                 return axios.post(urlupload, form, hd).then(function (response) {
+                    console.log(response);
                     var files = response.data.file;
                     var ids = new Array();
                     files.forEach(function(item){
@@ -142,16 +142,22 @@ class FurnitService {
     }
 
 
-    //create Furniture
+    // create Furniture
     static insertFurniture(furnit) {
-        console.log(furnit);
-        return axios.post(url, furnit).then(function (response) {
-            console.log('oooo');
-            console.log(response);
-        }).catch(function (error) {
-            console.log(error);
-        });
-    }
+        return new Promise(function(resolve, reject) {
+            try {
+                return axios.post(url, furnit).then(function (response) {
+                    console.log('Response');
+                    console.log(response);
+                    if (response.data) resolve(response.data);
+                }).catch(function (error) {
+                    console.log(error);
+                });
+            }  catch(err) {
+            reject(err);
+        }
+    });
+}
 
     //Delete Furnit
     static deleteFurnit(id) {
