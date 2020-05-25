@@ -2,7 +2,6 @@
     <el-container>
         <nav-component :displayTitles="true"></nav-component>
          <el-container class="furnit" style="height:85vh;">
-            {{furniture.city }} : {{furniture.name }}  
              <el-row style="width: 100%;height: 20vh;margin-top:18vh;">
               <el-col :span="8" :offset="8">
                   <h3 class="title">Louer des meubles gratuitement près de chez vous</h3>
@@ -66,7 +65,6 @@
 <script>
 import NavComponent from './NavComponent';
 // import FooterComponent from './FooterComponent';
-import FurnitService from '../FurnitService';
 
 export default {
   name: 'HomeComponent',
@@ -91,21 +89,15 @@ export default {
     methods: {
         async submit () {
             console.log(this.$refs['furniture']);
+            let context = this;
             this.$refs['furniture'].validate((valid) => {
               if (!valid) {
                 console.log('error submit!!')
               return false
              }
-             console.log('valider');
-             let context = this;
-              FurnitService.getFurnit(this.furniture).then(function(furn) {
-                console.log('FURNITURE');
-                let furnits = furn.furnits;
-                console.log(furnits);
-                context.$router.push({ name: 'Search', params: { furnits } });
-                }).catch(function(err) {
-                    console.log(err);
-         });
+            console.log('Formulaire valid');
+            let furn = context.furniture;
+            context.$router.push({ name: 'Search', params: { furniture: furn } });
         });
     }
 }

@@ -6,6 +6,7 @@ const urlupload = 'http://localhost:5000/api/furnits/upload';
 
 class FurnitService {
 
+
     static getFurnitures(){
         return new Promise(function(resolve, reject) {
             try {
@@ -43,8 +44,10 @@ class FurnitService {
             try {
                 axios.get(url, furnit0).then(function (response) {
                     // handle success
+                    console.log('FurnitService ==>');
+                    console.log(response);
                     const data = response.data;
-                    console.log(data);
+                    // console.log(data);
                     resolve(data);
                   })
                   .catch(function (error) {
@@ -78,7 +81,7 @@ class FurnitService {
     }
 
     //pour myFurnitComponent
-    static getFurnitFromOwner(pic_ids) {
+    static getImagesUrlFromPicIds(pic_ids) {
         let url_new = url + 'furn/';
         return new Promise(function(resolve, reject) {
             try {
@@ -142,7 +145,7 @@ class FurnitService {
     }
 
 
-    // create Furniture
+    // insert a new furniture from the form page
     static insertFurniture(furnit) {
         return new Promise(function(resolve, reject) {
             try {

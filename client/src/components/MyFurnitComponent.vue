@@ -77,13 +77,15 @@ export default {
   },
   async created() {
     this.furnitures = await FurnitService.getFurnitures();
+    console.log(this.furnitures);
     // this.pictures = await FurnitService.getPictures();
+    
     let picture_ids = new Array();
     this.furnitures.forEach(function(furn){
         if (furn.picture_ids.length > 0) picture_ids.push(furn.picture_ids[0]);
     });
     if (picture_ids.length > 0) {
-        this.url = await FurnitService.getFurnitFromOwner(picture_ids);
+        this.url = await FurnitService.getImagesUrlFromPicIds(picture_ids);
         console.log(this.url);
     }
     }

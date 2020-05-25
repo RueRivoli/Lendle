@@ -59,8 +59,20 @@ const upload1 = multer({ dest: './uploads' })
 
 const upload = multer({ storage });
 
+
+// router.get('/', function (req, res) {
+//   Furnit.find(function (err, furnits) {
+//     if (err) {
+//       console.log('err');
+//       res.send(err);
+//     }
+//     res.json(furnits);
+//   });
+// });
+
 router.get('/', function (req, res) {
   let db = mongoose.connection.db;
+  let collectionChunks = db.collection('uploads.chunks');
   let params = {};
 
   if (req.query.type) params.type = req.query.type
@@ -80,20 +92,53 @@ router.get('/', function (req, res) {
       //   title: 'Download Error', 
       //   message: 'No data found'});
     } else {
-      return res.json({ furnits: furnits });
-    }
+      // we have to retrieve one picture of each furnit
+      let picture_ids = [];
+      let finalFile = [];
+      furnits.forEach(function(furn){
+        if (furn.picture_ids.length > 0) picture_ids.push(furn.picture_ids[0]);
+        else picture_ids.push(-1);
+      });
+      console.log('picture_ids');
+      console.log(picture_ids);
+      furnits.forEach(function(ft) {
+        if (ft.picture_ids[0]) {
+          let id_first_pic = ft.picture_ids[0];
+          let id = ObjectId(id_first_pic);
+          gfs.files.findOne({ _id: id }, (err, fl) => {
+            if (!fl || fl.length === 0) {
+              return ft
+            } else {
+              let contentType = fl.contentType;
+              collectionChunks.find({files_id: id}).sort({ n: 1}).toArray(function(err, chunks) {
+              if(err){
+                return ft
+              }
+              if(!chunks || chunks.length === 0){
+                return ft
+              }
+              let fileData = [];
+              for (let i = 0; i < chunks.length; i++) {
+                fileData.push(chunks[i].data.toString('base64'));
+              }
+              finalFile.push('data:' + contentType + ';base64,' + fileData.join(''));
+              if (finalFile.length === picture_ids.length) {
+                console.log('')
+                res.json({furnits: furnits, imgUrl: finalFile}); }
+          });
+      }
     });
+    } else {
+      finalFile.push('test');
+      if (finalFile.length === picture_ids.length) {
+        res.json({furnits: furnits, imgurl: finalFile}); }
+    }
   });
+    }
+  });
+});
 
-// router.get('/', function (req, res) {
-//   Furnit.find(function (err, furnits) {
-//     if (err) {
-//       console.log('err');
-//       res.send(err);
-//     }
-//     res.json(furnits);
-//   });
-// });
+
 
 
 
@@ -160,34 +205,32 @@ router.get('/furn/:pic_ids', function (req, res) {
   let picture_ids = req.params.pic_ids.split(',');
   var finalFile = new Array();
   picture_ids.forEach(function(pic){
-  let id = ObjectId(pic);
-  gfs.files.findOne({ _id: id }, (err, fl) => {
-    if (!fl || fl.length === 0) {
-      return res.status(404).render({error: err.errMsg});
-    } else {
-      let contentType = fl.contentType;
-      collectionChunks.find({files_id: id}).sort({ n: 1}).toArray(function(err, chunks) {
-        if(err){
-          return res.status(404).render({
-            error: err.errmsg});
-        }
-        if(!chunks || chunks.length === 0){
-          return res.status(404).render({
-            error: err.errmsg});
-        }
-        let fileData = [];
-        for (let i=0; i<chunks.length;i++) {
-          fileData.push(chunks[i].data.toString('base64'));
-        }
-        finalFile.push('data:' + contentType + ';base64,' + fileData.join(''));
-        if (finalFile.length === picture_ids.length) { res.json({imgurl: finalFile}); }
+    let id = ObjectId(pic);
+    gfs.files.findOne({ _id: id }, (err, fl) => {
+      if (!fl || fl.length === 0) {
+        return res.status(404).render({error: err.errMsg});
+      } else {
+        let contentType = fl.contentType;
+        collectionChunks.find({files_id: id}).sort({ n: 1}).toArray(function(err, chunks) {
+          if(err){
+            return res.status(404).render({
+              error: err.errmsg});
+         }
+          if(!chunks || chunks.length === 0){
+            return res.status(404).render({
+              error: err.errmsg});
+          }
+          let fileData = [];
+          for (let i=0; i<chunks.length;i++) {
+            fileData.push(chunks[i].data.toString('base64'));
+          }
+          finalFile.push('data:' + contentType + ';base64,' + fileData.join(''));
+          if (finalFile.length === picture_ids.length) { res.json({imgurl: finalFile}); }
+        });
+      }
       });
-    }
     });
-    console.log(finalFile);
   });
-  
-});
 
 router.get('/images/SAP', function (req, res) {
   let db = mongoose.connection.db;

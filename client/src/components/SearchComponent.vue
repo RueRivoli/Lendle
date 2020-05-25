@@ -18,18 +18,47 @@
                 </el-col>
             </el-row>
             </el-header>
-            <el-main style="height:120vh;">
-               <el-row  style="width: 100%;height: 20vh;">
-                <el-col v-for="(fnt, index) in furnits" v-bind:key="index" :span="6" :offset="2">
-                    <h4>{{ fnt.name }}</h4>
-                    <h6>{{ fnt.loanstart }}/ {{ fnt.loanend }}</h6>
-                    <h7>{{ fnt.city }}</h7>
-                </el-col>
+            <el-main style="max-height:220vh;margin-left: 10vw;">
+               <el-row  :gutter="6" style="width: 100%;">
+                    <el-col v-for="(fnt, index) in furnits" v-bind:key="index" :span="5" style="margin-top:5px;">
+                        <el-card class="">
+                      
+                    
+                        <!-- <div class="center" style="">
+                            <time class="time"> {{ toFormat(fnt.loanstart)}} - {{ toFormat(fnt.loanend) }}</time>
+                        </div> -->
+                        <el-row>
+                            <div style="background-color: #D6DCDD">
+                                <img class="img pointer opacity" :src="imgUrl[index]">
+                            </div>
+                        </el-row>
+                        <!-- <el-row class="center">
+                            <el-badge class="item">
+                                <el-button size="mini">{{ fnt.city }}</el-button>
+                            </el-badge>
+                        </el-row> -->
+                        <div class="center" style="padding: 5px;">
+                            <span style="font-size:12px;padding:3px;">{{ fnt.name }}</span>
+                            <div class="bottom clearfix">
+                                <time  style="font-size:12px;float:left;margin-top: 4px;" class="time">{{ toFormat(fnt.loanstart)}} - {{ toFormat(fnt.loanend) }}</time>
+                                <el-tag type="primary" size="mini" style="float: right">{{ fnt.city }}</el-tag>
+                            </div>
+                        </div>
+                      
+                        </el-card>
+                    </el-col>
             </el-row>
             </el-main>
         </el-container>
+        <div style="text-align:center;margin-top:10vh;">
 
-         
+        <el-pagination
+        :page-size="20"
+        :pager-count="11"
+        layout="prev, pager, next"
+        :total="1000">
+        </el-pagination>
+         </div>
          
         <el-footer class="flex" style="background-color:#cfccc4; height: 200px;">
             <div class="margin-auto lendle" style="width:40vh;line-height:40px;font-size:40px;color:black;">Lendle</div>
@@ -77,6 +106,7 @@
 import NavComponent from './NavComponent';
 // import FooterComponent from './FooterComponent';
 import FurnitService from '../FurnitService';
+import moment from 'moment';
 
 export default {
   name: 'SearchComponent',
@@ -85,9 +115,10 @@ export default {
       return {
         furniture: {
             name: '',
-            city: ''
+            city: '',
         },
-        furnits: this.$route.params.furnits,
+        furnits: [],
+        imgUrl: [],
         rulesFurniture: {
             name: [
             { required: true, message: 'Sélectionner un meuble', trigger: 'blur' },
@@ -98,6 +129,20 @@ export default {
             ],
         }
   }
+  },
+  async created() {
+    if (this.$route.params && this.$route.params.furniture && this.$route.params.furniture.name) this.furniture.name = this.$route.params.furniture.name;
+    if (this.$route.params && this.$route.params.furniture && this.$route.params.furniture.city) this.furniture.city = this.$route.params.furniture.city;
+    let context = this;
+    console.log(this.furniture);
+    FurnitService.getFurnit(this.furniture).then(function(furn) {
+      console.log('result');
+      console.log(furn);
+      context.furnits = furn.furnits;
+      context.imgUrl = furn.imgUrl;
+    }).catch(function(err) {
+        console.log(err);
+    });
   },
     methods: {
         async submit () {
@@ -114,15 +159,39 @@ export default {
                 // context.$router.push({ name: 'ProfileComponent' });
                 }).catch(function(err) {
                     console.log(err);
-         });
-        });
+                });
+            });
+        },
+        toFormat (date) {
+          let mom = moment(date);
+          return mom.format('DD/MM/YY');
+      },
     }
-}
 }
 
 </script>
 
 <style>
+
+/* .el-button{
+    PADDING:
+} */
+
+.el-card__body {
+    padding: 0px !important;
+}
+
+.img{
+    display:block;
+    margin:auto;
+    height: 20vh;
+    max-width: 16vw;
+    cursor: pointer;
+}
+
+.center{
+    text-align: center;
+}
 
 .title{
     color: #851922;
@@ -158,5 +227,14 @@ export default {
     opacity: 0.9;
 } */
 
+
+  .clearfix:before,
+  .clearfix:after {
+    display: table;
+    content: "";
+  }
+  .clearfix:after {
+    clear: both
+  }
 
 </style>
