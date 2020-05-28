@@ -101,10 +101,6 @@ export default {
   background-color:#7490B8 !important;
 }
 
-// .el-form-item {
-//     margin-bottom: 0px;
-// }
-
 .line-thru {
     display: block;
     font-size: .875em;

@@ -6,7 +6,7 @@
               <el-col :span="8" :offset="8">
                   <h3 class="title">Louer des meubles gratuitement près de chez vous</h3>
                     <el-form class="select" ref="furniture" name="furniture"  :inline="true" :model="furniture" :rules="rulesFurniture" enctype="multipart/form-data">
-                         <el-input placeholder="Entrez un meuble" v-model="furniture.name" class="input-with-select">
+                         <el-input placeholder="Entrez un meuble" v-model="furniture.type" class="input-with-select">
                             <el-select placeholder="Ville" v-model="furniture.city" slot="prepend">
                                 <el-option label="Paris" value="Paris"></el-option>
                                 <el-option label="Lyon" value="Lyon"></el-option>
@@ -72,11 +72,11 @@ export default {
   data() {
       return {
          furniture: {
-            name: '',
+            type: '',
             city: '',
         },
         rulesFurniture: {
-            name: [
+            type: [
             { required: true, message: 'Sélectionner un meuble', trigger: 'blur' },
             { min: 3, max: 40, message: 'Plus de 2 lettres svp', trigger: 'blur' }
             ],

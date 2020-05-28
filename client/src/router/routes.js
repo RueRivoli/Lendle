@@ -1,4 +1,5 @@
 import VueRouter from 'vue-router'
+import AddFurnitComponent from './../components/AddFurnitComponent';
 import FurnitComponent from './../components/FurnitComponent';
 import MyFurnitComponent from './../components/MyFurnitComponent';
 import ChatComponent from './../components/ChatComponent';
@@ -19,7 +20,8 @@ const routes = [
   { path: '/signup', name:'SignUp', component: SignUpComponent },
   { path: '/profile', name:'ProfileComponent', component: ProfileComponent },
   { path: '/myfurnitures', name:'MyFurnit', component: MyFurnitComponent },
-  { path: '/addfurnit', name:'Addafurnit', component: FurnitComponent },
+  { path: '/furniture/:id', name:'Furnit', component: FurnitComponent },
+  { path: '/addfurnit', name:'Addafurnit', component: AddFurnitComponent },
   { path: '/help', name:'Help', component: HelpComponent },
   { path: '/validation', name:'ReSendMailValidationComponent', component: ReSendMailValidationComponent },
   { path: '/chat', name:'Chat', component: ChatComponent }

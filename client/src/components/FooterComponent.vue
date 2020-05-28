@@ -1,6 +1,6 @@
 <template>
     <el-footer class="flex" style="background-color:#cfccc4; height: 100%;">
-        <div class="margin-auto" style="width:40vh;line-height:40px;font-size:40px;color:black;">LENDLE</div>
+        <div class="m-auto" style="width:40vh;line-height:40px;font-size:40px;color:black;">LENDLE</div>
         <el-main style="font-size:12px;">
             <el-row>
                 <el-col span="6">

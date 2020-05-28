@@ -37,11 +37,11 @@
         </el-container>
         <div style="height:2px;"></div>
            <el-container style="height:65vh;">
-               <div class="flex margin-auto">
-                    <img class="margin-auto" src="../assets/preteur.png" alt="" style="padding: 20px;">
+               <div class="flex m-auto">
+                    <img class="m-auto" src="../assets/preteur.png" alt="" style="padding: 20px;">
                 </div>
                 <div class="flex" style="background-color:#252627;width:68%;padding:25px;color:white;text-align:left;">
-                    <div class="margin-auto">
+                    <div class="m-auto">
                         <h2>COMMENT CA MARCHE ?</h2>
                         Tu as besoin de meubles pendant une période donnée. Quelqu'un a besoin de les stocker pendant la même période.
                         Lendle vous met en relation, ensuite c'est à vous de jouer !

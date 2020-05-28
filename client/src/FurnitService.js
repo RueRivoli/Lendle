@@ -36,7 +36,7 @@ class FurnitService {
         console.log(furnit);
         let furnit0 = {
             params: {
-              type: furnit.name,
+              type: furnit.type,
               city: furnit.city
             }
         };
@@ -47,7 +47,6 @@ class FurnitService {
                     console.log('FurnitService ==>');
                     console.log(response);
                     const data = response.data;
-                    // console.log(data);
                     resolve(data);
                   })
                   .catch(function (error) {
@@ -103,12 +102,12 @@ class FurnitService {
     }
 
 
-    static getPictures(){
+    static getIdentidyCardFurnit(furnit_id){
         return new Promise(function(resolve, reject) {
             try {
-                axios.get(url + 'images').then(function (response) {
-                    const data = response.data;
+                axios.get(url + `images/${furnit_id}`).then(function (response) {
                     console.log('Response a get Pictures =====>');
+                    const data = response.data;
                     console.log(data);
                     resolve(data);
                   })

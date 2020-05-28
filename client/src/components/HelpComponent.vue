@@ -1,15 +1,18 @@
 <template>
- <el-container style="height: 100vh;">
-     HELP
+ <el-container>
+     <nav-component style="width:100%;" :displayTitles="true"></nav-component>
+     <el-container style="height:85vh;">
+         Help
+        </el-container>
     </el-container>
 </template>
 
 <script>
-
+import NavComponent from './NavComponent';
 
 export default {
   name: 'HelpComponent',
-  components: { },
+  components: { NavComponent },
   data() {
     return {
     }

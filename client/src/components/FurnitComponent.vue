@@ -1,248 +1,171 @@
 <template>
- <el-container style="height: 100vh;">
-  <aside-component/>
-  <el-main>
-    <el-row>
-      <el-col :span="24" style="margin-bottom:50px;">
-         <span class="add_furnit_title">AJOUTER VOTRE MEUBLE</span>
-      </el-col>
-    </el-row>
-      <el-form ref="furniture" name="furniture" :model="furniture" :rules="rulesFurniture" label-position="top" label-width="130px" enctype="multipart/form-data">
-        <el-row>
-          <el-col :span="6">
-            <el-form-item label="Nom du meuble" prop="name">
-              <el-input type="text" size="mini" v-model="furniture.name" required></el-input>
-            </el-form-item>
-          </el-col>
-          <el-col :span="6" :offset="2">
-            <el-form-item label="Type de meuble" prop="type">
-              <el-select v-model="furniture.type" size="mini" placeholder="Type of furniture">
-                <el-option label="Table" value="table"></el-option>
-                <el-option label="Chaise" value="chaise"></el-option>
-                <el-option label="Frigidaire" value="frigidaire"></el-option>
-                <el-option label="Machine à laver" value="machinealaver"></el-option>
-                <el-option label="Armoire" value="armoire"></el-option>
-                <el-option label="Placard" value="placard"></el-option>
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <el-col :span="4" :offset="1">
-            <el-form-item label="Ville de location" prop="city">
-              <el-select v-model="furniture.city" size="mini" placeholder="City">
-                <el-option label="Lille" value="Lille"></el-option>
-                <el-option label="Lyon" value="Lyon"></el-option>
-                <el-option label="Paris" value="Paris"></el-option>
-              </el-select>
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="8">
-        <el-form-item label="Start of the loan" prop="dateStart">
-          <el-date-picker ref="dateStart" type="date" v-model="furniture.dateStart" size="mini" style="width: 100%;"></el-date-picker>
-        </el-form-item>
-        </el-col>
-         <el-col :span="8" :offset="4">
-        <el-form-item label="End of the loan" prop="dateEnd">
-            <el-date-picker ref="dateEnd" type="date" v-model="furniture.dateEnd" size="mini" style="width: 100%;"></el-date-picker>
-        </el-form-item>
-         </el-col>
-        </el-row>
-        <el-row style="text-align: left;margin-bottom: 20px;">
-          <el-col :span="12">
-          </el-col>
-          <el-upload
-            ref="elUpload"
-            action="#"
-            list-type="picture-card"
-            :auto-upload="false"
-            accept=" .jpg, .jpeg, .png,"
-            multiple
-            :limit="10"
-            :on-remove="handleRemove"
-            :on-change="handleChange"
-            :on-exceed="handleExceed">
-            <i slot="default" class="el-icon-plus"></i>
-            <div class="el-upload__tip" slot="tip">Format jpg/png/jpeg</div>
-            <div slot="file" slot-scope="{file}">
-              <img
-                class="el-upload-list__item-thumbnail"
-                :src="file.url" alt="">
-            <span class="el-upload-list__item-actions">
-            <span
-              class="el-upload-list__item-preview"
-              @click="handlePictureCardPreview(file)">
-              <i class="el-icon-zoom-in"></i>
-            </span>
-            <span
-              v-if="!disabled"
-              class="el-upload-list__item-delete"
-              @click="handleRemove(file)">
-            <i class="el-icon-delete"></i>
-            </span>
-            </span>
-          </div>
-          </el-upload>
-          <el-dialog :visible.sync="dialogVisible">
-            <img width="100%" :src="dialogImageUrl" alt="">
-          </el-dialog>
-        </el-row>
-         <el-row>
-           <el-col :span="20">
-            <el-form-item label="Description">
-              <el-input type="textarea" :rows="3" v-model="furniture.description"></el-input>
-            </el-form-item>
-            </el-col>
-          </el-row>
-        <el-row>
-          <el-button type="primary" value="submit" @click="submitForm()" style="float:left" size="mini">Submit</el-button>
-        </el-row>
-      </el-form>
-      <img :src="imageprov" alt="">
-  </el-main>
-</el-container>
+    <div>
+     <nav-component :displayTitles="true"></nav-component>
+        <el-container style="height:85vh;">
+            <el-main style="width:100%">
+                  <el-form label-position="top" label-width="80px">
+                       <el-col :span="10" style="">
+                        <el-row style="font-size:18px;margin-bottom: 5vh;font-weight:bold;">
+                            <span>{{furnit.name }}</span>
+                         </el-row>
+                        
+                                <el-carousel trigger="click" height="30vh">
+                                    <el-carousel-item  v-for="(img, index) in imgUrl" :key="index">
+                                <!-- <div style="background-color: #D6DCDD"> -->
+                                        <h3 class="small">
+                                            <el-image class="imgcarousel"
+                                                :src="imgUrl[index]"
+                                                fit="contain"
+                                                @click="display(fnt)">
+                                            </el-image>
+                                        </h3>
+                            <!-- </div> -->
+                                    </el-carousel-item>
+                                </el-carousel>
+                                <el-row style="margin-top:5vh;">
+                                    <el-form-item label="Disponibilité">
+                                        <el-date-picker
+                                            readonly
+                                            v-model="date"
+                                            type="daterange"
+                                            range-separator="à"
+                                            start-placeholder="Début"
+                                            end-placeholder="Fin"
+                                            format="dd/MM/yyyy"
+                                            size="mini"
+                                            :picker-options="readonly"
+                                            :default-value="[furnit.loanstart, furnit.loanend]">
+                                            </el-date-picker>
+                                    </el-form-item>
+                                </el-row>
+                        </el-col>
+                            <el-col :span="8" :offset="3" style="">
+                                <el-row>
+                                     <el-form-item label="Prix">
+                                        <el-input
+                                            type="primary"
+                                            placeholder="0€/mois"
+                                            size="mini"
+                                            :disabled="true">
+                                        </el-input>
+                                    </el-form-item>
+                                    <el-form-item :label="stateOfFurnit">
+                                        <el-slider v-model="furnit.state" :step="25"
+                                            show-stops :format-tooltip="formatTooltip" :disabled="true"></el-slider>
+                                    </el-form-item>
+                                </el-row>
+
+                                <el-row>
+                                     <el-form-item label="Propriétaire">
+                                     <el-input
+                                        size="mini"
+                                        type="textarea"
+                                        :rows="2"
+                                        :placeholder="owner"
+                                        :disabled="true">
+                                    </el-input>
+                                </el-form-item>
+                                    <el-button size="mini" type="primary" @click="contact">Contacter le loueur</el-button>
+                                </el-row>
+                                 <el-row>
+                                     <el-form-item label="Description">
+                                     <el-input
+                                        size="mini"
+                                        type="textarea"
+                                        :rows="4"
+                                        :placeholder="furnit.description"
+                                        :disabled="true">
+                                        </el-input>
+                                       </el-form-item>
+                                 
+                                </el-row>
+                                
+                            </el-col>
+                           
+                     
+                         <el-row style="margin-top:5vh;">
+                              <el-col :span="10" style="">
+                                
+                            </el-col>
+                        </el-row>
+                         </el-form>
+            </el-main>
+        </el-container>
+    </div>
 </template>
 
 <script>
-
-/* Dans template Si class=el-upload-list-thumbnail images pleines dans img class= el-upload-list__item-thumbnail*/
-
-import AsideComponent from './AsideComponent';
+import NavComponent from './NavComponent';
 import FurnitService from '../FurnitService';
-import FormData from 'form-data';
-import moment from 'moment'
+import './../style/style.css';
+// import moment from 'moment'
 
 export default {
   name: 'FurnitComponent',
-  components: { AsideComponent },
+  components: { NavComponent },
   data() {
-    var validateDates = (rule, value, callback) => {
-      let dateStart = this.$refs.dateStart.value;
-      let dateEnd = this.$refs.dateEnd.value;
-      if (dateEnd !== null && dateEnd !== '' && dateStart !== null && dateStart !== '') {
-        console.log('ENNTNRANNCE');
-        let momStart = moment(dateStart).add(1, 'days').unix();
-        let momEnd = moment(dateEnd).unix();
-        if (momStart <= momEnd) callback()
-        else {
-          callback(new Error('Please choose a end of loan after the beggining'));
-        }
-      }
-      callback()
-    }
     return {
-      imageprov: 'data:image/jpg;base64,',
+      furnit: { state: 0 },
       dialogImageUrl: '',
-      dialogVisible: false,
-      disabled: false,
       file: null,
-      furniture: {
-        name: '',
-        type: '',
-        city: '',
-        dateStart: '',
-        dateEnd: '',
-        description: '',
-        picture_ids: []
-      },
-      rulesFurniture: {
-        name: [
-          { required: true, message: 'Please input the name of your furniture', trigger: 'blur' },
-          { min: 3, max: 40, message: 'Length should be between 3 and 40', trigger: 'blur' }
-        ],
-        type: [
-          { required: true, message: 'Please select a type', trigger: 'change' }
-        ],
-         city: [
-          { required: true, message: 'Please select a city', trigger: 'change' }
-        ],
-        dateStart: [
-          { type: 'date', required: true, message: 'Please input the start of the loan', trigger: 'blur' },
-          { validator: validateDates, trigger: 'blur' }
-        ],
-        dateEnd: [
-          { type: 'date', required: true, message: 'Please input the end of the loan', trigger: 'blur' },
-          { validator: validateDates, trigger: 'blur' }
-        ],
-      }
+    //   furnit: '',
+      date: [],
+      imgUrl: '',
     }
   },
-  async created() {
+  computed: {
+    owner: function () {
+        return 'Philip Morris, 13 rue Auguste Delone, 75013 ' + this.furnit.city;
+    },
+    stateOfFurnit: function () {
+        if (this.furnit.state === 100) return "Excellent état";
+        if (this.furnit.state === 75) return "Bon état";
+        if (this.furnit.state === 50) return "Etat correct";
+        if (this.furnit.state === 25) return "Etat délicat";
+        return "Bon état";
+    }
+},
+ async created() {
+    let context = this;
+    console.log(this.furniture);
+    FurnitService.getIdentidyCardFurnit(this.$route.params.id).then(function(furn) {
+      console.log('result');
+      console.log(furn);
+      context.furnit = furn.furnit;
+      let a = furn.furnit.loanstart;
+      let b = furn.furnit.loanend;
+      context.date = [a, b];
+      context.imgUrl = furn.imgurl;
+    //   context.numberFurnits = furn.furnits.length;
+    }).catch(function(err) {
+        console.log(err);
+    });
   },
   methods: {
-    handleRemove(file) {
-      let deletedUid = file.uid;
-      let uploadFls = this.$refs.elUpload.uploadFiles;
-      this.$refs.elUpload.uploadFiles = uploadFls.filter(elt => elt.uid !== deletedUid);
+      readonly () {
+          return true;
     },
-    handlePictureCardPreview(file) {
-      this.file = file;
-      this.dialogImageUrl = file.url;
-      this.dialogVisible = true;
-    },
-    handleChange(file) {
-      this.file = file
-      console.log(this.file)
-    },
-    handleExceed(files) {
-        this.$message.warning(`La limite est de 10 images, vous avez déjà choisi ${files.length} fichiers`);
-    },
-    async submitForm () {
-      let context = this;
-      this.$refs['furniture'].validate((valid) => {
-        if (valid) {
-          //create formData to send 
-          let fd = new FormData(document.forms.namedItem("furniture"));
-          // insert pictures uploaded into the db and return ids of the image
-          FurnitService.insertPicture(fd, {
-          headers: {
-            'Content-Type': `multipart/form-data;`
-            }
-          }).then(function(picture_ids) {
-            context.furniture.picture_ids = picture_ids;
-            context.furniture.owner_id = '5eab3f5eef84ce1f98676228';
-            console.log('CONTEXT FURNITRURE');
-            console.log(context.furniture);
-            FurnitService.insertFurniture(context.furniture).then(function(result) {
-              context.$message.success(result);
-              context.$router.push({ name: 'MyFurnit'});
-            }).catch(function(err) {
-              context.$message.warning(err);
-         });
-         }).catch(function(err) {
-             this.$message.warning(err);
-         });
-      } else {
-        context.$message.warning(`Veuillez remplir correctement le formulaire`);
+    formatTooltip(val) {
+        return val/100;
+      },
+      contact () {
+          console.log('contact');
       }
-  });
 }
 }
-}
+
 </script>
 
+
+
 <!-- Add "scoped" attribute to limit CSS to this component only -->
+
 <style lang="scss" scoped>
 
-$color-primary: #1E969D;
-$color-success: #484538;
-$color-info: #cad49d;
-$color-warning: #d4eac8;
-$color-danger: #c0d8e0;
-
-.add_furnit_title{
-  color: #1E969D;
-  text-align: center;
-  font-style:oblique;
-  font-weight:bold;
-  font-size:22px;
-  font-family:Times New Roman, Times, serif;
-}
-
-.el-form-item__label{
-  padding: 0px !important;
-  line-height: 10px !important;
-}
+// .el-form-item__label{
+//   padding: 0px !important;
+//   line-height: 10px !important;
+// }
 
 .el-header, .el-footer {
   background-color: #B3C0D1;
@@ -252,9 +175,45 @@ $color-danger: #c0d8e0;
 }
 
 
-.grid-content{
-  border-radius: 4px;
-  min-height: 50px;
+.imgcarousel{
+    height: 30vh;
+    cursor: pointer;
+    background-color: #D6DCDD;
 }
+
+
+  .el-carousel__item h3 {
+    color: #475669;
+    font-size: 14px;
+    opacity: 0.75;
+    line-height: 30vh;
+    margin: 0;
+  }
+
+  .el-carousel__item:nth-child(2n) {
+    background-color: #99a9bf;
+  }
+
+  .el-carousel__item:nth-child(2n+1) {
+    background-color: #d3dce6;
+  }
+
+.el-image {
+    display: block !important;
+    margin: auto !important;
+}
+
+
+.el-form-item{
+    margin-bottom: 2px !important;
+}
+
+.el-form--label-top .el-form-item__label{
+    padding: 0px !important;
+}
+
+</style>
+<style>
+
 
 </style>

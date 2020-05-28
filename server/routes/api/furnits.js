@@ -70,6 +70,7 @@ const upload = multer({ storage });
 //   });
 // });
 
+//appeler pour searchComponent
 router.get('/', function (req, res) {
   let db = mongoose.connection.db;
   let collectionChunks = db.collection('uploads.chunks');
@@ -81,27 +82,21 @@ router.get('/', function (req, res) {
   db.collection("furnits").find(params).toArray(function(err, furnits) {
     if(err){
       return res.json({ msg: 'erreur de requete'});
-      // return res.render('index', {
-      // title: 'Download Error', 
-      // message: 'Error retrieving furnits', 
-      // error: err.errmsg});
     } else if(!furnits || furnits.length === 0){
-      //No data found
       return res.json({ msg: 'pas de resultat'});
-      // return res.render('index', {
-      //   title: 'Download Error', 
-      //   message: 'No data found'});
     } else {
       // we have to retrieve one picture of each furnit
       let picture_ids = [];
-      let finalFile = [];
+      let finalFile = {};
       furnits.forEach(function(furn){
         if (furn.picture_ids.length > 0) picture_ids.push(furn.picture_ids[0]);
         else picture_ids.push(-1);
       });
       console.log('picture_ids');
       console.log(picture_ids);
-      furnits.forEach(function(ft) {
+      furnits.forEach(function(ft, index) {
+        console.log('Iteration numéro : ');
+        console.log(index);
         if (ft.picture_ids[0]) {
           let id_first_pic = ft.picture_ids[0];
           let id = ObjectId(id_first_pic);
@@ -111,6 +106,8 @@ router.get('/', function (req, res) {
             } else {
               let contentType = fl.contentType;
               collectionChunks.find({files_id: id}).sort({ n: 1}).toArray(function(err, chunks) {
+                // if (index === 4) console.log(chunks);
+                // console.log(chunks);
               if(err){
                 return ft
               }
@@ -119,12 +116,19 @@ router.get('/', function (req, res) {
               }
               let fileData = [];
               for (let i = 0; i < chunks.length; i++) {
+                // if (index === 4) console.log(chunks[i])
                 fileData.push(chunks[i].data.toString('base64'));
               }
-              finalFile.push('data:' + contentType + ';base64,' + fileData.join(''));
-              if (finalFile.length === picture_ids.length) {
-                console.log('')
-                res.json({furnits: furnits, imgUrl: finalFile}); }
+              finalFile[index] = 'data:' + contentType + ';base64,' + fileData.join('');
+              console.log('length of imgUrl');
+              let len = Object.keys(finalFile).length;
+              if (index === 4) {
+                console.log(len);
+                console.log(picture_ids.length);
+              }
+              if (len === picture_ids.length) {
+                res.json({furnits: furnits, imgUrl: finalFile}); 
+              }
           });
       }
     });
@@ -134,15 +138,10 @@ router.get('/', function (req, res) {
         res.json({furnits: furnits, imgurl: finalFile}); }
     }
   });
+  
     }
   });
 });
-
-
-
-
-
-
 
 router.get('/files', function (req, res) {
   gfs.files.find().toArray(((err, files) => {
@@ -277,64 +276,70 @@ router.get('/images/SAP', function (req, res) {
 });
 });
 
-
-router.get('/images', function (req, res) {
+//ok to modify //appeler pour FurnitComponent
+router.get('/images/:furnit_id', function (req, res) {
+  console.log('getIdentidyCardFurnit');
   let db = mongoose.connection.db;
-  let up = db.collection('uploads');
   let collectionChunks = db.collection('uploads.chunks');
-  gfs.files.find({}, (err, fls) => {
-    if (!fls || fls.length === 0) {
-      return res.render('index', {
+  let furnit_id = ObjectId(req.params.furnit_id);
+  console.log(furnit_id);
+  db.collection("furnits").findOne({_id: furnit_id}, (err, ft) => {
+    if (!ft || ft.length === 0) {
+      return res.status(404).json({
+        err: 'This furnit doesnt exist'
+      });
+    } else if (err) {
+      return res.status(404).json({
+        err: 'An error occured'
+      });
+    } else {
+      let pic_ids = ft.picture_ids;
+      var finalFile = {};
+      pic_ids.forEach(function(pid, index) {
+        gfs.files.findOne({ _id: ObjectId(pid)}, (err, fl) => {
+        if (!fl || fl.length === 0) {
+          return res.status(404).json({
             title: 'File error', 
             message: 'Error finding file', 
               error: err.errMsg});
-    }
-    if(!fls || fls.length === 0){
-      return res.render('index', {
-        title: 'Download Error', 
-        message: 'No file found'});
-    } else {
-      // console.log(fls)
-      var finalFile = new Array();
-      fls.forEach(function(fl){
-        let fileData = [];
-        collectionChunks.find({files_id: fl._id}).toArray(function(err, chunks){
-        if(err){
-            return res.render('index', {
-            title: 'Download Error',
-            message: 'Error retrieving chunks',
-            error: err.errmsg});
-          }
-        if(!chunks || chunks.length === 0){
-          //No data found
-          return res.render('index', {
-            title: 'Download Error', 
-            message: 'No data found'});
         }
-        
-    for (let i=0; i<chunks.length;i++) {
-      //This is in Binary JSON or BSON format, which is stored
-      //in fileData array in base64 endocoded string format
-      fileData.push(chunks[i].data.toString('base64'));
-      }
-      
-      finalFile.push('data:' + fl.contentType + ';base64,'
-         + fileData.join(''));
-      //finalFile.push(i);
-      console.log(finalFile);
+        if(err){
+          return res.status(404).json({
+            title: 'Download Error', 
+            message: 'No file found'});
+        } else {
+          
+          let fileData = [];
+          collectionChunks.find({files_id: fl._id}).toArray(function(err, chunks){
+          if(err){
+              return res.status(404).json({
+              title: 'Download Error',
+              message: 'Error retrieving chunks',
+              error: err.errmsg});
+          }
+          if(!chunks || chunks.length === 0) {
+            //No data found
+            return res.render('index', {
+              title: 'Download Error', 
+              message: 'No data found'});
+          }
+          for (let i = 0; i < chunks.length; i++) {
+            fileData.push(chunks[i].data.toString('base64'));
+         }
+         finalFile[index] = 'data:' + fl.contentType + ';base64,' + fileData.join('');
+        console.log(finalFile.length);
+        console.log(pic_ids.length);
+        let len = Object.keys(finalFile).length;
+        if (len === pic_ids.length) {
+          res.json({ furnit: ft, imgurl: finalFile });
+        }
+      });
+    };
+  });
     });
-    //Display the chunks using the data URI format
-    
-   console.log(finalFile);
-  });
-  // finalFile.push('omelette:');
-  //console.log(finalFile);
-    res.json({
-      imgurl: finalFile});
-    }
-  });
+  }
 });
-  
+});
 
 // Add File
 

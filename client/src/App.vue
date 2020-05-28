@@ -5,12 +5,10 @@
 </template>
 
 <script>
-// import FurnitComponent from './components/FurnitComponent.vue'
 
 export default {
   name: 'App',
   components: {
-    // FurnitComponent
   }
 }
 </script>

@@ -25,6 +25,10 @@ const FurnitSchema = mongoose.Schema({
         type: Date,
         required: true
     },
+    state: {
+        type: Number,
+        required: true
+    },
     description: {
         type: String,
         required: true
