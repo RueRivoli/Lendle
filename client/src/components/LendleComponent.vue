@@ -3,6 +3,10 @@
         <el-container style="height:65vh;">
             <div class="slogan">
                 PRÊTEZ VOS MEUBLES A CEUX QUI EN CHERCHENT
+                <router-link to="/signup/loan">
+                     <el-button type="primary" value="submit"  style="float:center" size="mini">S'inscrire</el-button>
+                </router-link>
+                
             </div>
             <div>
                 <img src="../assets/fauteuilrouge.png" alt="" style="float:right;height:100%;width:50vw;">

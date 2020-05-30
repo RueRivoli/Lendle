@@ -36,6 +36,8 @@ class AuthService {
         const url_login = url + '/login';
         return new Promise(function(resolve, reject) {
             try {
+                console.log('before send to api/auth');
+                console.log(user);
                 return axios.post(url_login, user).then(function (response) {
                     console.log(response);
                     if (response.data.success) {

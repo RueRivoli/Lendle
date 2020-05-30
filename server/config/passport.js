@@ -16,9 +16,6 @@ const FACEBOOK_APP_ID = require('./keys').FACEBOOK_APP_ID;
 const FACEBOOK_APP_SECRET = require('./keys').FACEBOOK_APP_SECRET;
 
 
-
-
-
 var cookieExtractor = function(req) {
   var token = null;
   if (req && req.headers && req.headers.authorization) token = req.headers.authorization.split('Bearer ')[1]
@@ -28,15 +25,17 @@ var cookieExtractor = function(req) {
 
 const opts = {};
 
-// opts.jwtFromRequest = ExtractJwt.fromAuthHeaderAsBearerToken();
+opts.jwtFromRequest = ExtractJwt.fromAuthHeaderAsBearerToken();
 
-opts.jwtFromRequest = cookieExtractor;
+// opts.jwtFromRequest = cookieExtractor;
 opts.secretOrKey = key;
 module.exports = passport => {
     passport.use(
         new JwtStrategy(opts, (jwt_payload, done) => {
             // console.log('Resultat jwt_payload');
             // console.log(jwt_payload);
+            console.log('OPTS');
+            console.log(jwt_payload);
             User.findById(jwt_payload._id).then(user => {
                 if (user) return done(null, user)
                 return done(null, false);
@@ -45,34 +44,34 @@ module.exports = passport => {
             });
 }))
 
-    passport.use(
-        new GoogleStrategy({
-          clientID: GOOGLE_CLIENT_ID,
-          clientSecret: GOOGLE_CLIENT_SECRET,
-          callbackURL: "/api/auth/google/callback",
-          passReqToCallback: true
-      }, (accessToken, refreshToken, profile, done) => {
-          User.findOne({ googleId: profile.id }).then((currentUser) => {
-            console.log('GOOGLE STRATEGY');
-            console.log(currentUser);
-              if (currentUser) {
-                  done(null, currentUser);
-              } else {
-                  newUser = new User();
-                  newUser.firstname = profile.name.givenName,
-                  newUser.lastname = profile.name.familyName,
-                  newUser.mail = profile._json.mail,
-                  newUser.isVerified = 'true',
-                  newUser.language = profile._json.locale,
-                  newUser.googleId = profile.profileId
-                  newUser.save().then((newUser) => {
-                    //   console.log('new user created:' + newUser);
-                  })
-              }
-            return done(null, newUser);
-          });
-      }
-    ));
+    // passport.use(
+    //     new GoogleStrategy({
+    //       clientID: GOOGLE_CLIENT_ID,
+    //       clientSecret: GOOGLE_CLIENT_SECRET,
+    //       callbackURL: "/api/auth/google/callback",
+    //       passReqToCallback: true
+    //   }, (accessToken, refreshToken, profile, done) => {
+    //       User.findOne({ googleId: profile.id }).then((currentUser) => {
+    //         console.log('GOOGLE STRATEGY');
+    //         console.log(currentUser);
+    //           if (currentUser) {
+    //               done(null, currentUser);
+    //           } else {
+    //               newUser = new User();
+    //               newUser.firstname = profile.name.givenName,
+    //               newUser.lastname = profile.name.familyName,
+    //               newUser.mail = profile._json.mail,
+    //               newUser.isVerified = 'true',
+    //               newUser.language = profile._json.locale,
+    //               newUser.googleId = profile.profileId
+    //               newUser.save().then((newUser) => {
+    //                 //   console.log('new user created:' + newUser);
+    //               })
+    //           }
+    //         return done(null, newUser);
+    //       });
+    //   }
+    // ));
 
     passport.use(new FacebookStrategy({
         clientID: FACEBOOK_APP_ID,

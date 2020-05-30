@@ -2,7 +2,7 @@
 <div>
 
      <nav-component style="width:100%;" :displayTitles="true"></nav-component>
- help
+Conditions
     </div>
 </template>
 
@@ -10,7 +10,7 @@
 import NavComponent from './NavComponent';
 
 export default {
-  name: 'HelpComponent',
+  name: 'ConditionComponent',
   components: { NavComponent },
   data() {
     return {

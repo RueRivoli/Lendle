@@ -1,6 +1,8 @@
 <template>
     <el-container>
-        <nav-component :displayTitles="true"></nav-component>
+          <nav-logged-component v-if="identified" style="border-bottom: 1px solid #dfe0e6"></nav-logged-component>
+        <nav-component v-else  :displayTitles="true"></nav-component>
+       
         <el-container>
             <el-header>
                  <el-row style="margin-top:2vh;margin-left: 15vw;margin-right:15vw;">
@@ -121,6 +123,7 @@
 
 <script>
 import NavComponent from './NavComponent';
+import NavLoggedComponent from './NavLoggedComponent';
 // import FooterComponent from './FooterComponent';
 import FurnitService from '../FurnitService';
 // import FurnitComponent from './FurnitComponent';
@@ -128,7 +131,7 @@ import moment from 'moment';
 
 export default {
   name: 'SearchComponent',
-  components: { NavComponent },
+  components: { NavComponent, NavLoggedComponent },
   data() {
       return {
         furniture: {
@@ -136,6 +139,7 @@ export default {
             city: '',
             type: ''
         },
+        identified: true,
         numberFurnits: '',
         furnits: [],
         imgUrl: [],

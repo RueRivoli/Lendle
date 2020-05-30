@@ -39,7 +39,7 @@ router.get('/profile', function(req, res, next) {
 });
 
 passport.serializeUser(function(user, done) {
-  console.log("SERIA");
+  console.log("SERIALISER");
   console.log(user);
   done(null, user.id);
 });
@@ -123,7 +123,10 @@ router.post('/signup', function (req, res) {
   let {
     email,
     password,
-    passwordConfirmed
+    passwordConfirmed,
+    loaner,
+    finder
+
   } = req.body;
   if (password !== passwordConfirmed) {
     return res.status(404).json({
@@ -132,11 +135,21 @@ router.post('/signup', function (req, res) {
   };
   User.findOne({ mail: email }).then(user => {
     if (user) {
-      return res.status(404).json({
-        err: 'Cet email est deja utilisé'
-      });
+      let msg0 = 'Cet email est deja utilisé.';
+      let msg;
+      if (user.finder && !user.loaner) {
+        msg = msg0 + ' Si vous voulez vous inscrire en tant que prêteur, veuillez vous connecter et le déclarer dans Mon Compte';
+      } else if (user.loaner && !user.finder) {
+        msg = msg0 + ' Si vous voulez vous inscrire en tant qu emprunteur, veuillez vous connecter et le déclarer dans Mon Compte';
+      } else {
+        msg = msg0;
+      }
+        return res.status(404).json({
+          err: msg
+        });
     } else {
-      let user = new User({ mail: email, pswd: password});
+
+      let user = new User({ mail: email, pswd: password, loaner: loaner, finder: finder});
       bcrypt.genSalt(10, (err, salt) => {
         bcrypt.hash(user.pswd, salt, (err, hash) => {
     
@@ -280,6 +293,8 @@ router.post('/signup', function (req, res) {
 router.post('/login', function (req, res) {
   let mail = req.body.email;
   let pswd = req.body.password;
+  console.log('PASD');
+  console.log(pswd);
   User.findOne({ mail: mail }).then(user => {
     console.log(user);
     if (!user) {
@@ -294,6 +309,9 @@ router.post('/login', function (req, res) {
           err: 'Votre mail n a pas été validé. Regardez votre boîte mail'
         });
       } else {
+        console.log('BOTH');
+        console.log(pswd);
+        console.log(user.pswd);
         bcrypt.compare(pswd, user.pswd).then(isMatch => {
           if (isMatch) {
             const payload = {

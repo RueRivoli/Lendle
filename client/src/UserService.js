@@ -19,7 +19,7 @@ class UserService {
                 // let token = "zffzfzffzfz78625362fzezef";
                 // let storage = document.cookie.jwt;
                 let token = document.cookie.split('jwt=')[1];
-                console.log('COOOKKKIIIIEEEEEE')
+                console.log('Cookie')
                 console.log(token);
                 let config = {
                     headers: {
@@ -34,9 +34,9 @@ class UserService {
                 // axios.defaults.withCredentials = true;
                 // require('axios-debug-log');
 
-                return axios.get(url_profile, config ).then(function (response) {
+                return axios.get(url_profile, config).then(function (response) {
                     console.log(response);
-                    resolve(response);
+                    resolve(response.data.profile);
                 }).catch(function (error) {
                     console.log('ERROR');
                     if (error.response) {
@@ -63,6 +63,71 @@ class UserService {
                     }
                 });
             } catch(err) {
+                console.log(err);
+                reject(err);
+            }
+        })
+    }
+
+    static updateUser(user) {
+        const url_update = url + '/update';
+        console.log('updateUser');
+        return new Promise(function(resolve, reject) {
+            try {
+                let token = document.cookie.split('jwt=')[1];
+                let config = {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                           
+                    },
+                };
+                return axios.post(url_update, user, config).then(function (response) {
+                    console.log(response.data.msg);
+                    resolve(response.data.msg);
+                }).catch(function (error) {
+                    console.log('Réponse de lerreur');
+                    if (error.response) {
+                        console.log(error.response.data);
+                        console.log(error.response.status);
+                        console.log(error.response.headers);
+                      }
+                    reject(error);
+                });
+            } catch(err) {
+                console.log('Erreur de promesse');
+                console.log(err);
+                reject(err);
+            }
+        })
+    }
+
+    static changePassword(pswd) {
+        const url_change_pswd = url + '/password';
+        console.log('change Password ==>');
+        return new Promise(function(resolve, reject) {
+            try {
+                let token = document.cookie.split('jwt=')[1];
+                let config = {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                           
+                    },
+                };
+                return axios.post(url_change_pswd, pswd, config).then(function (response) {
+                    console.log(response.data.msg);
+                    resolve(response.data.msg);
+                }).catch(function (error) {
+                    console.log('Donne une erreur');
+                    if (error.response) {
+                        console.log(error.response.data);
+                        console.log(error.response.status);
+                        console.log(error.response.headers);
+                      }
+                      console.log(error);
+                    reject(error.response.data.err);
+                });
+            } catch(err) {
+                console.log('Erreur de promesse');
                 console.log(err);
                 reject(err);
             }

@@ -1,10 +1,26 @@
 <template>
     <div>
         <nav-component :displayTitles="false" style="border-bottom: 1px solid #dfe0e6"></nav-component>
+                     <div style="height:10vh;"></div>
+                    <el-row>
+                        <el-col v-if="$route.params.role === 'find'" class="center" style="margin-bottom: 3vh;" :span="8" :offset="8">
+                            <span style="font-weight:bold;font-size:18px;">Créer un compte pour louer des meubles:</span>
+                            <div style="text-align:center;font-size:12px;">
+                                Ou <span class="pointer green"><router-link to="/signup/loan" tag="span">inscrivez-vous </router-link></span> pour faire louer vos meubles 
+                            </div>
+                        </el-col>
+                         <el-col v-else-if="$route.params.role === 'loan'" class="center" style="margin-bottom: 3vh;" :span="8" :offset="8">
+                            <span style="font-weight:bold;font-size:18px;">Créer un compte pour mettre des meubles en location:</span>
+                            <div style="text-align:center;font-size:12px;">
+                                Ou <span class="pointer green"><router-link to="/signup/find" tag="span">inscrivez-vous </router-link></span> pour louer des meubles 
+                            </div>
+                        </el-col>
+                    </el-row>
+
                     <el-row>
                         <el-col class="flex sp-around" :span="8" :offset="8">
                             <!-- <a href="http://localhost:5000/api/auth/google">CLIQUE ICI</a> -->
-                            <el-button value="submit" style="margin-top:5px;background-color:#6C7076;color:white;" size="mini" @click="signUpGoogle">Créer un compte avec Gmail</el-button>
+                            <el-button id="ggl" value="submit" style="margin-top:5px;background-color:#6C7076;color:white;" size="mini" @click="signUpGoogle">Créer un compte avec Gmail</el-button>
                         </el-col>
                     </el-row>
                     <el-row>
@@ -17,7 +33,7 @@
                             <strong class="line-thru">ou</strong>
                         </el-col>
                     </el-row>
-                    <el-form ref="registration" name="registration" style="width:100%;margin-top:15vh;" :model="registration" :rules="rulesRegistration" label-position="top" label-width="130px" enctype="multipart/form-data">
+                    <el-form ref="registration" name="registration" style="width:100%;" :model="registration" :rules="rulesRegistration" label-position="top" label-width="130px" enctype="multipart/form-data">
                     <el-row>
                         <el-col :span="8" :offset="8">
                             <div style="text-align:center;font-size:12px;">
@@ -49,7 +65,7 @@
                     <el-row>
                         <el-col :span="8" :offset="8">
                             <div style="text-align:center;font-size:12px;">
-                                En cliquant sur le bouton d'inscription, vous acceptez les <span class="pointer green">conditions générales d'utilisation </span> de Lendle. 
+                                En cliquant sur le bouton d'inscription, vous acceptez les <span class="pointer green"><router-link to="/conditionsutilisation" tag="span">conditions générales d'utilisation </router-link></span> de Lendle. 
                             </div>
                         </el-col>
                     </el-row>
@@ -61,7 +77,7 @@
                     <el-row>
                         <el-col :span="8" :offset="8">
                             <div style="text-align:center;font-size:12px;margin-top:5px;">
-                                Vous avez déjà un compte ? <span class="pointer green">Connexion</span>
+                                Vous avez déjà un compte ? <span class="pointer green"><router-link to="/login" tag="span">Connexion</router-link></span>
                             </div>
                         </el-col>
                     </el-row>
@@ -132,6 +148,13 @@ export default {
               if (!valid) {
                 return false
             }
+             if (this.$route.params.role === 'find') {
+                this.registration.finder = true;
+                this.registration.loaner = false;
+            } else {
+                this.registration.loaner = true;
+                this.registration.finder = false;
+            }
             let context = this;
             AuthService.insertUser(this.registration).then(function() {
                 context.$router.push({ name: 'LogIn', params: { checkMails: true }})
@@ -164,9 +187,12 @@ export default {
 @import "./../style/element-variables.scss";
 
 #fb:hover{
-  background-color:#7490B8 !important;
+  opacity: 0.7;
 }
 
+#ggl:hover{
+  opacity: 0.7;
+}
 
 
 .line-thru {

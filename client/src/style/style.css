@@ -20,6 +20,10 @@
     display:flex;
 }
 
+.f-auto{
+    flex: auto;
+}
+
 .column{
     flex-direction: column;
 }
@@ -28,9 +32,7 @@
     justify-content: space-around;
 }
 
-.f-auto{
-    flex:auto;
-}
+
 
 
 
@@ -52,6 +54,12 @@
   margin: auto;
 }
 
+
+
+.full_height{
+    height: 100%;
+}
+
 .lendle{
     font-family: 'Gagalin';
     color: #1E969D;
@@ -61,3 +69,6 @@
     font-size:25px !important;
 }
 
+opacity:hover{
+    opacity: 0.7;
+}

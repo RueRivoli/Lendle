@@ -37,13 +37,98 @@ router.get('/', function (req, res) {
 // );
 
 router.get('/profile', function(req, res) {
-  console.log('AH OUAIS');
-  // console.log(req);
-  //res.json({RESULTAT: "/profile"});
   return res.status(201).json({
-    message: 'All is ok'
+    profile: req.user
   });
 });
+
+
+
+// Update data of the user
+router.post('/update', function (req, res) {
+  console.log('router.post(/update');
+  let { firstname, lastname, language, finder, loaner, address, postcode, city, description
+  } = req.body;
+  let id = req.user._id;
+  User.updateOne( {_id: id }, { firstname,
+    lastname,
+    language,
+    finder,
+    loaner,
+    address,
+    postcode,
+    city,
+    description}, function (err) {
+    if (err) {
+      return res.status(404).json({
+        err: 'Erreur d edition'
+      });
+    } else {
+      return res.status(201).json({
+        msg: 'Mise à jour effectuée'
+      });
+    }
+  })
+});
+
+// Update data of the user
+router.post('/password', function (req, res) {
+  console.log('router.post(/password');
+  let { actualpswd, pswd, pswdCf
+  } = req.body;
+  let id = req.user._id;
+  if (pswd !== pswdCf) {
+    return res.status(404).json({
+      err: 'Les mots de passe ne correspondent pas'
+    });
+  };
+  User.findOne({ _id: id }).then(user => {
+    console.log(user);
+    if (!user) {
+      return res.status(404).json({
+        err: 'Une erreur sest produite'
+      });
+    } else {
+      if (!user.isVerified) {
+        return res.status(404).json({
+          err: 'Votre mail n a pas été validé. Regardez votre boîte mail'
+        });
+      } else {
+        console.log('BOTH');
+        console.log(pswd);
+        console.log(user.pswd);
+        bcrypt.compare(actualpswd, user.pswd).then(isMatch => {
+          console.log(isMatch);
+          if (!isMatch) {
+            return res.status(404).json({
+              err: 'Le mot de passe actuel n est pas correct'
+            });
+          } else {
+            bcrypt.genSalt(10, (err, salt) => {
+              bcrypt.hash(pswd, salt, (err, hash) => {
+                if (err) throw err;
+                User.updateOne( {_id: id }, { pswd: hash }, function (err) {
+                  if (err) {
+                    return res.status(404).json({
+                      err: 'Erreur de modification de mot de passe'
+                    });
+                  } else {
+                    return res.status(201).json({
+                      msg: 'Le mot de passe a été modifié'
+                    });
+                  }
+                });
+              });
+            });
+          }
+        });
+      }
+    }
+  });
+});
+
+
+
 
 // router.post('/profile', verifyToken, (req, res) => {
 //    jwt.verify(req.token, key, (err, authData) => {

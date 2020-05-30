@@ -21,6 +21,10 @@ const UserSchema = mongoose.Schema({
         type: String,
         required: false
     },
+    postcode: {
+        type: Number,
+        required: false
+    },
     city: {
         type: String,
         required: false
@@ -29,13 +33,13 @@ const UserSchema = mongoose.Schema({
         type: Boolean,
         default: false
     },
-    usurer: {
+    loaner: {
         type: Boolean,
-        default: true
+        default: false
     },
-    borrower: {
+    finder: {
         type: Boolean,
-        required: false
+        default: false
     },
     description: {
         type: String,
@@ -47,6 +51,10 @@ const UserSchema = mongoose.Schema({
     },
     language: {
         type: String,
+        required: false
+    },
+    mark: {
+        type: Number,
         required: false
     },
 });

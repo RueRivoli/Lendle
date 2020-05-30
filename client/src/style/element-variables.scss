@@ -10,7 +10,8 @@ $--color-danger: red;
 /* chemin vers le fichier de police, requis */
 // $--font-path: '~element-ui/lib/theme-chalk/fonts';
 
-// @import "~element-ui/packages/theme-chalk/src/index";
+/* icon font path, required */
+$--font-path: '~element-ui/lib/theme-chalk/fonts';
 
-
+@import "~element-ui/packages/theme-chalk/src/index";
 

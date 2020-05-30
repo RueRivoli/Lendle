@@ -1,20 +1,24 @@
 <template>
- <el-container style="height: 100vh;">
-     <aside-component/>
+<div>
+      <nav-logged-component  style="border-bottom: 1px solid #dfe0e6"></nav-logged-component>
+      <el-container style="height: 100vh;">
+     <!-- <aside-component/> -->
     <el-main>CHAT
     <el-row>
    </el-row>
   </el-main>
   </el-container>
+  </div>
 </template>
 
 
 <script>
-import AsideComponent from './AsideComponent';
+// import AsideComponent from './AsideComponent';
+import NavLoggedComponent from './NavLoggedComponent';
 
 export default {
   name: 'ChatComponent',
-  components: { AsideComponent },
+  components: { NavLoggedComponent },
   data() {
       return {
           methods: {

@@ -78,6 +78,7 @@ router.get('/', function (req, res) {
 
   if (req.query.type) params.type = req.query.type
   if (req.query.city) params.city = req.query.city
+  if (req.query.id) params._id = req.query.id
   console.log(params);
   db.collection("furnits").find(params).toArray(function(err, furnits) {
     if(err){

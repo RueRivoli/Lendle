@@ -1,6 +1,9 @@
 <template>
+<div>
+    <nav-logged-component  style="border-bottom: 1px solid #dfe0e6"></nav-logged-component>
  <el-container style="height: 100vh;">
-     <aside-component/>
+      
+     <!-- <aside-component/> -->
     <el-main>
     <el-row>
       <el-col :span="24" style="margin-bottom:50px;">
@@ -41,23 +44,23 @@
         </el-row>
   </el-main>
   </el-container>
+  </div>
 </template>
 
 
 <script>
-import AsideComponent from './AsideComponent';
+import NavLoggedComponent from './NavLoggedComponent';
+// import AsideComponent from './AsideComponent';
 import FurnitService from '../FurnitService';
 import moment from 'moment';
 
 export default {
   name: 'MyFurnitComponent',
-  components: { AsideComponent },
+  components: { NavLoggedComponent },
   data() {
       return {
           furnitures: '',
           url: [],
-          methods:{
-          }
       }
   },
   methods: {
