@@ -1,6 +1,6 @@
 <template>
 <div>
-    <nav-logged-component  style="border-bottom: 1px solid #dfe0e6"></nav-logged-component>
+    <nav-logged-component  @search="search" style="border-bottom: 1px solid #dfe0e6"></nav-logged-component>
  <el-container style="height: 100vh;">
     <el-main>
     <el-row>
@@ -12,22 +12,25 @@
         <el-table
             :data="tableData"
             style="width: 100%">
-      <el-table-column
-        prop="date"
-        label="Date"
-        width="180">
-      </el-table-column>
-      <el-table-column
-        prop="name"
-        label="Nom"
-        width="180">
-      </el-table-column>
-      <el-table-column
-        prop="address"
-        label="Adresse">
-      </el-table-column>
-    </el-table>
-          </el-col>
+            <el-table-column
+                prop="date"
+                label="Date"
+                width="180">
+            </el-table-column>
+            <el-table-column
+                prop="name"
+                label="Nom"
+                width="180">
+            </el-table-column>
+            <el-table-column
+                prop="address"
+                label="Adresse">
+            </el-table-column>
+        </el-table>
+        <table>
+
+        </table>
+        </el-col>
     </el-row>
     <el-row>
         <el-col :span="16" :offset="7">
@@ -65,7 +68,7 @@
                         <time class="time"> Mensualité 0 €/mois</time>
                     </div>
                     <div class="m-auto">
-                        <el-button icon="el-icon-edit" size="mini" type="primary" class="button cursor" style="">Modifier</el-button>
+                        <el-button icon="el-icon-edit" size="mini" type="primary" class="button cursor" @click="details(rt._id)">Modifier</el-button>
                     </div>
                 </el-col>
             </el-card>
@@ -103,7 +106,7 @@
                                     <time class="time"> Mensualité 0 €/mois</time>
                                 </div>
                                 <div class="m-auto">
-                                    <el-button icon="el-icon-view" size="mini" type="info" class="button cursor" >Détails</el-button>
+                                    <el-button icon="el-icon-view" size="mini" type="info" class="button cursor" @click="details(rt._id)">Détails</el-button>
                                 </div>
                             </el-col>
                     </el-card>
@@ -158,8 +161,16 @@ export default {
           let mom = moment(date);
           return mom.format('DD MMMM YYYY');
       },
-      handleChange () {
-          
+    details(id) {
+        this.$router.push({ name: 'Rental',  params: { id: id } });
+    },
+    search(value) {
+          console.log('SEARCH');
+          console.log(value);
+          let furniture = {
+              word: value
+          }
+          this.$router.push({ name: 'Search',  params: { furniture } });
       }
     //   async deleteFurnit (fn) {
     //       let id = fn._id;
@@ -198,7 +209,7 @@ export default {
 }
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 
 @import "./../style/element-variables.scss";
 

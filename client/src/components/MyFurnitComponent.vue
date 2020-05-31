@@ -1,6 +1,6 @@
 <template>
 <div>
-    <nav-logged-component  style="border-bottom: 1px solid #dfe0e6"></nav-logged-component>
+    <nav-logged-component  v-bind:search="searchMeth"  style="border-bottom: 1px solid #dfe0e6"></nav-logged-component>
  <el-container style="height: 100vh;">
       
      <!-- <aside-component/> -->
@@ -74,6 +74,10 @@ export default {
           this.furnitures = await FurnitService.getFurnitures();
           await FurnitService.deleteFile(fn);
           
+      },
+      searchMeth(event) {
+          console.log('SEARCH');
+          console.log(event);
       }
   },
   computed: {

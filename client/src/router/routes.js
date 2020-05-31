@@ -1,6 +1,7 @@
 import VueRouter from 'vue-router'
 import AddFurnitComponent from './../components/AddFurnitComponent';
 import FurnitComponent from './../components/FurnitComponent';
+import RentalComponent from './../components/RentalComponent';
 import MyFurnitComponent from './../components/MyFurnitComponent';
 import MyRentalsComponent from './../components/MyRentalsComponent';
 import ChatComponent from './../components/ChatComponent';
@@ -24,6 +25,7 @@ const routes = [
   { path: '/myfurnitures', name:'MyFurnit', component: MyFurnitComponent },
   { path: '/myrentals', name:'MyRentals', component: MyRentalsComponent },
   { path: '/furniture/:id', name:'Furnit', component: FurnitComponent },
+  { path: '/rental/:id', name:'Rental', component: RentalComponent },
   { path: '/addfurnit', name:'Addafurnit', component: AddFurnitComponent },
   { path: '/help', name:'Help', component: HelpComponent },
   { path: '/conditionsutilisation', name:'Conditions', component: ConditionComponent },

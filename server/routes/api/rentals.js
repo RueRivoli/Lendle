@@ -51,6 +51,42 @@ const storage = new GridFsStorage({
 
 
 
+// called for myRentalsComponent
+// return all rentals and their associated furnits
+router.get('/details/:rental_id', function (req, res) {
+  let db = mongoose.connection.db;
+  let id = req.user._id.toString();
+  console.log(req.params);
+  let rental_id = ObjectId(req.params.rental_id);
+  console.log(rental_id);
+
+  db.collection("rentals").aggregate([
+    { "$match": { "_id": ObjectId(rental_id) } },
+    { 
+        "$lookup": { 
+            "from": 'furnits', 
+            "localField": 'furnit_id', 
+            "foreignField": '_id', 
+            "as": 'furnit' 
+        } 
+    }]).toArray(function(err, rental) {
+      console.log(rental);
+    if(err){
+      return res.status(404).json({
+          err: 'Erreur d editions'
+      });
+    } else if(!rental || rental.length === 0){
+      return res.status(404).json({
+        err: 'Pas de resultat'
+      });
+    } else {
+        return res.status(201).json({
+            rental
+          });
+        }
+    });
+});
+
 //appeler pour searchComponent
 router.get('/', function (req, res) {
   let db = mongoose.connection.db;
@@ -82,8 +118,6 @@ router.get('/', function (req, res) {
         }
     });
 });
-
-
 
 
 module.exports = router;

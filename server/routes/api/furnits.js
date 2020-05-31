@@ -70,6 +70,62 @@ const upload = multer({ storage });
 //   });
 // });
 
+// Retrieve one picture for a list of furnits
+function retrievePictures(furnits, req, res) {
+  let db = mongoose.connection.db;
+  let collectionChunks = db.collection('uploads.chunks');
+  let picture_ids = [];
+  let finalFile = {};
+  furnits.forEach(function(furn){
+    if (furn.picture_ids.length > 0) picture_ids.push(furn.picture_ids[0]);
+    else picture_ids.push(-1);
+  });
+  console.log('picture_ids');
+  console.log(picture_ids);
+  furnits.forEach(function(ft, index) {
+    console.log('Iteration numéro : ');
+    console.log(index);
+    if (ft.picture_ids[0]) {
+      let id_first_pic = ft.picture_ids[0];
+      let id = ObjectId(id_first_pic);
+      gfs.files.findOne({ _id: id }, (err, fl) => {
+        if (!fl || fl.length === 0) {
+          return ft
+        } else {
+          let contentType = fl.contentType;
+          collectionChunks.find({files_id: id}).sort({ n: 1}).toArray(function(err, chunks) {
+          if(err){
+            return ft
+          }
+          if(!chunks || chunks.length === 0){
+            return ft
+          }
+          let fileData = [];
+          for (let i = 0; i < chunks.length; i++) {
+            fileData.push(chunks[i].data.toString('base64'));
+          }
+          finalFile[index] = 'data:' + contentType + ';base64,' + fileData.join('');
+          console.log('length of imgUrl');
+          let len = Object.keys(finalFile).length;
+          if (index === 4) {
+            console.log(len);
+            console.log(picture_ids.length);
+          }
+          if (len === picture_ids.length) {
+            res.json({furnits: furnits, imgUrl: finalFile}); 
+          }
+      });
+  }
+});
+} else {
+  finalFile.push('test');
+  if (finalFile.length === picture_ids.length) {
+    res.json({furnits: furnits, imgurl: finalFile}); }
+}
+});
+}
+
+
 //appeler pour searchComponent
 router.get('/', function (req, res) {
   let db = mongoose.connection.db;
@@ -78,7 +134,9 @@ router.get('/', function (req, res) {
 
   if (req.query.type) params.type = req.query.type
   if (req.query.city) params.city = req.query.city
+  // if (req.query.word) params.word = req.query.word
   if (req.query.id) params._id = req.query.id
+  console.log(req.query);
   console.log(params);
   db.collection("furnits").find(params).toArray(function(err, furnits) {
     if(err){
@@ -87,62 +145,108 @@ router.get('/', function (req, res) {
       return res.json({ msg: 'pas de resultat'});
     } else {
       // we have to retrieve one picture of each furnit
-      let picture_ids = [];
-      let finalFile = {};
-      furnits.forEach(function(furn){
-        if (furn.picture_ids.length > 0) picture_ids.push(furn.picture_ids[0]);
-        else picture_ids.push(-1);
-      });
-      console.log('picture_ids');
-      console.log(picture_ids);
-      furnits.forEach(function(ft, index) {
-        console.log('Iteration numéro : ');
-        console.log(index);
-        if (ft.picture_ids[0]) {
-          let id_first_pic = ft.picture_ids[0];
-          let id = ObjectId(id_first_pic);
-          gfs.files.findOne({ _id: id }, (err, fl) => {
-            if (!fl || fl.length === 0) {
-              return ft
-            } else {
-              let contentType = fl.contentType;
-              collectionChunks.find({files_id: id}).sort({ n: 1}).toArray(function(err, chunks) {
-                // if (index === 4) console.log(chunks);
-                // console.log(chunks);
-              if(err){
-                return ft
-              }
-              if(!chunks || chunks.length === 0){
-                return ft
-              }
-              let fileData = [];
-              for (let i = 0; i < chunks.length; i++) {
-                // if (index === 4) console.log(chunks[i])
-                fileData.push(chunks[i].data.toString('base64'));
-              }
-              finalFile[index] = 'data:' + contentType + ';base64,' + fileData.join('');
-              console.log('length of imgUrl');
-              let len = Object.keys(finalFile).length;
-              if (index === 4) {
-                console.log(len);
-                console.log(picture_ids.length);
-              }
-              if (len === picture_ids.length) {
-                res.json({furnits: furnits, imgUrl: finalFile}); 
-              }
-          });
-      }
-    });
-    } else {
-      finalFile.push('test');
-      if (finalFile.length === picture_ids.length) {
-        res.json({furnits: furnits, imgurl: finalFile}); }
-    }
-  });
+      return retrievePictures(furnits, req, res);
+  //     let picture_ids = [];
+  //     let finalFile = {};
+  //     furnits.forEach(function(furn){
+  //       if (furn.picture_ids.length > 0) picture_ids.push(furn.picture_ids[0]);
+  //       else picture_ids.push(-1);
+  //     });
+  //     console.log('picture_ids');
+  //     console.log(picture_ids);
+  //     furnits.forEach(function(ft, index) {
+  //       console.log('Iteration numéro : ');
+  //       console.log(index);
+  //       if (ft.picture_ids[0]) {
+  //         let id_first_pic = ft.picture_ids[0];
+  //         let id = ObjectId(id_first_pic);
+  //         gfs.files.findOne({ _id: id }, (err, fl) => {
+  //           if (!fl || fl.length === 0) {
+  //             return ft
+  //           } else {
+  //             let contentType = fl.contentType;
+  //             collectionChunks.find({files_id: id}).sort({ n: 1}).toArray(function(err, chunks) {
+  //               // if (index === 4) console.log(chunks);
+  //               // console.log(chunks);
+  //             if(err){
+  //               return ft
+  //             }
+  //             if(!chunks || chunks.length === 0){
+  //               return ft
+  //             }
+  //             let fileData = [];
+  //             for (let i = 0; i < chunks.length; i++) {
+  //               // if (index === 4) console.log(chunks[i])
+  //               fileData.push(chunks[i].data.toString('base64'));
+  //             }
+  //             finalFile[index] = 'data:' + contentType + ';base64,' + fileData.join('');
+  //             console.log('length of imgUrl');
+  //             let len = Object.keys(finalFile).length;
+  //             if (index === 4) {
+  //               console.log(len);
+  //               console.log(picture_ids.length);
+  //             }
+  //             if (len === picture_ids.length) {
+  //               res.json({furnits: furnits, imgUrl: finalFile}); 
+  //             }
+  //         });
+  //     }
+  //   });
+  //   } else {
+  //     finalFile.push('test');
+  //     if (finalFile.length === picture_ids.length) {
+  //       res.json({furnits: furnits, imgurl: finalFile}); }
+  //   }
+  // });
   
     }
   });
 });
+
+
+router.get('/search', function (req, res) {
+  let db = mongoose.connection.db;
+  console.log(req.query);
+  let word = '';
+  let city = '';
+  let type = '';
+  if (req.query.word) word = req.query.word;
+  if (req.query.type) type = req.query.type;
+  if (req.query.city) city = req.query.city;
+  const regex_word = new RegExp(word);
+  const regex_type = new RegExp(type);
+  const regex_city = new RegExp(city);
+  console.log('Les queries de la requete :');
+  console.log(word);
+  console.log(type);
+  console.log(city);
+  console.log('Les regex :');
+  console.log(regex_word);
+  console.log(regex_type);
+  console.log(regex_city);
+
+  db.collection("furnits").aggregate([
+    { "$match": { 
+      $and: [
+      // { $or: [ { name: { $regex: regex_word } }, { type: { $regex: regex_word } }, { description: { $regex: regex_word } }]},
+      { type: {$regex: regex_type}},
+      { city: {$regex: regex_city}},
+      { $or: [ {name: { $regex: regex_word }}, { type: { $regex: regex_word } }, { description: { $regex: regex_word } }]}
+      ]}}
+  ]).toArray(function(err, furnits) {
+      console.log(furnits);
+    if(err){
+      return res.status(404).json({
+          err: 'Erreur de recherche de meubles'
+      });
+    } else if(!furnits || furnits.length === 0){
+      return res.json({furnits: {}, imgUrl: {}});
+    } else {
+      return retrievePictures(furnits, req, res);
+        }
+    });
+});
+
 
 router.get('/files', function (req, res) {
   gfs.files.find().toArray(((err, files) => {
@@ -204,7 +308,7 @@ router.get('/furn/:pic_ids', function (req, res) {
   let furnits = db.collection('furnits');
   let picture_ids = req.params.pic_ids.split(',');
   var finalFile = new Array();
-  picture_ids.forEach(function(pic){
+  picture_ids.forEach(function(pic, index){
     let id = ObjectId(pic);
     gfs.files.findOne({ _id: id }, (err, fl) => {
       if (!fl || fl.length === 0) {
@@ -224,8 +328,12 @@ router.get('/furn/:pic_ids', function (req, res) {
           for (let i=0; i<chunks.length;i++) {
             fileData.push(chunks[i].data.toString('base64'));
           }
-          finalFile.push('data:' + contentType + ';base64,' + fileData.join(''));
-          if (finalFile.length === picture_ids.length) { res.json({imgurl: finalFile}); }
+          finalFile[index] = 'data:' + fl.contentType + ';base64,' + fileData.join('');
+          // finalFile.push('data:' + contentType + ';base64,' + fileData.join(''));
+          let len = Object.keys(finalFile).length;
+          if (len === picture_ids.length) {
+            res.json({imgurl: finalFile});
+          }
         });
       }
       });

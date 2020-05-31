@@ -4,8 +4,7 @@
             <li tabindex="0" class="mright" v-bind:class="{ 'selected': displayLendle, 'pointer': true, 'lendle': true }"><router-link to="/" tag="span">LENDLE</router-link></li>
             <div class="f-auto" style="width:25%;"></div>
             <div class="f-auto" style="flex-grow: 1;">
-                 <el-input v-if="searchMode" size="mini" prefix-icon="el-icon-search" placeholder="Canapé, Frigidaire ..." v-model="searchWord" @change="searchFurnit"></el-input>
-                  <el-button v-else class="pointer" icon="el-icon-search" size="mini" @click="search"  circle></el-button>
+                <el-button class="pointer f-r" type="text" icon="el-icon-search" size="mini" @click="searchFurnit"></el-button>
             </div>
             <div class="f-auto" style="flex-grow: 2;">
                  <li tabindex="0" class="pointer" style="float:right;" ><router-link to="/myrentals" tag="span">Mes meubles</router-link></li>
@@ -36,17 +35,12 @@ export default {
   name: 'NavLoggedComponent',
   data() {
       return {
-          display: 1,
-          searchMode: false,
-          searchWord: ''
-        }
-    },
+          display: 1
+          }
+        },
     methods: {
-        search() {
-          let value = this.searchMode;
-          this.searchMode = !value;
-      },
       searchFurnit() {
+          console.log('searchFurnit');
           this.$router.push({ name: 'Search' });
       }
   },
@@ -103,4 +97,5 @@ li {
 nav ul{
     justify-content: space-between;
 }
+
 </style>

@@ -17,39 +17,40 @@
                             </el-select>
                         </el-col>
                         <el-col :span="10" :offset="5">
-                         <el-input placeholder="Nom" size="mini" v-model="furniture.name" class="input-with-select">
+                         <el-input placeholder="Nom" size="mini" v-model="furniture.word" class="input-with-select">
                               <i class="el-icon-search el-input__icon" slot="suffix"></i>
                             <el-select placeholder="Type" size="mini" v-model="furniture.type" slot="prepend">
-                                  <el-option label="Fauteuil" value="Fauteuil"></el-option>
-                                <el-option label="Chaise" value="Chaise"></el-option>
-                                <el-option label="Canapé" value="Canape"></el-option>
-                                <el-option label="Frigidaire" value="Frigidaire"></el-option>
-                                <el-option label="Machine à laver" value="Machinealaver"></el-option>
-                                <el-option label="Lave vaisselle" value="Lavevaisselle"></el-option>
-                                <el-option label="Sèche linge" value="Sechelinge"></el-option>
-                                <el-option label="Table" value="Table"></el-option>
-                                <el-option label="Armoire" value="Armoire"></el-option>
-                                <el-option label="Etagère" value="Etagere"></el-option>
+                                <el-option label="Tous" value=""></el-option>
+                                <el-option label="Fauteuil" value="fauteuil"></el-option>
+                                <el-option label="Chaise" value="chaise"></el-option>
+                                <el-option label="Canapé" value="canape"></el-option>
+                                <el-option label="Frigidaire" value="frigidaire"></el-option>
+                                <el-option label="Machine à laver" value="machinealaver"></el-option>
+                                <el-option label="Lave vaisselle" value="lavevaisselle"></el-option>
+                                <el-option label="Sèche linge" value="sechelinge"></el-option>
+                                <el-option label="Table" value="table"></el-option>
+                                <el-option label="Armoire" value="armoire"></el-option>
+                                <el-option label="Etagère" value="etagere"></el-option>
                             </el-select>
                         </el-input>
                          </el-col>
                           </el-row>
                         <el-row style="margin-top:10px;">
                         <el-col :span="6" :offset="10">
-                            <el-button class="red" size="mini" icon="el-icon-search" @click="search">Rechercher</el-button>
+                            <el-button type="primary" size="mini" icon="el-icon-search" @click="search">Rechercher</el-button>
                         </el-col>
                         </el-row>
                     </el-form>
             </el-row>
             </el-header>
-            <el-main style="max-height:220vh;margin-left: 15vw;margin-top:6vh;">
+            <el-main style="max-height:220vh;min-height: 55vh;margin-left: 15vw;margin-top:6vh;">
                 <el-row text-align="left">
                     <span style="font-size:13px;">Meubles: {{ numberFurnits }}</span>
                 </el-row>
                <el-row :gutter="6" style="width: 100%;">
                     <el-col v-for="(fnt, index) in furnits" v-bind:key="index" :span="5" style="margin-top:5px;">
                         <el-card class="card">
-                            <div style="background-color: #D6DCDD">
+                            <div style="background-color: #D6DCDD;height: 20vh;">
                                 <!-- <img class="img pointer opacity" :src="imgUrl[index]"> -->
                                 <el-image
                                     :src="imgUrl[index]"
@@ -135,9 +136,9 @@ export default {
   data() {
       return {
         furniture: {
-            name: '',
             city: '',
-            type: ''
+            type: '',
+            word: ''
         },
         identified: true,
         numberFurnits: '',
@@ -147,10 +148,13 @@ export default {
         }
   }
   },
-  async beforeMount() {
+  async created() {
     if (this.$route.params && this.$route.params.furniture && this.$route.params.furniture.type) this.furniture.type = this.$route.params.furniture.type;
     if (this.$route.params && this.$route.params.furniture && this.$route.params.furniture.city) this.furniture.city = this.$route.params.furniture.city;
+    if (this.$route.params && this.$route.params.furniture && this.$route.params.furniture.word) this.furniture.word = this.$route.params.furniture.word;
     let context = this;
+    console.log('THIS FURNITURE');
+    console.log(this.$route.params);
     console.log(this.furniture);
     FurnitService.getFurnit(this.furniture).then(function(furn) {
       console.log('result');
@@ -162,7 +166,62 @@ export default {
         console.log(err);
     });
   },
+  watch: {
+    // '$route.params.furniture' : {
+    //   //Your code here
+    //   handler: function(search) {
+    //       console.log('HANDLER');
+    //        console.log(search);
+    //        let context = this;
+    //        FurnitService.getFurnitWithSearch(search).then(function(furn) {
+    //             console.log('result');
+    //             console.log(furn);
+    //             context.furnits = furn.furnits;
+    //             context.imgUrl = furn.imgUrl;
+    //             context.numberFurnits = furn.furnits.length;
+    //         }).catch(function(err) {
+    //             console.log(err);
+    //         });
+    //     },
+    //     deep: true,
+    //     immediate: true
+    //   }
+    'furniture.city' : {
+      //Your code here
+      handler: function() {
+          console.log('HANDLER city');
+            this.searchFurnits();
+        },
+      },
+       'furniture.type' : {
+      //Your code here
+      handler: function() {
+          console.log('HANDLER city');
+            this.searchFurnits();
+        },
+      },
+       'furniture.word' : {
+      //Your code here
+      handler: function() {
+          console.log('HANDLER city');
+            this.searchFurnits();
+        },
+      }
+    },
     methods: {
+        async searchFurnits() {
+            let context = this;
+           console.log(this.furniture);
+           FurnitService.getFurnit(this.furniture).then(function(furn) {
+                console.log('result');
+                console.log(furn);
+                context.furnits = furn.furnits;
+                context.imgUrl = furn.imgUrl;
+                context.numberFurnits = furn.furnits.length;
+            }).catch(function(err) {
+                console.log(err);
+            });
+        },
         display (fnt) {
           console.log('Display');
           console.log(fnt._id);
