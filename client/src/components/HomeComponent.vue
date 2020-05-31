@@ -12,7 +12,7 @@
                                 <el-option label="Lyon" value="Lyon"></el-option>
                                 <el-option label="Lille" value="Lille"></el-option>
                             </el-select>
-                            <el-button class="red" slot="append" icon="el-icon-search" @click="submit"></el-button>
+                            <el-button type="primary" slot="append" icon="el-icon-search" @click="submit"></el-button>
                         </el-input>
                     </el-form>
                 </el-col>
