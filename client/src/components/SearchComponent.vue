@@ -49,7 +49,7 @@
                 </el-row>
                <el-row :gutter="6" style="width: 100%;">
                     <el-col v-for="(fnt, index) in furnits" v-bind:key="index" :span="5" style="margin-top:5px;">
-                        <el-card class="card">
+                        <el-card class="card opacity">
                             <div style="background-color: #D6DCDD;height: 20vh;">
                                 <!-- <img class="img pointer opacity" :src="imgUrl[index]"> -->
                                 <el-image

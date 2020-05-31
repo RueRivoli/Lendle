@@ -69,7 +69,17 @@ router.get('/details/:rental_id', function (req, res) {
             "foreignField": '_id', 
             "as": 'furnit' 
         } 
-    }]).toArray(function(err, rental) {
+    },
+    {
+      "$lookup":{
+          "from": "users", 
+          "localField": "renter_id", 
+          "foreignField": "_id",
+          "as": "owner"
+      }
+  }
+  ]).next(function(err, rental) {
+      console.log('rental');
       console.log(rental);
     if(err){
       return res.status(404).json({

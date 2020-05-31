@@ -10,7 +10,7 @@
                          </el-row>
                         
                                 <el-carousel trigger="click" height="30vh">
-                                    <el-carousel-item  v-for="(img, index) in imgUrl" :key="index">
+                                    <el-carousel-item  class="opacity" v-for="(img, index) in imgUrl" :key="index">
                                 <!-- <div style="background-color: #D6DCDD"> -->
                                         <h3 class="small">
                                             <el-image class="imgcarousel"
@@ -114,21 +114,24 @@ export default {
     }
   },
   computed: {
-    owner: function () {
-        return 'Philip Morris, 13 rue Auguste Delone, 75013 ' + this.furnit.city;
-    },
     stateOfFurnit: function () {
         if (this.furnit.state === 100) return "Excellent état";
         if (this.furnit.state === 75) return "Bon état";
         if (this.furnit.state === 50) return "Etat correct";
         if (this.furnit.state === 25) return "Etat délicat";
         return "Bon état";
+    },
+    owner: function () {
+        if (this.furnit.owner[0]) {
+            return this.furnit.owner[0].firstname + ' ' + this.furnit.owner[0].lastname + ' \u000A' + this.furnit.owner[0].address + ', ' + this.furnit.owner[0].postcode + ' ' + this.furnit.owner[0].city;
+        }
+        return '';
     }
 },
  async created() {
     let context = this;
     console.log(this.furniture);
-    FurnitService.getIdentidyCardFurnit(this.$route.params.id).then(function(furn) {
+    FurnitService.getIdentityCardFurnit(this.$route.params.id).then(function(furn) {
       console.log('result');
       console.log(furn);
       context.furnit = furn.furnit;
@@ -185,7 +188,6 @@ export default {
   .el-carousel__item h3 {
     color: #475669;
     font-size: 14px;
-    opacity: 0.75;
     line-height: 30vh;
     margin: 0;
   }

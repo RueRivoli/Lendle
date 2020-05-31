@@ -22,7 +22,6 @@ mongoose.connect( URI, { dbName: 'furniture-loan', useNewUrlParser: true, useUni
 // });
 
 // Init gfs
-
 let gfs;
 
 mongoose.connection.once('open', () => {
@@ -386,20 +385,31 @@ router.get('/images/SAP', function (req, res) {
 });
 
 //ok to modify //appeler pour FurnitComponent
-router.get('/images/:furnit_id', function (req, res) {
+router.get('/identity/:furnit_id', function (req, res) {
   console.log('getIdentidyCardFurnit');
   let db = mongoose.connection.db;
   let collectionChunks = db.collection('uploads.chunks');
   let furnit_id = ObjectId(req.params.furnit_id);
   console.log(furnit_id);
-  db.collection("furnits").findOne({_id: furnit_id}, (err, ft) => {
-    if (!ft || ft.length === 0) {
+  db.collection("furnits").aggregate([
+    { "$match": { "_id": furnit_id } },
+    { 
+        "$lookup": { 
+            "from": 'users', 
+            "localField": 'owner_id', 
+            "foreignField": '_id', 
+            "as": 'owner' 
+        } 
+    }]).next(function(err, ft) {
+      console.log('FURNIT APRES MATCH');
+      console.log(ft);
+    if(err){
       return res.status(404).json({
-        err: 'This furnit doesnt exist'
+          err: 'Erreur de requete'
       });
-    } else if (err) {
+    } else if(!ft || ft.length === 0){
       return res.status(404).json({
-        err: 'An error occured'
+        err: 'Ce meuble nexiste pas'
       });
     } else {
       let pic_ids = ft.picture_ids;
@@ -436,9 +446,9 @@ router.get('/images/:furnit_id', function (req, res) {
             fileData.push(chunks[i].data.toString('base64'));
          }
          finalFile[index] = 'data:' + fl.contentType + ';base64,' + fileData.join('');
-        console.log(finalFile.length);
         console.log(pic_ids.length);
         let len = Object.keys(finalFile).length;
+        console.log(len);
         if (len === pic_ids.length) {
           res.json({ furnit: ft, imgurl: finalFile });
         }
@@ -449,6 +459,66 @@ router.get('/images/:furnit_id', function (req, res) {
   }
 });
 });
+
+
+
+//   db.collection("furnits").findOne({_id: furnit_id}, (err, ft) => {
+//     if (!ft || ft.length === 0) {
+//       return res.status(404).json({
+//         err: 'This furnit doesnt exist'
+//       });
+//     } else if (err) {
+//       return res.status(404).json({
+//         err: 'An error occured'
+//       });
+//     } else {
+//       let pic_ids = ft.picture_ids;
+//       var finalFile = {};
+//       pic_ids.forEach(function(pid, index) {
+//         gfs.files.findOne({ _id: ObjectId(pid)}, (err, fl) => {
+//         if (!fl || fl.length === 0) {
+//           return res.status(404).json({
+//             title: 'File error', 
+//             message: 'Error finding file', 
+//               error: err.errMsg});
+//         }
+//         if(err){
+//           return res.status(404).json({
+//             title: 'Download Error', 
+//             message: 'No file found'});
+//         } else {
+          
+//           let fileData = [];
+//           collectionChunks.find({files_id: fl._id}).toArray(function(err, chunks){
+//           if(err){
+//               return res.status(404).json({
+//               title: 'Download Error',
+//               message: 'Error retrieving chunks',
+//               error: err.errmsg});
+//           }
+//           if(!chunks || chunks.length === 0) {
+//             //No data found
+//             return res.render('index', {
+//               title: 'Download Error', 
+//               message: 'No data found'});
+//           }
+//           for (let i = 0; i < chunks.length; i++) {
+//             fileData.push(chunks[i].data.toString('base64'));
+//          }
+//          finalFile[index] = 'data:' + fl.contentType + ';base64,' + fileData.join('');
+//         console.log(finalFile.length);
+//         console.log(pic_ids.length);
+//         let len = Object.keys(finalFile).length;
+//         if (len === pic_ids.length) {
+//           res.json({ furnit: ft, imgurl: finalFile });
+//         }
+//       });
+//     };
+//   });
+//     });
+//   }
+// });
+// });
 
 // Add File
 

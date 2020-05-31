@@ -6,7 +6,7 @@
                   <el-form label-position="top" label-width="80px">
                        <el-col :span="10" style="">
                         <el-row style="font-size:18px;margin-bottom: 5vh;font-weight:bold;">
-                            <span><span>{{rental[0].furnit[0].name}}</span></span>
+                            <span><span>{{rental.furnit[0].name}}</span></span>
                          </el-row>
                                 <el-carousel trigger="click" height="30vh">
                                     <el-carousel-item  v-for="(img, index) in url" :key="index">
@@ -24,7 +24,6 @@
                                 <el-row style="margin-top:5vh;">
                                     <el-form-item label="Période">
                                         <el-date-picker
-                                            readonly
                                             v-model="date"
                                             type="daterange"
                                             range-separator="à"
@@ -33,7 +32,7 @@
                                             format="dd/MM/yyyy"
                                             size="mini"
                                             :picker-options="readonly"
-                                            :default-value="[rental[0].loan_start, rental[0].loan_end]">
+                                            :default-value="[rental.loan_start, rental.loan_end]">
                                             </el-date-picker>
                                     </el-form-item>
                                 </el-row>
@@ -49,7 +48,7 @@
                                         </el-input>
                                     </el-form-item>
                                     <el-form-item :label="stateOfFurnit">
-                                        <el-slider v-model="rental[0].furnit[0].state" :step="25"
+                                        <el-slider v-model="rental.furnit[0].state" :step="25"
                                             show-stops :format-tooltip="formatTooltip" :disabled="true"></el-slider>
                                     </el-form-item>
                                 </el-row>
@@ -72,7 +71,7 @@
                                         size="mini"
                                         type="textarea"
                                         :rows="4"
-                                        :placeholder="rental[0].furnit[0].description"
+                                        :placeholder="rental.furnit[0].description"
                                         :disabled="true">
                                         </el-input>
                                        </el-form-item>
@@ -108,23 +107,22 @@ export default {
       rental_id: this.$route.params.id,
       rental: {},
       url: {},
-      dialogImageUrl: '',
-      file: null,
-    //   furnit: '',
       date: [],
-      imgUrl: '',
     }
   },
   computed: {
-    // owner: function () {
-    //     return 'Philip Morris, 13 rue Auguste Delone, 75013 ' + this.furnit.city;
-    // },
     stateOfFurnit: function () {
-        if (this.rental[0].furnit[0].state === 100) return "Excellent état";
-        if (this.rental[0].furnit[0].state === 75) return "Bon état";
-        if (this.rental[0].furnit[0].state === 50) return "Etat correct";
-        if (this.rental[0].furnit[0].state === 25) return "Etat délicat";
+        if (this.rental.furnit && this.rental.furnit[0].state === 100) return "Excellent état";
+        if (this.rental.furnit && this.rental.furnit[0].state === 75) return "Bon état";
+        if (this.rental.furnit && this.rental.furnit[0].state === 50) return "Etat correct";
+        if (this.rental.furnit && this.rental.furnit[0].state === 25) return "Etat délicat";
         return "Bon état";
+    },
+    owner: function () {
+        if (this.rental.owner && this.rental.owner[0]) {
+            return this.rental.owner[0].firstname + ' ' + this.rental.owner[0].lastname + ' \u000A' + this.rental.owner[0].address + ', ' + this.rental.owner[0].postcode + ' ' + this.rental.owner[0].city;
+        }
+        return '';
     }
 },
  async created() {
@@ -133,11 +131,13 @@ export default {
       console.log('result');
       console.log(rental);
       context.rental = rental.rental;
-      console.log(context.rental[0]);
-      let dateStart = context.rental[0].loan_start;
-      let dateEnd = context.rental[0].loan_end;
+      console.log(context.rental);
+      let dateStart = context.rental.loan_start;
+      let dateEnd = context.rental.loan_end;
       context.date = [dateStart, dateEnd];
-     let picture_ids = context.rental[0].furnit[0].picture_ids;
+      console.log(context.date);
+     let picture_ids = context.rental.furnit[0].picture_ids;
+     console.log(picture_ids);
      if (picture_ids && picture_ids.length > 0) {
         FurnitService.getImagesUrlFromPicIds(picture_ids).then(function(urls) {
             context.url = urls.imgurl;

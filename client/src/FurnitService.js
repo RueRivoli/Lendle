@@ -162,10 +162,10 @@ class FurnitService {
     }
 
 
-    static getIdentidyCardFurnit(furnit_id){
+    static getIdentityCardFurnit(furnit_id){
         return new Promise(function(resolve, reject) {
             try {
-                axios.get(url + `images/${furnit_id}`).then(function (response) {
+                axios.get(url + `identity/${furnit_id}`).then(function (response) {
                     console.log('Response a get Pictures =====>');
                     const data = response.data;
                     console.log(data);
