@@ -1,6 +1,6 @@
 <template>
     <div>
-        <nav-logged-component  style="border-bottom: 1px solid #dfe0e6"></nav-logged-component>
+        <nav-component  style="border-bottom: 1px solid #dfe0e6"></nav-component>
         
             <el-tabs type="border-card" style="margin-left:15vh;margin-right:15vh;margin-top:5vh;">
                 <el-tab-pane>
@@ -181,14 +181,14 @@
 
 
 <script>
-import NavLoggedComponent from './NavLoggedComponent';
+import NavComponent from './Navigation/NavComponent';
 import UserService from '../UserService';
 import moment from 'moment';
 
 
 export default {
   name: 'ProfileComponent',
-  components: { NavLoggedComponent },
+  components: { NavComponent },
   data() {
     var validatePass = (rule, value, callback) => {
       if (value === '') {

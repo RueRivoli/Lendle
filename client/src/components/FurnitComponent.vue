@@ -95,7 +95,7 @@
 </template>
 
 <script>
-import NavComponent from './NavComponent';
+import NavComponent from './Navigation/NavComponent';
 import FurnitService from '../FurnitService';
 import './../style/style.css';
 // import moment from 'moment'

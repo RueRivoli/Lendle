@@ -53,7 +53,7 @@
 
 
 <script>
-import NavComponent from './NavComponent';
+import NavComponent from './Navigation/NavComponent';
 import LendleComponent from './LendleComponent';
 import LoanFurnitComponent from './LoanFurnitComponent';
 import FindFurnitComponent from './FindFurnitComponent';

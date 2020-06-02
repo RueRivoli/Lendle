@@ -73,7 +73,7 @@
 
 
 <script>
-import NavComponent from './NavComponent';
+import NavComponent from './Navigation/NavComponent';
 import AuthService from '../AuthService';
 import VueCookie from 'vue-cookie'
 

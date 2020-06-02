@@ -1,4 +1,5 @@
 import Vue from 'vue'
+import Vuex from 'vuex'
 import App from './App.vue'
 import ElementUI from 'element-ui';
 // import 'element-ui/lib/theme-chalk/index.css';
@@ -10,9 +11,11 @@ import VueRouter from 'vue-router'
 import VueAuthenticate from 'vue-authenticate'
 import router from './router/routes.js'
 import VueCookie from 'vue-cookie'
+import store from './store/'
 
-Vue.use(VueRouter)
-Vue.use(ElementUI, { locale })
+Vue.use(VueRouter);
+Vue.use(ElementUI, { locale });
+Vue.use(Vuex);
 Vue.use(moment);
 Vue.use(VueCookie);
 // Vue.Prototype.$cookie = VueCookies;
@@ -32,5 +35,6 @@ Vue.config.productionTip = false
 
 new Vue({
   render: h => h(App),
+  store,
   router
 }).$mount('#app')

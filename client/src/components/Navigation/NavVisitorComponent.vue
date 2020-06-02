@@ -1,5 +1,5 @@
 <template>
-    <nav style="border-bottom: 1px solid #dfe0e6">
+    <nav style="border-bottom: 1px solid #dfe0e6; width: 100%;">
         <ul role="menubar" class="" style="height: 50px;">
             <li tabindex="0" class="mright" v-bind:class="{ 'selected': displayLendle, 'pointer': true, 'lendle': true }"><router-link to="/" tag="span">LENDLE</router-link></li>
             <!-- <li v-if="displayTitles" tabindex="0" v-bind:class="{ 'selected': displayLoanFurnit, 'pointer': true }" style="float:right;margin-right:5px;" @click="select(1)"> Prêter des meubles</li>
@@ -30,7 +30,7 @@
 <script>
 
 export default {
-  name: 'NavComponent',
+  name: 'NavVisitorComponent',
   props: ['displayTitles'],
   data() {
       return {

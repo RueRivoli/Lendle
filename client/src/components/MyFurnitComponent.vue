@@ -1,6 +1,6 @@
 <template>
 <div>
-    <nav-logged-component  v-bind:search="searchMeth"  style="border-bottom: 1px solid #dfe0e6"></nav-logged-component>
+    <nav-component  style="border-bottom: 1px solid #dfe0e6"></nav-component>
  <el-container style="height: 100vh;">
       
      <!-- <aside-component/> -->
@@ -49,14 +49,14 @@
 
 
 <script>
-import NavLoggedComponent from './NavLoggedComponent';
+import NavComponent from './Navigation/NavComponent';
 // import AsideComponent from './AsideComponent';
 import FurnitService from '../FurnitService';
 import moment from 'moment';
 
 export default {
   name: 'MyFurnitComponent',
-  components: { NavLoggedComponent },
+  components: { NavComponent },
   data() {
       return {
           furnitures: '',
@@ -75,10 +75,6 @@ export default {
           await FurnitService.deleteFile(fn);
           
       },
-      searchMeth(event) {
-          console.log('SEARCH');
-          console.log(event);
-      }
   },
   computed: {
   },

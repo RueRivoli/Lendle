@@ -63,7 +63,7 @@
 
 
 <script>
-import NavComponent from './NavComponent';
+import NavComponent from './Navigation/NavComponent';
 // import FooterComponent from './FooterComponent';
 
 export default {

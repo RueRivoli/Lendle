@@ -1,13 +1,12 @@
 <template>
 <div>
-
      <nav-component style="width:100%;" :displayTitles="true"></nav-component>
  help
     </div>
 </template>
 
 <script>
-import NavComponent from './NavComponent';
+import NavComponent from './Navigation/NavComponent';
 
 export default {
   name: 'HelpComponent',

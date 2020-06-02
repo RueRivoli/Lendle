@@ -123,8 +123,7 @@
 
 
 <script>
-import NavComponent from './NavComponent';
-import NavLoggedComponent from './NavLoggedComponent';
+import NavComponent from './Navigation/NavComponent';
 // import FooterComponent from './FooterComponent';
 import FurnitService from '../FurnitService';
 // import FurnitComponent from './FurnitComponent';
@@ -132,7 +131,7 @@ import moment from 'moment';
 
 export default {
   name: 'SearchComponent',
-  components: { NavComponent, NavLoggedComponent },
+  components: { NavComponent },
   data() {
       return {
         furniture: {
@@ -140,7 +139,7 @@ export default {
             type: '',
             word: ''
         },
-        identified: true,
+        identified: this.$store.getters.GET_AUTH,
         numberFurnits: '',
         furnits: [],
         imgUrl: [],

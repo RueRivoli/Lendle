@@ -87,7 +87,7 @@
 
 
 <script>
-import NavComponent from './NavComponent';
+import NavComponent from './Navigation/NavComponent';
 import AuthService from '../AuthService';
 
 export default {

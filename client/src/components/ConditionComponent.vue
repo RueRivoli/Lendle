@@ -7,7 +7,7 @@ Conditions
 </template>
 
 <script>
-import NavComponent from './NavComponent';
+import NavComponent from './Navigation/NavComponent';
 
 export default {
   name: 'ConditionComponent',

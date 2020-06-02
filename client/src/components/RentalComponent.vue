@@ -1,6 +1,6 @@
 <template>
     <div>
-      <nav-logged-component style="border-bottom: 1px solid #dfe0e6"></nav-logged-component>
+      <nav-component style="border-bottom: 1px solid #dfe0e6"></nav-component>
         <el-container style="height:85vh;">
             <el-main style="width:100%"> 
                   <el-form label-position="top" label-width="80px">
@@ -93,7 +93,7 @@
 </template>
 
 <script>
-import NavLoggedComponent from './NavLoggedComponent';
+import NavComponent from './Navigation/NavComponent';
 import RentalService from '../RentalService';
 import FurnitService from '../FurnitService';
 import './../style/style.css';
@@ -101,7 +101,7 @@ import './../style/style.css';
 
 export default {
   name: 'RentalComponent',
-  components: { NavLoggedComponent },
+  components: { NavComponent },
   data() {
     return {
       rental_id: this.$route.params.id,

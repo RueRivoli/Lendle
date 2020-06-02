@@ -1,6 +1,6 @@
 <template>
 <div>
-    <nav-logged-component  @search="search" style="border-bottom: 1px solid #dfe0e6"></nav-logged-component>
+    <nav-component  @search="search" style="border-bottom: 1px solid #dfe0e6"></nav-component>
  <el-container style="height: 100vh;">
     <el-main>
     <el-row>
@@ -124,14 +124,14 @@
 
 
 <script>
-import NavLoggedComponent from './NavLoggedComponent';
+import NavComponent from './Navigation/NavComponent';
 import RentalService from '../RentalService';
 import FurnitService from '../FurnitService';
 import moment from 'moment';
 
 export default {
   name: 'MyRentalsComponent',
-  components: { NavLoggedComponent },
+  components: { NavComponent },
   data() {
       return {
           tableData: [{

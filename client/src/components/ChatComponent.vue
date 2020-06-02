@@ -1,6 +1,6 @@
 <template>
 <div>
-      <nav-logged-component  style="border-bottom: 1px solid #dfe0e6"></nav-logged-component>
+      <nav-component  style="border-bottom: 1px solid #dfe0e6"></nav-component>
       <el-container style="height: 100vh;">
      <!-- <aside-component/> -->
     <el-main>CHAT
@@ -14,11 +14,11 @@
 
 <script>
 // import AsideComponent from './AsideComponent';
-import NavLoggedComponent from './NavLoggedComponent';
+import NavComponent from './Navigation/NavComponent';
 
 export default {
   name: 'ChatComponent',
-  components: { NavLoggedComponent },
+  components: { NavComponent },
   data() {
       return {
           methods: {
