@@ -1,6 +1,6 @@
 <template>
     <el-container>
-          <nav-logged-component v-if="identified" style="border-bottom: 1px solid #dfe0e6"></nav-logged-component>
+        <nav-logged-component v-if="identified" style="border-bottom: 1px solid #dfe0e6"></nav-logged-component>
         <nav-component v-else  :displayTitles="true"></nav-component>
        
         <el-container>
@@ -149,6 +149,7 @@ export default {
   }
   },
   async created() {
+      this.identified = false;
     if (this.$route.params && this.$route.params.furniture && this.$route.params.furniture.type) this.furniture.type = this.$route.params.furniture.type;
     if (this.$route.params && this.$route.params.furniture && this.$route.params.furniture.city) this.furniture.city = this.$route.params.furniture.city;
     if (this.$route.params && this.$route.params.furniture && this.$route.params.furniture.word) this.furniture.word = this.$route.params.furniture.word;
@@ -189,21 +190,18 @@ export default {
     'furniture.city' : {
       //Your code here
       handler: function() {
-          console.log('HANDLER city');
             this.searchFurnits();
         },
       },
        'furniture.type' : {
       //Your code here
       handler: function() {
-          console.log('HANDLER city');
             this.searchFurnits();
         },
       },
        'furniture.word' : {
       //Your code here
       handler: function() {
-          console.log('HANDLER city');
             this.searchFurnits();
         },
       }

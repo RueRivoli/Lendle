@@ -60,66 +60,6 @@ class FurnitService {
         })
     }
 
-    static getFurnitWithId(id){
-        console.log('furnit of research');
-        // console.log(furnit);
-        let furnit0 = {
-            params: {
-              id: id,
-            }
-        };
-        return new Promise(function(resolve, reject) {
-            try {
-                axios.get(url, furnit0).then(function (response) {
-                    // handle success
-                    console.log('getFurnit with Id ==>');
-                    console.log(response);
-                    const data = response.data;
-                    resolve(data);
-                  })
-                  .catch(function (error) {
-                    // handle error
-                    console.log(error);
-                  });
-            } catch(err) {
-                reject(err);
-            }
-        })
-    }
-
-    static getFurnitWithSearch(search){
-        console.log('Searching with a word');
-        let url_search = url + 'search/';
-        let word = search.word;
-        console.log(word);
-        let furnit0 = {
-            params: {
-                word,
-            }
-        };
-        // `${url_search}${word.word}`
-        console.log('form before send');
-        console.log(furnit0);
-        return new Promise(function(resolve, reject) {
-            try {
-                axios.get(url_search, furnit0).then(function (response) {
-                    // handle success
-                    console.log('getFurnit with Word response success ==>');
-                    console.log(response);
-                    const data = response.data;
-                    resolve(data);
-                  })
-                  .catch(function (error) {
-                    // handle error
-                    console.log(error);
-                  });
-            } catch(err) {
-                reject(err);
-            }
-        })
-    }
-
-
     static getImages(){
         return new Promise(function(resolve, reject) {
             try {
@@ -141,7 +81,7 @@ class FurnitService {
 
     //pour myFurnitComponent
     static getImagesUrlFromPicIds(pic_ids) {
-        let url_new = url + 'furn/';
+        let url_new = url + 'images/';
         return new Promise(function(resolve, reject) {
             try {
                 axios.get(`${url_new}${pic_ids}`).then(function (response) {

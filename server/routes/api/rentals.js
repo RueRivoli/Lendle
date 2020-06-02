@@ -1,64 +1,15 @@
 const express = require('express');
-const mongodb = require('mongodb'); //mongodb driver
 const mongoose = require('mongoose');
 const Rental = require('../../../model/Rental');
-const Grid = require('gridfs-stream');
-const crypto = require('crypto');
-const path = require('path');
-const GridFsStorage = require('multer-gridfs-storage');
-const multer = require('multer');
 const ObjectId = mongoose.Types.ObjectId;
-const URI = require('./../../config/keys').URI;
-
 const router = express.Router();
 
-
-// Connexion
-
-mongoose.connect( URI, { dbName: 'furniture-loan', useNewUrlParser: true, useUnifiedTopology: true }, ()=> console.log('connected to DB'));
-
-
-let gfs;
-
-mongoose.connection.once('open', () => {
-  // Init stream
-  gfs = Grid(mongoose.connection.db, mongoose.mongo);
-  gfs.collection('uploads');
-  console.log('connect to uploads');
-})
-
-// Create storage engine
-
-const storage = new GridFsStorage({
-  // db: mongoose.connection,
-  url: URI,
-  file: (req, file) => {
-    return new Promise((resolve, reject) => {
-      crypto.randomBytes(16, (err, buf) => {
-        if (err) {
-          return reject(err);
-        }
-        const filename = buf.toString('hex') + path.extname(file.originalname);
-        const fileInfo = {
-          filename: filename,
-          bucketName: 'uploads'
-        };
-        resolve(fileInfo);
-      });
-    });
-  }
-});
-
-
-
-// called for myRentalsComponent
-// return all rentals and their associated furnits
+// called for RentalComponent
+// retrieve the rental that is rental_id and retrieve furnit and owner data
 router.get('/details/:rental_id', function (req, res) {
   let db = mongoose.connection.db;
   let id = req.user._id.toString();
-  console.log(req.params);
   let rental_id = ObjectId(req.params.rental_id);
-  console.log(rental_id);
 
   db.collection("rentals").aggregate([
     { "$match": { "_id": ObjectId(rental_id) } },
@@ -79,8 +30,6 @@ router.get('/details/:rental_id', function (req, res) {
       }
   }
   ]).next(function(err, rental) {
-      console.log('rental');
-      console.log(rental);
     if(err){
       return res.status(404).json({
           err: 'Erreur d editions'
@@ -97,7 +46,8 @@ router.get('/details/:rental_id', function (req, res) {
     });
 });
 
-//appeler pour searchComponent
+// called for MyRentalsComponent
+// retrieve all the rentals attached to a specified user
 router.get('/', function (req, res) {
   let db = mongoose.connection.db;
   let id = req.user._id.toString();
@@ -112,7 +62,6 @@ router.get('/', function (req, res) {
             "as": 'furnit' 
         } 
     }]).toArray(function(err, rentals) {
-      console.log(rentals);
     if(err){
       return res.status(404).json({
           err: 'Erreur d editions'

@@ -108,8 +108,10 @@ export default {
 <style>
 
 .furnit{
-    background: no-repeat right 50% url('./../assets/fauteuilrouge.png'),
-    no-repeat left 50% url('./../assets/fauteuilrouge.png');
+    /* background: no-repeat right 50% url('./../assets/fauteuilrouge.png'), */
+    background:  no-repeat url('./../assets/background.jpg');
+    background-size: 100% auto;
+    /* no-repeat left 50% url('./../assets/fauteuilrouge.png'); */
     /* url('./../assets/fatvert.jpg') no-repeat right top; */
 }
 
