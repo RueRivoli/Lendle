@@ -1,7 +1,6 @@
 <template>
     <el-container>
-        <nav-logged-component v-if="identified" style="border-bottom: 1px solid #dfe0e6"></nav-logged-component>
-        <nav-component v-else  :displayTitles="true"></nav-component>
+        <nav-component :displayTitles="true"></nav-component>
        
         <el-container>
             <el-header>
@@ -139,7 +138,6 @@ export default {
             type: '',
             word: ''
         },
-        identified: this.$store.getters.GET_AUTH,
         numberFurnits: '',
         furnits: [],
         imgUrl: [],

@@ -123,6 +123,12 @@ export default {
             return this.rental.owner[0].firstname + ' ' + this.rental.owner[0].lastname + ' \u000A' + this.rental.owner[0].address + ', ' + this.rental.owner[0].postcode + ' ' + this.rental.owner[0].city;
         }
         return '';
+    },
+    renter () {
+        return this.$store.getters.GET_AUTH && !this.$store.getters.GET_LOAN;
+    },
+    loaner () {
+        return this.$store.getters.GET_AUTH && this.$store.getters.GET_LOAN;
     }
 },
  async created() {

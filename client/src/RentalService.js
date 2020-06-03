@@ -6,16 +6,20 @@ const url = 'http://localhost:5000/api/rentals/';
 class RentalService {
 
 
-    static getRentals(){
+    static getRentals(asLoaner){
         return new Promise(function(resolve, reject) {
             try {
+                let url_rentals;
+                console.log(asLoaner);
+                if (asLoaner) url_rentals = url + 'loan/';
+                if (!asLoaner) url_rentals = url + 'rent/';
                 let token = document.cookie.split('jwt=')[1];
                 let config = {
                     headers: {
                         'Authorization': `Bearer ${token}`
                     },
                 };
-                axios.get(url, config).then(function (response) {
+                axios.get(url_rentals, config).then(function (response) {
                     const data = response.data;
                     console.log('success');
                     console.log(data);

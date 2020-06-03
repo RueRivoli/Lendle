@@ -1,6 +1,7 @@
 <template>
     <el-container>
-        <nav-logged-component v-if="identified" style="border-bottom: 1px solid #dfe0e6"></nav-logged-component>
+        <nav-loaner-component v-if="loaner" style="border-bottom: 1px solid #dfe0e6"></nav-loaner-component>
+        <nav-renter-component v-else-if="renter" :displayTitles="true"></nav-renter-component>
         <nav-visitor-component v-else :displayTitles="true"></nav-visitor-component>
     </el-container>
 </template>
@@ -9,18 +10,25 @@
 
 <script>
 import NavVisitorComponent from './NavVisitorComponent';
-import NavLoggedComponent from './NavLoggedComponent';
-
+import NavLoanerComponent from './NavLoanerComponent';
+import NavRenterComponent from './NavRenterComponent';
 
 export default {
   name: 'NavComponent',
-  components: { NavVisitorComponent, NavLoggedComponent },
+  components: { NavVisitorComponent, NavLoanerComponent, NavRenterComponent },
   data() {
       return {
-        identified: this.$store.getters.GET_AUTH,
     }
   },
     methods: {
+    },
+    computed: {
+        renter () {
+            return this.$store.getters.GET_AUTH && !this.$store.getters.GET_LOAN;
+        },
+        loaner () {
+            return this.$store.getters.GET_AUTH && this.$store.getters.GET_LOAN;
+        }
     }
 }
 

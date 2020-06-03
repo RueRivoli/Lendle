@@ -68,14 +68,25 @@
                         </el-col>
                     </el-row>
         </el-form>
+        <el-dialog
+            title='"Bienvenue, dans quel but voulez-vous vous connecter ?"'
+            :visible.sync="centerDialogVisible"
+            width="50%"
+            style="border-radius:4px;"
+            center>
+            <span slot="footer" class="dialog-footer">
+                <el-button @click="toRent()">Mettre en location</el-button>
+                <el-button type="primary" @click="toLoan()">Louer</el-button>
+            </span>
+        </el-dialog>
     </div>
-</template>
+</template> 
 
 
 <script>
 import NavComponent from './Navigation/NavComponent';
 import AuthService from '../AuthService';
-import VueCookie from 'vue-cookie'
+// import VueCookie from 'vue-cookie'
 
 export default {
   name: 'LogInComponent',
@@ -92,6 +103,7 @@ export default {
       }
     }
       return {
+          centerDialogVisible: false,
           registration: {
               email: '',
               password: ''
@@ -113,10 +125,24 @@ export default {
             },
         }
     },
-    created() {
-         VueCookie.set("jwt", 'gez78727', "1h");
-    },
+    // created() {
+    //      VueCookie.set("jwt", 'gez78727', "1h");
+    // },
     methods: {
+        toRent() {
+             console.log('TO RENT');
+            this.$store.commit('TO_RENT', false);
+            this.centerDialogVisible = false;
+            this.$store.commit('AUTH');
+            this.$router.push({ name: 'ProfileComponent'});
+        },
+        toLoan() {
+            console.log('TO LOAN');
+            this.$store.commit('TO_RENT', true);
+            this.centerDialogVisible = false;
+            this.$store.commit('AUTH');
+            this.$router.push({ name: 'ProfileComponent'});
+        },
         async submitForm() {
             console.log(this.registration);
             this.$refs['registration'].validate((valid) => {
@@ -128,10 +154,17 @@ export default {
     //    this.$cookie.set('token', 'fzfzzffz', 1);
     //    VueCookies.set('jwt', '1897878378', "1h");
         let context = this;
-        AuthService.logUser(this.registration).then(function(token) {
-            console.log('TOKEN');
-            console.log(token);
-            context.$router.push({ name: 'ProfileComponent' , params: { token }});
+        AuthService.logUser(this.registration).then(function(data) {
+            console.log('Data');
+            console.log(data);
+            // let token;
+            // if (data.token) token = data.token;
+            if (data.user.renter && data.user.loaner) context.centerDialogVisible = true
+            else {
+                context.$store.commit('AUTH');
+                if (data.user.renter) context.$store.commit('TO_RENT');
+                context.$router.push({ name: 'ProfileComponent'});
+            }
         }).catch(function(err) {
             if (err.response && err.response.data.type === 0) {
                 let msg = "Il y a une erreur dans la création du compte";

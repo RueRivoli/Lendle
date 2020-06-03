@@ -181,12 +181,21 @@ export default {
     //   }
   },
   computed: {
-  },
+        renter () {
+            return this.$store.getters.GET_AUTH && !this.$store.getters.GET_LOAN;
+        },
+        loaner () {
+            return this.$store.getters.GET_AUTH && this.$store.getters.GET_LOAN;
+        }
+    },
   async created() {
     let context = this;
     console.log('RentalService getRentals');
-    RentalService.getRentals().then(function(rentals) {
+    RentalService.getRentals(this.loaner).then(function(rentals) {
+        console.log('RENTALS');
+        console.log(rentals);
       context.rentals = rentals.rentals;
+      console.log(context.rentals);
     let picture_ids = new Array();
     context.rentals.forEach(function(rt){
         console.log(rt);

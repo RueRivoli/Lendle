@@ -39,11 +39,12 @@ class AuthService {
                 console.log('before send to api/auth');
                 console.log(user);
                 return axios.post(url_login, user).then(function (response) {
+                    console.log('RTOUR DE LOGIN');
                     console.log(response);
                     if (response.data.success) {
                         const token = response.data.token;
                         VueCookies.set('jwt' , token , "1h") 
-                        resolve(token);
+                        resolve(response.data);
                     } else {
                         resolve(response);
                     }

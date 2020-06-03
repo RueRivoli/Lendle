@@ -125,7 +125,7 @@ router.post('/signup', function (req, res) {
     password,
     passwordConfirmed,
     loaner,
-    finder
+    renter
 
   } = req.body;
   if (password !== passwordConfirmed) {
@@ -137,9 +137,9 @@ router.post('/signup', function (req, res) {
     if (user) {
       let msg0 = 'Cet email est deja utilisé.';
       let msg;
-      if (user.finder && !user.loaner) {
+      if (user.renter && !user.loaner) {
         msg = msg0 + ' Si vous voulez vous inscrire en tant que prêteur, veuillez vous connecter et le déclarer dans Mon Compte';
-      } else if (user.loaner && !user.finder) {
+      } else if (user.loaner && !user.renter) {
         msg = msg0 + ' Si vous voulez vous inscrire en tant qu emprunteur, veuillez vous connecter et le déclarer dans Mon Compte';
       } else {
         msg = msg0;
@@ -149,7 +149,7 @@ router.post('/signup', function (req, res) {
         });
     } else {
 
-      let user = new User({ mail: email, pswd: password, loaner: loaner, finder: finder});
+      let user = new User({ mail: email, pswd: password, loaner: loaner, renter: renter});
       bcrypt.genSalt(10, (err, salt) => {
         bcrypt.hash(user.pswd, salt, (err, hash) => {
     
@@ -295,15 +295,15 @@ router.post('/login', function (req, res) {
   let pswd = req.body.password;
   console.log('PASD');
   console.log(pswd);
-  User.findOne({ mail: mail }).then(user => {
-    console.log(user);
-    if (!user) {
+  User.findOne({ mail: mail }).then(usr => {
+    console.log(usr);
+    if (!usr) {
       return res.status(404).json({
         type: 0,
         err: 'Cet email nest pas associe a un compte'
       });
     } else {
-      if (!user.isVerified) {
+      if (!usr.isVerified) {
         return res.status(404).json({
           type: 1,
           err: 'Votre mail n a pas été validé. Regardez votre boîte mail'
@@ -311,18 +311,21 @@ router.post('/login', function (req, res) {
       } else {
         console.log('BOTH');
         console.log(pswd);
-        console.log(user.pswd);
-        bcrypt.compare(pswd, user.pswd).then(isMatch => {
+        console.log(usr.pswd);
+        console.log(usr);
+        bcrypt.compare(pswd, usr.pswd).then(isMatch => {
           if (isMatch) {
             const payload = {
-              _id: user._id,
-              mail: user.mail
+              _id: usr._id,
+              mail: usr.mail
             }
+            const { loaner, renter, language } = usr;
+            const user = {loaner, renter, language};
             jwt.sign(payload, key, { expiresIn: 604800 }, (err, token) =>  {
               // res.redirect('/api/users/profile');
               res.status(200).json({
                 success: true,
-                // token: `Bearer ${token}`,
+                user: user,
                  token: `${token}`,
                 msg: "Vous êtes connecté.e"
               })

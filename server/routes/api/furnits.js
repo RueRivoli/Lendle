@@ -450,6 +450,7 @@ router.post('/', function (req, res) {
   furnit.loanstart = req.body.dateStart;
   furnit.loanend = req.body.dateEnd;
   furnit.city = req.body.city;
+  furnit.state = 75;
   furnit.description = req.body.description;
   furnit.creation = new Date();
   furnit.picture_ids = req.body.picture_ids;

@@ -13,6 +13,7 @@ import router from './router/routes.js'
 import VueCookie from 'vue-cookie'
 import store from './store/'
 
+Vue.use
 Vue.use(VueRouter);
 Vue.use(ElementUI, { locale });
 Vue.use(Vuex);

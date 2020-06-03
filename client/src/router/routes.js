@@ -20,7 +20,7 @@ const routes = [
   { path: '/intro/beARenter', name: 'Intro', component: IntroComponent, props: {displayLendle: true } },
   { path: '/login', name:'LogIn', component: LogInComponent },
   { path: '/search', name:'Search', component: SearchComponent },
-  { path: '/signup/:role', name:'SignUp', component: SignUpComponent },
+  { path: '/signup/:as', name:'SignUp', component: SignUpComponent },
   { path: '/profile', name:'ProfileComponent', component: ProfileComponent },
   { path: '/myfurnitures', name:'MyFurnit', component: MyFurnitComponent },
   { path: '/myrentals', name:'MyRentals', component: MyRentalsComponent },

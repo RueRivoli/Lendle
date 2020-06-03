@@ -86,6 +86,9 @@ export default {
         }
   }
   },
+  created () {
+      this.$store.commit('EXIT');
+  },
     methods: {
         async submit () {
             console.log(this.$refs['furniture']);

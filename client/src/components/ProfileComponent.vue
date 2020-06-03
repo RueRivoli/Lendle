@@ -33,8 +33,8 @@
                         <el-row>
                             <el-col :span="6" :offset="4">
                                 <el-form-item label="Inscrit en tant que" >
-                                    <el-checkbox v-model="profile.finder" disabled label="Emprunteur">Emprunteur</el-checkbox>
-                                    <el-checkbox v-model="profile.loaner" disabled label="Prêteur">Prêteur</el-checkbox>
+                                    <el-checkbox v-model="profile.loaner" disabled label="Emprunteur">Emprunteur</el-checkbox>
+                                    <el-checkbox v-model="profile.renter" disabled label="Prêteur">Prêteur</el-checkbox>
                                 </el-form-item>
                             </el-col>
                             <el-col :span="6" :offset="3">
@@ -106,10 +106,10 @@
                             <el-row>
                                 <el-col :span="7" :offset="4">
                                     <el-form-item label="Inscrit en tant que">
-                                        <el-checkbox v-if="activeFinder" v-model="profile.finder" label="Emprunteur">Emprunteur</el-checkbox>
-                                        <el-checkbox v-else v-model="profile.finder" disabled label="Emprunteur">Emprunteur</el-checkbox>
-                                        <el-checkbox v-if="activeLoaner" v-model="profile.loaner"  label="Prêteur">Prêteur</el-checkbox>
-                                        <el-checkbox v-else v-model="profile.loaner" disabled label="Prêteur">Prêteur</el-checkbox>
+                                        <el-checkbox v-if="activeLoaner" v-model="profile.loaner"  label="Emprunteur">Emprunteur</el-checkbox>
+                                        <el-checkbox v-else v-model="profile.loaner" disabled label="Emprunteur">Emprunteur</el-checkbox>
+                                        <el-checkbox v-if="activeRenter" v-model="profile.renter" label="Prêteur">Prêteur</el-checkbox>
+                                        <el-checkbox v-else v-model="profile.renter" disabled label="Prêteur">Prêteur</el-checkbox>
                                     </el-form-item>
                                     </el-col>
                             </el-row>
@@ -211,7 +211,7 @@ export default {
     }
       return {
         activeLoaner: true,
-        activeFinder: true,
+        activeRenter: true,
         profile: {
             lastname: '',
             firstname: '',
@@ -219,7 +219,7 @@ export default {
             address: '',
             postcode: '',
             city: '',
-            finder: false,
+            renter: false,
             loaner: false,
             mark: 0
         },
@@ -264,7 +264,7 @@ export default {
                 { pattern: '^(?:[0-8][0-9]|9[0-8])[0-9]{3}$', message: 'Ecrivez un code postal correct', trigger: 'blur' },
             ],
             city: [
-                { pattern: '^[a-zA-Z]{2,30}$', message: 'Ecrivez une ville correcte', trigger: 'blur' },
+                // { pattern: '^[a-zA-Z]\s{2,30}$', message: 'Ecrivez une ville correcte', trigger: 'blur' },
             ],
         }
     }
@@ -273,7 +273,7 @@ export default {
         let context = this;
         UserService.getProfile().then(function(profile) {
             context.profile = profile;
-            if (profile.finder) context.activeFinder = false;
+            if (profile.renter) context.activeRenter = false;
             if (profile.loaner) context.activeLoaner = false;
         }).catch(function(err) {
         console.log(err);

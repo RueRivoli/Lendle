@@ -11,7 +11,7 @@
             <div class="f-auto" v-if="displayTitles">
                 <li tabindex="0" class="pointer" style="float:right;margin-right: 10px;" v-if="displayTitles" ><router-link to="/login" tag="span">Connexion</router-link></li>
                 <span style="float:right;margin-right: 5px;" v-if="displayTitles" >|</span>
-                 <li tabindex="0" class="pointer" style="float:right;margin-right: 5px;" v-if="displayTitles" ><router-link to="/signup/find" tag="span">Inscription</router-link></li>
+                 <li tabindex="0" class="pointer" style="float:right;margin-right: 5px;" v-if="displayTitles" ><router-link to="/signup/loaner" tag="span">Inscription</router-link></li>
             </div>
              <!-- <div class="f-auto" v-if="displayTitles">
                 <li tabindex="0" class="pointer" style="float:right;margin-right: 5px;" v-if="displayTitles" ><router-link to="/signup" tag="span">Inscription</router-link></li>

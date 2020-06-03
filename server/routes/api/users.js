@@ -47,13 +47,13 @@ router.get('/profile', function(req, res) {
 // Update data of the user
 router.post('/update', function (req, res) {
   console.log('router.post(/update');
-  let { firstname, lastname, language, finder, loaner, address, postcode, city, description
+  let { firstname, lastname, language, renter, loaner, address, postcode, city, description
   } = req.body;
   let id = req.user._id;
   User.updateOne( {_id: id }, { firstname,
     lastname,
     language,
-    finder,
+    renter,
     loaner,
     address,
     postcode,

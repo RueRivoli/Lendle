@@ -37,7 +37,7 @@ const UserSchema = mongoose.Schema({
         type: Boolean,
         default: false
     },
-    finder: {
+    renter: {
         type: Boolean,
         default: false
     },

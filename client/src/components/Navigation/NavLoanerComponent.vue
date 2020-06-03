@@ -1,5 +1,5 @@
 <template>
-    <nav style="border-bottom: 1px solid #dfe0e6">
+    <nav style="border-bottom: 1px solid #dfe0e6;width:100%;">
         <ul role="menubar" class="" style="height: 50px;">
             <li tabindex="0" class="mright" v-bind:class="{ 'selected': displayLendle, 'pointer': true, 'lendle': true }"><router-link to="/" tag="span">LENDLE</router-link></li>
             <div class="f-auto" style="width:25%;"></div>
@@ -20,6 +20,7 @@
                     </span>
                     <el-dropdown-menu slot="dropdown">
                         <el-dropdown-item icon="el-icon-setting"><router-link to="/profile" tag="span">Profil</router-link></el-dropdown-item>
+                        <el-dropdown-item icon="el-icon-help"><router-link to="/help" tag="span">Aide</router-link></el-dropdown-item>
                         <el-dropdown-item icon="el-icon-caret-left"><router-link to="/" tag="span">Deconnexion</router-link></el-dropdown-item>
                     </el-dropdown-menu>
                     </el-dropdown>
@@ -32,7 +33,7 @@
 <script>
 
 export default {
-  name: 'NavLoggedComponent',
+  name: 'NavLoanerComponent',
   data() {
       return {
           display: 1

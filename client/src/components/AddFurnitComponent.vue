@@ -1,12 +1,14 @@
 <template>
- <el-container style="height: 100vh;">
-  <aside-component/>
+ <div>
+  <nav-component :displayTitles="true"></nav-component>
   <el-main>
-    <el-row>
-      <el-col :span="24" style="margin-bottom:50px;">
-         <span class="add_furnit_title">AJOUTER VOTRE MEUBLE</span>
-      </el-col>
-    </el-row>
+    <!-- <el-header>
+      <el-row>
+        <el-col :span="24" style="margin-bottom:50px;">
+          <span class="add_furnit_title">AJOUTER VOTRE MEUBLE</span>
+        </el-col>
+      </el-row>
+    </el-header> -->
       <el-form ref="furniture" name="furniture" :model="furniture" :rules="rulesFurniture" label-position="top" label-width="130px" enctype="multipart/form-data">
         <el-row>
           <el-col :span="6">
@@ -100,21 +102,20 @@
       </el-form>
       <img :src="imageprov" alt="">
   </el-main>
-</el-container>
+</div>
 </template>
 
 <script>
 
 /* Dans template Si class=el-upload-list-thumbnail images pleines dans img class= el-upload-list__item-thumbnail*/
-
-import AsideComponent from './AsideComponent';
+import NavComponent from './Navigation/NavComponent';
 import FurnitService from '../FurnitService';
 import FormData from 'form-data';
 import moment from 'moment'
 
 export default {
   name: 'AddFurnitComponent',
-  components: { AsideComponent },
+  components: { NavComponent },
   data() {
     var validateDates = (rule, value, callback) => {
       let dateStart = this.$refs.dateStart.value;
@@ -224,12 +225,6 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="scss" scoped>
 
-$color-primary: #1E969D;
-$color-success: #484538;
-$color-info: #cad49d;
-$color-warning: #d4eac8;
-$color-danger: #c0d8e0;
-
 .add_furnit_title{
   color: #1E969D;
   text-align: center;
@@ -245,10 +240,10 @@ $color-danger: #c0d8e0;
 }
 
 .el-header, .el-footer {
-  background-color: #B3C0D1;
+  // background-color: #B3C0D1;
   color: #333;
-  text-align: center;
-  line-height: 60px;
+  text-align: left;
+  line-height: 30px;
 }
 
 

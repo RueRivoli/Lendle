@@ -3,16 +3,16 @@
         <nav-component :displayTitles="false" style="border-bottom: 1px solid #dfe0e6"></nav-component>
                      <div style="height:10vh;"></div>
                     <el-row>
-                        <el-col v-if="$route.params.role === 'find'" class="center" style="margin-bottom: 3vh;" :span="8" :offset="8">
+                        <el-col v-if="$route.params.as === 'loaner'" class="center" style="margin-bottom: 3vh;" :span="8" :offset="8">
                             <span style="font-weight:bold;font-size:18px;">Créer un compte pour louer des meubles:</span>
                             <div style="text-align:center;font-size:12px;">
-                                Ou <span class="pointer green"><router-link to="/signup/loan" tag="span">inscrivez-vous </router-link></span> pour faire louer vos meubles 
+                                Ou <span class="pointer green"><router-link to="/signup/renter" tag="span">inscrivez-vous </router-link></span> pour faire louer vos meubles 
                             </div>
                         </el-col>
-                         <el-col v-else-if="$route.params.role === 'loan'" class="center" style="margin-bottom: 3vh;" :span="8" :offset="8">
+                         <el-col v-else-if="$route.params.as === 'renter'" class="center" style="margin-bottom: 3vh;" :span="8" :offset="8">
                             <span style="font-weight:bold;font-size:18px;">Créer un compte pour mettre des meubles en location:</span>
                             <div style="text-align:center;font-size:12px;">
-                                Ou <span class="pointer green"><router-link to="/signup/find" tag="span">inscrivez-vous </router-link></span> pour louer des meubles 
+                                Ou <span class="pointer green"><router-link to="/signup/loaner" tag="span">inscrivez-vous </router-link></span> pour louer des meubles 
                             </div>
                         </el-col>
                     </el-row>
@@ -117,7 +117,8 @@ export default {
           registration: {
               email: '',
               password: '',
-              passwordConfirmed: ''
+              passwordConfirmed: '',
+              as: this.$route.params.as
           },
         rulesRegistration: {
             email: [
@@ -148,12 +149,12 @@ export default {
               if (!valid) {
                 return false
             }
-             if (this.$route.params.role === 'find') {
-                this.registration.finder = true;
+             if (this.$route.params.as === 'renter') {
+                this.registration.renter = true;
                 this.registration.loaner = false;
             } else {
                 this.registration.loaner = true;
-                this.registration.finder = false;
+                this.registration.renter = false;
             }
             let context = this;
             AuthService.insertUser(this.registration).then(function() {

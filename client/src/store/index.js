@@ -3,6 +3,8 @@ import Vuex from 'vuex'
 import getters from './getters'
 import actions from './actions'
 import mutations from './mutations'
+import createPersistedState from 'vuex-persistedstate'
+// import * as Cookies from 'js-cookie'
 
 Vue.use(Vuex)
 
@@ -10,6 +12,7 @@ Vue.use(Vuex)
 const state = {
     // User store
     authentificated: false,
+    toLoan: true,
     token: ''
   }
   
@@ -17,5 +20,10 @@ const state = {
     state,
     getters,
     mutations,
-    actions
+    actions,
+    plugins: [
+        createPersistedState({
+            storage: window.sessionStorage,
+        })
+      ]
   })
