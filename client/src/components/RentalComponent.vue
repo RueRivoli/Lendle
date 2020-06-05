@@ -53,8 +53,8 @@
                                     </el-form-item>
                                 </el-row>
 
-                                <el-row>
-                                     <el-form-item label="Propriétaire">
+                                <el-row v-if="isLoaner">
+                                     <el-form-item  label="Propriétaire">
                                      <el-input
                                         size="mini"
                                         type="textarea"
@@ -62,9 +62,24 @@
                                         :placeholder="owner"
                                         :disabled="true">
                                     </el-input>
-                                </el-form-item>
+                                    </el-form-item>
+
                                     <el-button class="pointer" size="mini" type="primary"  style="margin-top:10px;">Contacter le loueur</el-button>
                                 </el-row>
+                                 <el-row v-else>
+                                     <el-form-item  label="Locataire">
+                                     <el-input
+                                        size="mini"
+                                        type="textarea"
+                                        :rows="2"
+                                        :placeholder="loaner"
+                                        :disabled="true">
+                                    </el-input>
+                                    </el-form-item>
+
+                                    <el-button class="pointer" size="mini" type="primary"  style="margin-top:10px;">Contacter le locataire</el-button>
+                                </el-row>
+
                                  <el-row>
                                      <el-form-item label="Description">
                                      <el-input
@@ -124,16 +139,22 @@ export default {
         }
         return '';
     },
+    loaner: function () {
+        if (this.rental.loaner && this.rental.loaner[0]) {
+            return this.rental.loaner[0].firstname + ' ' + this.rental.loaner[0].lastname + ' \u000A' + this.rental.loaner[0].address + ', ' + this.rental.loaner[0].postcode + ' ' + this.rental.loaner[0].city;
+        }
+        return '';
+    },
     renter () {
         return this.$store.getters.GET_AUTH && !this.$store.getters.GET_LOAN;
     },
-    loaner () {
+    isLoaner () {
         return this.$store.getters.GET_AUTH && this.$store.getters.GET_LOAN;
     }
 },
  async created() {
     let context = this;
-    RentalService.getRentalById(this.$route.params.id).then(function(rental) {
+    RentalService.getRentalById(this.$route.params.id, this.isLoaner).then(function(rental) {
       console.log('result');
       console.log(rental);
       context.rental = rental.rental;

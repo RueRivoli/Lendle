@@ -10,7 +10,7 @@
                  <li tabindex="0" class="pointer" style="float:right;" ><router-link to="/addfurnit" tag="span">Créer une annonce</router-link></li>
             </div>
             <div class="f-auto" style="flex-grow: 2;">
-                 <li tabindex="0" class="pointer" style="float:right;" ><router-link to="/myfurnitures" tag="span">Mes annonces</router-link></li>
+                 <li tabindex="0" class="pointer" style="float:right;" ><router-link to="/myads" tag="span">Mes annonces</router-link></li>
             </div>
             <div class="f-auto" style="flex-grow: 2;">
                  <li tabindex="0" class="pointer" style="float:right;" ><router-link to="/myrentals" tag="span">Mes locations</router-link></li>

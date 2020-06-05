@@ -69,7 +69,7 @@
                     </el-row>
         </el-form>
         <el-dialog
-            title='"Bienvenue, dans quel but voulez-vous vous connecter ?"'
+            title="Bienvenue, dans quel but voulez-vous vous connecter ?"
             :visible.sync="centerDialogVisible"
             width="50%"
             style="border-radius:4px;"

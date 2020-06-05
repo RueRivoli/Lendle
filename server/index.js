@@ -35,7 +35,7 @@ const rentals = require('./routes/api/rentals');
 app.use('/api/auth', auth);//register login 
 app.use('/api/users', passport.authenticate('jwt', {session: false}), users);//profile...
 app.use('/api/rentals', passport.authenticate('jwt', {session: false}), rentals);
-app.use('/api/furnits', furnits);
+app.use('/api/furnits', passport.authenticate('jwt', {session: false}), furnits);
 // app.use('/api/users', users)
 
 // app.use(function(req, res, next) {

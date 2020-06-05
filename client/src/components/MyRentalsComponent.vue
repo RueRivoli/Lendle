@@ -8,33 +8,11 @@
             <span class="add__furnit__title">VOS MEUBLES</span>
         </el-col>
         <el-col :span="15" style="margin-bottom:50px;">
-  
-        <el-table
-            :data="tableData"
-            style="width: 100%">
-            <el-table-column
-                prop="date"
-                label="Date"
-                width="180">
-            </el-table-column>
-            <el-table-column
-                prop="name"
-                label="Nom"
-                width="180">
-            </el-table-column>
-            <el-table-column
-                prop="address"
-                label="Adresse">
-            </el-table-column>
-        </el-table>
-        <table>
-
-        </table>
         </el-col>
     </el-row>
     <el-row>
         <el-col :span="16" :offset="7">
-        <el-collapse v-model="activeNames" @change="handleChange">
+        <el-collapse v-model="activeNames">
             <el-collapse-item title="En location" name="1">
                 <div v-for="(rt, index) in rentals" v-bind:key="index">
             <el-row class="pointer opacity" v-if="rt.inprocess" style="height:90px;padding: 10px;margin-bottom:7px;">
@@ -134,23 +112,6 @@ export default {
   components: { NavComponent },
   data() {
       return {
-          tableData: [{
-            date: '2016-05-03',
-            name: 'Tom',
-            address: 'No. 189, Grove St, Los Angeles'
-          }, {
-            date: '2016-05-02',
-            name: 'Tom',
-            address: 'No. 189, Grove St, Los Angeles'
-          }, {
-            date: '2016-05-04',
-            name: 'Tom',
-            address: 'No. 189, Grove St, Los Angeles'
-          }, {
-            date: '2016-05-01',
-            name: 'Tom',
-            address: 'No. 189, Grove St, Los Angeles'
-          }],
           rentals: {},
           url: [],
           activeNames: ['1']

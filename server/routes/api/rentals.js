@@ -7,7 +7,7 @@ const router = express.Router();
 // called for RentalComponent
 // retrieve the rental that is rental_id and retrieve furnit and owner data
 // This part is for the loaner
-router.get('/details/:rental_id', function (req, res) {
+router.get('/details/loan/:rental_id', function (req, res) {
   let db = mongoose.connection.db;
   let id = req.user._id.toString();
   let rental_id = ObjectId(req.params.rental_id);
@@ -16,7 +16,7 @@ router.get('/details/:rental_id', function (req, res) {
     { "$match": { "_id": ObjectId(rental_id) } },
     { 
         "$lookup": { 
-            "from": 'furnits', 
+            "from": 'furnits',
             "localField": 'furnit_id', 
             "foreignField": '_id', 
             "as": 'furnit' 
@@ -50,7 +50,7 @@ router.get('/details/:rental_id', function (req, res) {
 // called for RentalComponent
 // retrieve the rental that is rental_id and retrieve furnit and loaner data
 // This part is for the renter
-router.get('/details/:rental_id', function (req, res) {
+router.get('/details/rent/:rental_id', function (req, res) {
   let db = mongoose.connection.db;
   let id = req.user._id.toString();
   let rental_id = ObjectId(req.params.rental_id);
@@ -68,9 +68,9 @@ router.get('/details/:rental_id', function (req, res) {
     {
       "$lookup":{
           "from": "users", 
-          "localField": "renter_id", 
+          "localField": "loaner_id", 
           "foreignField": "_id",
-          "as": "owner"
+          "as": "loaner"
       }
   }
   ]).next(function(err, rental) {

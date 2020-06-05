@@ -29,6 +29,10 @@ const FurnitSchema = mongoose.Schema({
         type: Number,
         required: true
     },
+    price: {
+        type: Number,
+        required: true
+    },
     description: {
         type: String,
         required: true

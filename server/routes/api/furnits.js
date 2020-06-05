@@ -191,6 +191,23 @@ router.get('/search', function (req, res) {
     });
 });
 
+router.get('/rent', function (req, res) {
+  let db = mongoose.connection.db;
+  console.log(req.user);
+  let id = req.user._id.toString();
+
+  db.collection("furnits").find({owner_id: id}).toArray(function(err, furnits) {
+    if(err){
+      return res.json({ msg: 'erreur de requete'});
+    } else if(!furnits || furnits.length === 0){
+      return res.json({ msg: 'pas de resultat'});
+    } else {
+      // we have to retrieve one picture of each furnit
+      return retrievePictures(furnits, req, res);
+    }
+  });
+});
+
 
 router.get('/files', function (req, res) {
   gfs.files.find().toArray(((err, files) => {
@@ -361,64 +378,6 @@ router.get('/identity/:furnit_id', function (req, res) {
 });
 
 
-
-//   db.collection("furnits").findOne({_id: furnit_id}, (err, ft) => {
-//     if (!ft || ft.length === 0) {
-//       return res.status(404).json({
-//         err: 'This furnit doesnt exist'
-//       });
-//     } else if (err) {
-//       return res.status(404).json({
-//         err: 'An error occured'
-//       });
-//     } else {
-//       let pic_ids = ft.picture_ids;
-//       var finalFile = {};
-//       pic_ids.forEach(function(pid, index) {
-//         gfs.files.findOne({ _id: ObjectId(pid)}, (err, fl) => {
-//         if (!fl || fl.length === 0) {
-//           return res.status(404).json({
-//             title: 'File error', 
-//             message: 'Error finding file', 
-//               error: err.errMsg});
-//         }
-//         if(err){
-//           return res.status(404).json({
-//             title: 'Download Error', 
-//             message: 'No file found'});
-//         } else {
-          
-//           let fileData = [];
-//           collectionChunks.find({files_id: fl._id}).toArray(function(err, chunks){
-//           if(err){
-//               return res.status(404).json({
-//               title: 'Download Error',
-//               message: 'Error retrieving chunks',
-//               error: err.errmsg});
-//           }
-//           if(!chunks || chunks.length === 0) {
-//             //No data found
-//             return res.render('index', {
-//               title: 'Download Error', 
-//               message: 'No data found'});
-//           }
-//           for (let i = 0; i < chunks.length; i++) {
-//             fileData.push(chunks[i].data.toString('base64'));
-//          }
-//          finalFile[index] = 'data:' + fl.contentType + ';base64,' + fileData.join('');
-//         console.log(finalFile.length);
-//         console.log(pic_ids.length);
-//         let len = Object.keys(finalFile).length;
-//         if (len === pic_ids.length) {
-//           res.json({ furnit: ft, imgurl: finalFile });
-//         }
-//       });
-//     };
-//   });
-//     });
-//   }
-// });
-// });
 
 // Add File
 

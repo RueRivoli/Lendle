@@ -43,9 +43,43 @@ class FurnitService {
         };
         return new Promise(function(resolve, reject) {
             try {
-                axios.get(url + 'search/', furnit0).then(function (response) {
+                let token = document.cookie.split('jwt=')[1];
+                let config = {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    },
+                };
+                axios.get(url + 'search/', config, furnit0).then(function (response) {
                     // handle success
                     console.log('FurnitService ==>');
+                    console.log(response);
+                    const data = response.data;
+                    resolve(data);
+                  })
+                  .catch(function (error) {
+                    // handle error
+                    console.log(error);
+                  });
+            } catch(err) {
+                reject(err);
+            }
+        })
+    }
+
+    static getFurnitsFromRenter(){
+        console.log('Gets Furnit from a renter');
+
+        return new Promise(function(resolve, reject) {
+            try {
+                let token = document.cookie.split('jwt=')[1];
+                let config = {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    },
+                };
+                axios.get(url + 'rent/', config).then(function (response) {
+                    // handle success
+                    console.log('Response of getFurnitsFromRenter ==>');
                     console.log(response);
                     const data = response.data;
                     resolve(data);
@@ -105,7 +139,13 @@ class FurnitService {
     static getIdentityCardFurnit(furnit_id){
         return new Promise(function(resolve, reject) {
             try {
-                axios.get(url + `identity/${furnit_id}`).then(function (response) {
+                let token = document.cookie.split('jwt=')[1];
+                let config = {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    },
+                };
+                axios.get(url + `identity/${furnit_id}`, config).then(function (response) {
                     console.log('Response a get Pictures =====>');
                     const data = response.data;
                     console.log(data);
