@@ -35,9 +35,9 @@
                          </el-col>
                           </el-row>
                         <el-row style="margin-top:10px;">
-                        <el-col :span="6" :offset="10">
+                        <!-- <el-col :span="6" :offset="10">
                             <el-button type="primary" size="mini" icon="el-icon-search" @click="search">Rechercher</el-button>
-                        </el-col>
+                        </el-col> -->
                         </el-row>
                     </el-form>
             </el-row>

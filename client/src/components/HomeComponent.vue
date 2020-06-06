@@ -2,7 +2,7 @@
     <el-container>
         <nav-component :displayTitles="true"></nav-component>
          <el-container class="furnit" style="height:85vh;">
-             <el-row style="width: 100%;height: 20vh;margin-top:18vh;">
+             <el-row style="width: 100%;height: 20vh;margin-top:7vw;">
               <el-col :span="8" :offset="8">
                   <h3 class="title">Louer des meubles gratuitement près de chez vous</h3>
                     <el-form class="select" ref="furniture" name="furniture"  :inline="true" :model="furniture" :rules="rulesFurniture" enctype="multipart/form-data">
@@ -113,7 +113,9 @@ export default {
 .furnit{
     /* background: no-repeat right 50% url('./../assets/fauteuilrouge.png'), */
     background:  no-repeat url('./../assets/background.jpg');
-    background-size: 100% auto;
+    background-size: cover;
+    background-position: 100%;
+    /* background-size: 100% auto; */
     /* no-repeat left 50% url('./../assets/fauteuilrouge.png'); */
     /* url('./../assets/fatvert.jpg') no-repeat right top; */
 }
