@@ -21,7 +21,7 @@
              <el-card class="box-card opacity" :body-style="{ padding: '2px', height: '90px'}">
                 <el-col class="full_height" :span="4" >
                  <div class="full_height" style="background-color: #D6DCDD;max-height: 100px;">
-                    <el-image
+                    <el-image v-if="url[index] !== 'null'"
                         class="pointer full_height"
                         :src="url[index]"
                         fit="contain">
@@ -100,7 +100,7 @@ export default {
     FurnitService.getFurnitsFromRenter().then(function(furnits) {
         console.log('FURNITS');
         console.log(furnits);
-      context.furnits = furnits.furnits;
+        context.furnits = furnits.furnits;
        context.url = furnits.imgUrl;
       console.log(context.furnits);
       console.log(context.url);

@@ -15,8 +15,8 @@
                                         active-color="primary"
                                         inactive-color="success"
                                         size="mini"
-                                        active-text="Edition mode"
-                                        inactive-text="View mode"
+                                        active-text="Mode édition"
+                                        inactive-text="Mode vue"
                                         >
                                     </el-switch>
                                  </el-col>
@@ -25,15 +25,14 @@
                              <el-col :span="10">
                                 <el-carousel trigger="click" height="30vh">
                                     <el-carousel-item  v-for="(img, index) in url" :key="index">
-                                <!-- <div style="background-color: #D6DCDD"> -->
                                         <h3 class="small">
                                             <el-image class="imgcarousel"
                                                 :src="img"
                                                 fit="contain"
                                                 >
                                             </el-image>
+                                      
                                         </h3>
-                            <!-- </div> -->
                                     </el-carousel-item>
                                 </el-carousel>
                                 <el-row style="margin-top:5vh;">
@@ -87,7 +86,7 @@
                             </el-col>
                            </el-form>
                               <div v-if="modeEdit">
-                                  <el-form label-position="top" label-width="80px">
+                                  <el-form ref="ad" name="ad" label-position="" label-width="120px">
                                 
                                 <table style="width: 100%;">
                                     <thead>
@@ -113,8 +112,6 @@
                                         </td>
                                         <td></td>
                                         <td style="font-size:14px;">Description</td>
-
-                                        
                                         <td> 
                                             <el-input
                                                 size="mini"
@@ -132,7 +129,7 @@
                                             <el-form-item label="">
                                             <el-input
                                                 v-model="ad.price"
-                                                type="primary"
+                                                type="number"
                                                 suffix="€/mois"
                                                 size="mini"
                                                 >
@@ -159,48 +156,87 @@
                                     </tr>
                                       <tr>
                                         <td style="font-size:14px;">Etat</td>
-                                        <td> 
-                                            <el-form-item label="">
-                                                <el-slider v-model="ad.state" :step="25"
-                                                    show-stops :format-tooltip="formatTooltip" size="mini">
-                                                </el-slider>
+                                        <td>
+                                            <el-form-item label="" prop="state">
+                                            <el-select v-model="ad.state" size="mini" placeholder="">
+                                                <el-option label="Etat moyen" :value="0"></el-option>
+                                                <el-option label="Etat correct" :value="25"></el-option>
+                                                <el-option label="Bon état" :value="50"></el-option>
+                                                <el-option label="Excellent état" :value="75"></el-option>
+                                                <el-option label="Comme neuf" :value="100"></el-option>
+                                                </el-select>
+                                     </el-form-item>
+                                        </td>
+                                        <td></td>
+                                         <td style="font-size:14px;">Type</td>
+                                        <td>
+                                            <el-form-item label="" prop="type">
+                                                <el-select v-model="ad.type" size="mini" placeholder="Type of furniture">
+                                                    <el-option label="Table" value="table"></el-option>
+                                                    <el-option label="Chaise" value="chaise"></el-option>
+                                                    <el-option label="Frigidaire" value="frigidaire"></el-option>
+                                                    <el-option label="Machine à laver" value="machinealaver"></el-option>
+                                                    <el-option label="Armoire" value="armoire"></el-option>
+                                                    <el-option label="Placard" value="placard"></el-option>
+                                                    <el-option label="Fauteuil" value="fauteuil"></el-option>
+                                                    <el-option label="Canapé" value="canape"></el-option>
+                                                    <el-option label="Lampe" value="lampe"></el-option>
+                                                </el-select>
+                                                </el-form-item>
+                                        </td>
+                                    </tr>
+                                     <tr>
+                                        <td style="font-size:14px;">City</td>
+                                        <td>
+                                            <el-form-item label="" prop="city">
+                                                <el-select v-model="ad.city" size="mini" placeholder="City">
+                                                    <el-option label="Lille" value="Lille"></el-option>
+                                                    <el-option label="Lyon" value="Lyon"></el-option>
+                                                    <el-option label="Paris" value="Paris"></el-option>
+                                                </el-select>
                                             </el-form-item>
                                         </td>
                                     </tr>
-                                     <!-- <tr>
-                                        <td style="font-size:14px;">Description</td>
-                                        <td> 
-                                            <el-input
-                                                size="mini"
-                                                type="textarea"
-                                                :rows="4"
-                                                v-model="ad.description"
-                                                >
-                                        </el-input>
-                                        </td>
-                                    </tr> -->
-                                     <!-- <tr>
-                                        <td style="font-size:14px;">Période de disponibilité</td>
-                                        <td> 
-                                             <el-date-picker
-                                            v-model="date"
-                                            type="daterange"
-                                            range-separator="à"
-                                            start-placeholder="Début"
-                                            end-placeholder="Fin"
-                                            format="dd/MM/yyyy"
-                                            size="mini"
-                                            :picker-options="readonly"
-                                            >
-                                              </el-date-picker>
-                              
-                                        </td>
-                                    </tr> -->
                                 </table>
-                       
-                              </el-form>
+                        <el-upload
+                            ref="elUpload"
+                            action="#"
+                            list-type="picture-card"
+                            :auto-upload="false"
+                            :file-list="filesData"
+                            accept=" .jpg, .jpeg, .png,"
+                            multiple
+                            :limit="10"
+                            :on-remove="handleRemove"
+                            :on-change="handleChange"
+                            :on-exceed="handleExceed">
+                            <i slot="default" class="el-icon-plus"></i>
+                            <div class="el-upload__tip" slot="tip">Format jpg/png/jpeg</div>
+                            <div slot="file" slot-scope="{file}">
+                                <img
+                                    class="el-upload-list__item-thumbnail"
+                                    :src="file.url" alt="">
+                                <span class="el-upload-list__item-actions">
+                                    <span
+                                    class="el-upload-list__item-preview"
+                                    @click="handlePictureCardPreview(file)">
+                                    <i class="el-icon-zoom-in"></i>
+                                    </span>
+                                    <span
+                                    
+                                    class="el-upload-list__item-delete"
+                                    @click="handleRemove(file)">
+                                    <i class="el-icon-delete"></i>
+                                    </span>
+                                </span>
                             </div>
-    
+                        </el-upload>
+                        <el-dialog :visible.sync="dialogVisible">
+                            <img width="100%" :src="dialogImageUrl" alt="">
+                        </el-dialog>
+                        <el-button v-if="modeEdit" type="primary" value="submit" @click="submitForm()" style="float:left;margin-top:10px;" size="mini">Editer</el-button>
+                    </el-form>
+                </div>
             </el-main>
         </el-container>
     </div>
@@ -219,12 +255,75 @@ export default {
   data() {
     return {
       furnit_id: this.$route.params.id,
-      ad: {},
+      file: null,
+      ad: {
+        name: '',
+        type: '',
+        price: 0,
+        state: 0,
+        city: '',
+        loanstart: '',
+        loanend: '',
+        description: '',
+        picture_ids: []
+      },
       url: {},
+      filesData: [],
       date: [],
-      modeEdit: false
+      pic_ids_deleted: [],
+      modeEdit: false,
+      dialogVisible: false,
+      dialogImageUrl: ''
     }
   },
+  methods: {
+    handleRemove(file) {
+      let deletedUid = file.uid;
+      let uploadFls = this.$refs.elUpload.uploadFiles;
+      this.pic_ids_deleted.push(file.pic_id);
+      this.$refs.elUpload.uploadFiles = uploadFls.filter(elt => elt.uid !== deletedUid);
+    },
+    handlePictureCardPreview(file) {
+      this.file = file;
+      this.dialogImageUrl = file.url;
+      this.dialogVisible = true;
+    },
+    handleChange(file) {
+      this.file = file
+      console.log(this.file)
+    },
+    handleExceed(files) {
+        this.$message.warning(`La limite est de 10 images, vous avez déjà choisi ${files.length} fichiers`);
+    },
+    readonly () {
+        return true;
+    },
+    formatTooltip(val) {
+        return val/100;
+    },
+    async submitForm () {
+      console.log('submitForm');
+      let context = this;
+      let fd = new FormData(document.forms.namedItem("ad"));
+      FurnitService.insertPicture(fd).then(function(picture_ids) {
+        context.ad.loanstart = context.date[0];
+        context.ad.loanend = context.date[1];
+        let pic_ids = context.ad.picture_ids.filter(pid => !context.pic_ids_deleted.includes(pid));
+        context.ad.picture_ids =  pic_ids.concat(picture_ids);
+        FurnitService.updateFurniture(context.ad).then(function(result) {
+              console.log('result updateFurniture');
+              const message = result.data.msg;
+            if (context.pic_ids_deleted && context.pic_ids_deleted.length > 0) {
+                FurnitService.deleteFile({ picture_ids: context.pic_ids_deleted });
+            }
+              context.$message.success(message);
+              context.$router.push({ name: 'MyAds'});
+            }).catch(function(err) {
+              context.$message.warning(err);
+         });
+        });
+      }
+    },
   computed: {
     stateOfFurnit: function () {
         if (this.ad && this.ad.state === 100) return "Excellent état";
@@ -233,41 +332,26 @@ export default {
         if (this.ad && this.ad.state === 25) return "Etat délicat";
         return "Bon état";
     },
-    // owner: function () {
-    //     if (this.rental.owner && this.rental.owner[0]) {
-    //         return this.rental.owner[0].firstname + ' ' + this.rental.owner[0].lastname + ' \u000A' + this.rental.owner[0].address + ', ' + this.rental.owner[0].postcode + ' ' + this.rental.owner[0].city;
-    //     }
-    //     return '';
-    // },
-    // loaner: function () {
-    //     if (this.rental.loaner && this.rental.loaner[0]) {
-    //         return this.rental.loaner[0].firstname + ' ' + this.rental.loaner[0].lastname + ' \u000A' + this.rental.loaner[0].address + ', ' + this.rental.loaner[0].postcode + ' ' + this.rental.loaner[0].city;
-    //     }
-    //     return '';
-    // },
-    renter () {
-        return this.$store.getters.GET_AUTH && !this.$store.getters.GET_LOAN;
-    },
-    isLoaner () {
-        return this.$store.getters.GET_AUTH && this.$store.getters.GET_LOAN;
-    }
 },
-    // watch: {
-    //     modeView: function () {
-    //       this.$router.push({ name: 'EditAd',  params: { id: this.furnit_id } });
-    //     }
-    // },
  async created() {
     let context = this;
     console.log(this.furnit_id);
     FurnitService.getIdentityCardFurnit(this.furnit_id).then(function(ft) {
-      console.log('result');
+      console.log('getIdentityCard ==');
       console.log(ft);
       context.ad = ft.furnit;
-      context.url = ft.imgurl;
-      let dateStart = context.ad.loanstart;
-      let dateEnd = context.ad.loanend;
-      context.date = [dateStart, dateEnd];
+      context.url[0] = "";
+      if (ft.imgUrl && Object.keys(ft.imgUrl) !== 0) {
+          context.url = ft.imgUrl;
+      }
+      
+      Object.keys(ft.imgUrl).forEach(ul => {
+          context.filesData.push({name: 'name', url: ft.imgUrl[ul], pic_id: ft.furnit.picture_ids[ul]});
+      });
+      console.log('FileData');
+      console.log(context.filesData);
+      console.log(ft.imgUrl);
+      context.date = [context.ad.loanstart, context.ad.loanend];
       console.log(context.date);
     //  let picture_ids = context.rental.furnit[0].picture_ids;
     //  console.log(picture_ids);
@@ -283,14 +367,7 @@ export default {
         console.log(err);
     });
   },
-  methods: {
-      readonly () {
-          return true;
-    },
-    formatTooltip(val) {
-        return val/100;
-      }
-}
+
 }
 
 </script>

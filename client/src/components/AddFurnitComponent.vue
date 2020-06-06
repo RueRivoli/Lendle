@@ -25,6 +25,9 @@
                 <el-option label="Machine à laver" value="machinealaver"></el-option>
                 <el-option label="Armoire" value="armoire"></el-option>
                 <el-option label="Placard" value="placard"></el-option>
+                <el-option label="Fauteuil" value="fauteuil"></el-option>
+                <el-option label="Canapé" value="canape"></el-option>
+                <el-option label="Lampe" value="lampe"></el-option>
               </el-select>
             </el-form-item>
           </el-col>
@@ -70,20 +73,20 @@
               <img
                 class="el-upload-list__item-thumbnail"
                 :src="file.url" alt="">
-            <span class="el-upload-list__item-actions">
-            <span
-              class="el-upload-list__item-preview"
-              @click="handlePictureCardPreview(file)">
-              <i class="el-icon-zoom-in"></i>
+              <span class="el-upload-list__item-actions">
+              <span
+                class="el-upload-list__item-preview"
+                @click="handlePictureCardPreview(file)">
+                <i class="el-icon-zoom-in"></i>
+              </span>
+              <span
+                v-if="!disabled"
+                class="el-upload-list__item-delete"
+                @click="handleRemove(file)">
+              <i class="el-icon-delete"></i>
+              </span>
             </span>
-            <span
-              v-if="!disabled"
-              class="el-upload-list__item-delete"
-              @click="handleRemove(file)">
-            <i class="el-icon-delete"></i>
-            </span>
-            </span>
-          </div>
+            </div>
           </el-upload>
           <el-dialog :visible.sync="dialogVisible">
             <img width="100%" :src="dialogImageUrl" alt="">
@@ -192,7 +195,7 @@ export default {
       let context = this;
       this.$refs['furniture'].validate((valid) => {
         if (valid) {
-          //create formData to send 
+          //create formData to send
           let fd = new FormData(document.forms.namedItem("furniture"));
           // insert pictures uploaded into the db and return ids of the image
           FurnitService.insertPicture(fd, {
@@ -201,8 +204,8 @@ export default {
             }
           }).then(function(picture_ids) {
             context.furniture.picture_ids = picture_ids;
-            context.furniture.owner_id = '5eab3f5eef84ce1f98676228';
-            console.log('CONTEXT FURNITRURE');
+            // context.furniture.owner_id = '5eab3f5eef84ce1f98676228';
+            console.log('Furniture before insert into Db');
             console.log(context.furniture);
             FurnitService.insertFurniture(context.furniture).then(function(result) {
               context.$message.success(result);

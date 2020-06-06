@@ -70,6 +70,8 @@ const upload = multer({ storage });
 // });
 
 // Retrieve one picture for a list of furnits
+
+// Retrieve one picture for a list of furnits
 function retrievePictures(furnits, req, res) {
   let db = mongoose.connection.db;
   let collectionChunks = db.collection('uploads.chunks');
@@ -82,12 +84,12 @@ function retrievePictures(furnits, req, res) {
   console.log('picture_ids');
   console.log(picture_ids);
   furnits.forEach(function(ft, index) {
-    console.log('Iteration numéro : ');
-    console.log(index);
     if (ft.picture_ids[0]) {
-      let id_first_pic = ft.picture_ids[0];
-      let id = ObjectId(id_first_pic);
+      console.log('entree');
+      let id = ObjectId(ft.picture_ids[0]);
+      console.log(id);
       gfs.files.findOne({ _id: id }, (err, fl) => {
+        console.log(fl);
         if (!fl || fl.length === 0) {
           return ft
         } else {
@@ -110,20 +112,24 @@ function retrievePictures(furnits, req, res) {
             console.log(len);
             console.log(picture_ids.length);
           }
+          console.log(len);
+          console.log(picture_ids.length);
           if (len === picture_ids.length) {
+            console.log('END');
             res.json({furnits: furnits, imgUrl: finalFile}); 
           }
       });
   }
 });
 } else {
-  finalFile.push('test');
-  if (finalFile.length === picture_ids.length) {
-    res.json({furnits: furnits, imgurl: finalFile}); }
+  finalFile[index] = 'null';
+  console.log(Object.keys(finalFile).length);
+  console.log(picture_ids.length);
+  if (Object.keys(finalFile).length === picture_ids.length) {
+    res.json({furnits: furnits, imgUrl: finalFile}); }
 }
 });
 }
-
 
 //appeler pour searchComponent
 router.get('/', function (req, res) {
@@ -193,10 +199,13 @@ router.get('/search', function (req, res) {
 
 router.get('/rent', function (req, res) {
   let db = mongoose.connection.db;
+  console.log('user');
   console.log(req.user);
-  let id = req.user._id.toString();
+  let id = ObjectId(req.user._id.toString());
 
   db.collection("furnits").find({owner_id: id}).toArray(function(err, furnits) {
+    console.log('FURNITS');
+    console.log(furnits);
     if(err){
       return res.json({ msg: 'erreur de requete'});
     } else if(!furnits || furnits.length === 0){
@@ -293,7 +302,7 @@ router.get('/images/:pic_ids', function (req, res) {
           // finalFile.push('data:' + contentType + ';base64,' + fileData.join(''));
           let len = Object.keys(finalFile).length;
           if (len === picture_ids.length) {
-            res.json({imgurl: finalFile});
+            res.json({imgUrl: finalFile});
           }
         });
       }
@@ -331,6 +340,7 @@ router.get('/identity/:furnit_id', function (req, res) {
     } else {
       let pic_ids = ft.picture_ids;
       var finalFile = {};
+      if (pic_ids && pic_ids.length > 0) {
       pic_ids.forEach(function(pid, index) {
         gfs.files.findOne({ _id: ObjectId(pid)}, (err, fl) => {
         if (!fl || fl.length === 0) {
@@ -367,12 +377,17 @@ router.get('/identity/:furnit_id', function (req, res) {
         let len = Object.keys(finalFile).length;
         console.log(len);
         if (len === pic_ids.length) {
-          res.json({ furnit: ft, imgurl: finalFile });
+          return res.json({ furnit: ft, imgUrl: finalFile});
         }
       });
     };
   });
     });
+  } else {
+    console.log('PAS DE PIC IDS');
+    console.log(ft)
+    return res.status(201).json({ furnit: ft, imgUrl: {}});
+  }
   }
 });
 });
@@ -403,8 +418,9 @@ router.post('/upload', upload.array('file'), (req, res) => {
 router.post('/', function (req, res) {
   var furnit = new Furnit();
   
+  let id = req.user._id.toString();
   furnit.name = req.body.name;
-  furnit.owner_id = req.body.owner_id;
+  furnit.owner_id = req.body.id;
   furnit.type = req.body.type;
   furnit.loanstart = req.body.dateStart;
   furnit.loanend = req.body.dateEnd;
@@ -422,9 +438,44 @@ router.post('/', function (req, res) {
   });
 });
 
+router.post('/update', function (req, res) {
+  console.log('QUERIES');
+  console.log(req.body);
+  console.log(req.user);
+  // let furnit = req.params.ad;
+  let { _id, name, price, type, loanstart, loanend, city, state, description, picture_ids} = req.body;
+  console.log(name);
+  console.log(price);
+  console.log(type);
+  console.log(loanstart);
+  console.log(loanend);
+  console.log(city);
+  console.log(state);
+  console.log(description);
+  console.log(picture_ids);
+  let db = mongoose.connection.db;
+
+  db.collection("furnits").updateOne(
+    { "_id" : ObjectId(_id) },
+      [{ $set: { "name": name, "price": price, "state": state, "description": description, "loanstart": loanstart, "loanend": loanend, "type": type, "city": city, "picture_ids": picture_ids }}]
+ , function (err, rsp) {
+    res.status(201).json({ msg: 'L annonce a bien été mise à jour'});
+ });
+});
+
+  // furnit.save(function (err) {
+  //   if (err) {
+  //     console.log('Error');
+  //     res.send(err);
+  //   }
+  //   res.send('Bravo, votre meuble a été ajouté');
+  // });
+
 // Delete Files (upload.files and upload.chunks)of the furniture deleted
 
 router.delete('/files/:files_id', function (req, res) {
+  console.log('DELETE');
+  console.log(req.params.files_id);
   let picture_ids = req.params.files_id.split(',')
   picture_ids.forEach(function(elt){
     let el = ObjectId(elt);

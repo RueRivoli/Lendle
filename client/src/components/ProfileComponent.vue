@@ -4,7 +4,7 @@
         
             <el-tabs type="border-card" style="margin-left:15vh;margin-right:15vh;margin-top:5vh;">
                 <el-tab-pane>
-                    <span slot="label">Profile</span>
+                    <span slot="label">Profil</span>
                     <el-form  style="width:100%;" label-position="left" label-width="130px">
                         <el-row>
                             <el-col :span="6" :offset="4">
@@ -73,7 +73,7 @@
                         </el-form>
                     </el-tab-pane>
                     
-                    <el-tab-pane> <span slot="label"><i class="el-icon-edit"></i> Edit</span>
+                    <el-tab-pane> <span slot="label"><i class="el-icon-edit"></i> Editer</span>
                         <el-form ref="profile" name="profile" style="width:100%;" :model="profile" :rules="rulesProfile" label-position="left" label-width="130px">
                             <el-row>
                                 <el-col :span="7" :offset="4">
@@ -144,7 +144,7 @@
                     <el-button type="primary" value="submit" @click="editProfile()" style="display:block;margin:auto;" size="mini">Valider</el-button>
                     </el-form>
                 </el-tab-pane>
-                <el-tab-pane> <span slot="label"><i class="el-icon-key"></i>Change password</span>
+                <el-tab-pane> <span slot="label"><i class="el-icon-key"></i>Changer le mot de passe</span>
                     <el-form ref="password" name="password" style="width:100%;" :model="password" :rules="rulesPassword" label-position="left" label-width="160px" enctype="multipart/form-data">
                         <el-row>
                             <el-col :span="10" :offset="4">

@@ -6,8 +6,13 @@ const urlupload = 'http://localhost:5000/api/furnits/upload';
 
 class FurnitService {
 
+    static defaultsHeaders() {
+        let token = document.cookie.split('jwt=')[1];
+        axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+    }
 
     static getFurnitures(){
+        this.defaultsHeaders();
         return new Promise(function(resolve, reject) {
             try {
                 axios.get(url).then(function (response) {
@@ -41,15 +46,16 @@ class FurnitService {
               word: furnit.word
             }
         };
+        this.defaultsHeaders();
         return new Promise(function(resolve, reject) {
             try {
-                let token = document.cookie.split('jwt=')[1];
-                let config = {
-                    headers: {
-                        'Authorization': `Bearer ${token}`
-                    },
-                };
-                axios.get(url + 'search/', config, furnit0).then(function (response) {
+                // let token = document.cookie.split('jwt=')[1];
+                // let config = {
+                //     headers: {
+                //         'Authorization': `Bearer ${token}`
+                //     },
+                // };
+                axios.get(url + 'search/', furnit0).then(function (response) {
                     // handle success
                     console.log('FurnitService ==>');
                     console.log(response);
@@ -118,6 +124,8 @@ class FurnitService {
         let url_new = url + 'images/';
         return new Promise(function(resolve, reject) {
             try {
+                let token = document.cookie.split('jwt=')[1];
+                axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
                 axios.get(`${url_new}${pic_ids}`).then(function (response) {
                     // handle success
                     const data = response.data;
@@ -137,15 +145,12 @@ class FurnitService {
 
 
     static getIdentityCardFurnit(furnit_id){
+        this.defaultsHeaders();
         return new Promise(function(resolve, reject) {
             try {
-                let token = document.cookie.split('jwt=')[1];
-                let config = {
-                    headers: {
-                        'Authorization': `Bearer ${token}`
-                    },
-                };
-                axios.get(url + `identity/${furnit_id}`, config).then(function (response) {
+                console.log('ENTR');
+                console.log(furnit_id);
+                axios.get(url + `identity/${furnit_id}`).then(function (response) {
                     console.log('Response a get Pictures =====>');
                     const data = response.data;
                     console.log(data);
@@ -163,10 +168,11 @@ class FurnitService {
 
     // when creating a furniture, insert image first in the database and return the id to the form
     // to let it know the id of the pictures associated to this furniture
-    static insertPicture(form, hd) {
+    static insertPicture(form) {
+        this.defaultsHeaders();
         return new Promise(function(resolve, reject) {
             try {
-                return axios.post(urlupload, form, hd).then(function (response) {
+                return axios.post(urlupload, form).then(function (response) {
                     console.log(response);
                     var files = response.data.file;
                     var ids = new Array();
@@ -188,9 +194,34 @@ class FurnitService {
     static insertFurniture(furnit) {
         return new Promise(function(resolve, reject) {
             try {
-                return axios.post(url, furnit).then(function (response) {
+                let token = document.cookie.split('jwt=')[1];
+                let config = {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    },
+                };
+                return axios.post(url, config, furnit).then(function (response) {
                     console.log('Response');
                     console.log(response);
+                    if (response.data) resolve(response.data);
+                }).catch(function (error) {
+                    console.log(error);
+                });
+            }  catch(err) {
+            reject(err);
+        }
+    });
+}
+
+    static updateFurniture(ad) {
+        let url_update = url + 'update/';
+        this.defaultsHeaders();
+        return new Promise(function(resolve, reject) {
+            try {
+                return axios.post(url_update, ad).then(function (response) {
+                    console.log('Response');
+                    console.log(response);
+                    resolve(response);
                     if (response.data) resolve(response.data);
                 }).catch(function (error) {
                     console.log(error);
@@ -209,10 +240,14 @@ class FurnitService {
             console.log(error);
         });
     }
+
     //Delete File
     static deleteFile(fl) {
         let url0 = url + 'files/';
         let files_id = fl.picture_ids;
+        console.log('TEST X');
+        console.log(fl);
+        console.log(files_id);
         return axios.delete(`${url0}${files_id}`).then(function (response) {
             console.log(response);
         }).catch(function (error) {
