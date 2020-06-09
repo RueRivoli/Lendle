@@ -34,8 +34,8 @@ module.exports = passport => {
         new JwtStrategy(opts, (jwt_payload, done) => {
             // console.log('Resultat jwt_payload');
             // console.log(jwt_payload);
-            console.log('OPTS');
-            console.log(jwt_payload);
+            // console.log('OPTS');
+            // console.log(jwt_payload);
             User.findById(jwt_payload._id).then(user => {
                 if (user) return done(null, user)
                 return done(null, false);
@@ -80,9 +80,9 @@ module.exports = passport => {
       },
       function(accessToken, refreshToken, profile, done) {
         console.log('DONNEES RECUPEREES');
-        console.log(accessToken);
-        console.log(refreshToken);
-        console.log(profile);
+        // console.log(accessToken);
+        // console.log(refreshToken);
+        // console.log(profile);
         User.findOne({ fbId: profile.id }).then((currentUser) => {
             if (currentUser) {
                 done(null, currentUser);

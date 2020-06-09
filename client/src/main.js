@@ -12,8 +12,22 @@ import VueAuthenticate from 'vue-authenticate'
 import router from './router/routes.js'
 import VueCookie from 'vue-cookie'
 import store from './store/'
+// import VueSocketIO from 'vue-socket.io'
+// import io from 'socket.io-client'
 
-Vue.use
+// const options = { path: 'components/ChatComponent' };
+
+// var socket = io('http://localhost:3000');
+// console.log(socket);
+// Vue.use(new VueSocketIO({
+//   debug: true,
+//   connection: SocketIO('http://localhost:3000', options),
+//   vuex: {
+//       store,
+//       actionPrefix: 'SOCKET_',
+//       mutationPrefix: 'SOCKET_'
+//   }
+// }));
 Vue.use(VueRouter);
 Vue.use(ElementUI, { locale });
 Vue.use(Vuex);

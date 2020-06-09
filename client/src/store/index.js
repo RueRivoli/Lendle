@@ -13,7 +13,9 @@ const state = {
     // User store
     authentificated: false,
     toLoan: true,
-    token: ''
+    token: '',
+    isConnectedToChat: false,
+    socketMessage: ''
   }
   
   export default new Vuex.Store({

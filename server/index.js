@@ -14,7 +14,9 @@ const passportJwt = require('passport-jwt');
 require('./config/passport')(passport);
 var cookieParser = require('cookie-parser')
 
+
 const app = express();
+
 
 // Middleware
 app.use(bodyParser.json());
@@ -25,12 +27,11 @@ app.use(cookieParser());
 
 app.use(passport.initialize());
 
-
+const chat = require('./chat');
 const furnits = require('./routes/api/furnits');
 const users = require('./routes/api/users');
 const auth = require('./routes/api/auth');
 const rentals = require('./routes/api/rentals');
-
 
 app.use('/api/auth', auth);//register login 
 app.use('/api/users', passport.authenticate('jwt', {session: false}), users);//profile...

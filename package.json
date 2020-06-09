@@ -36,9 +36,12 @@
     "passport-google-oauth": "^2.0.0",
     "passport-google-oauth20": "^2.0.0",
     "passport-jwt": "^4.0.0",
+    "socket.io": "^2.3.0",
+    "socket.io-client": "^2.3.0",
     "vue-authenticate": "^1.4.1",
     "vue-picture-input": "^2.1.6",
     "vue-router": "^3.1.6",
+    "vue-socket.io": "^3.0.9",
     "vuex": "^3.4.0",
     "vuex-persistedstate": "^3.0.1"
   },

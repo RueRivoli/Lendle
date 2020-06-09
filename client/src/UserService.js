@@ -1,9 +1,19 @@
 import axios from 'axios';
+var jwt = require('jsonwebtoken');
 
 const url = 'http://localhost:5000/api/users';
 
 class UserService {
 
+    static getUser() {
+        let token = document.cookie.split('jwt=')[1];
+        var decoded = jwt.decode(token, {complete: true});
+        // console.log('Decoded payload');
+        // console.log(decoded.header);
+        // console.log(decoded.payload);
+        // console.log(decoded);
+        return decoded.payload;
+    }
     static getProfile(token) {
         let url_profile = url + '/profile'
         console.log('LE TOKEN');
