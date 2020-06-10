@@ -5,6 +5,10 @@ const UserSchema = mongoose.Schema({
         type: String,
         required: false
     },
+    dest_id: {
+        type: String,
+        required: false
+    },
     mail: {
         type: String,
         required: false

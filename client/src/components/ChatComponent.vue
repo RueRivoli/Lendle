@@ -2,14 +2,21 @@
 <div>
       <nav-component  style="border-bottom: 1px solid #dfe0e6"></nav-component>
       <el-container style="height: 100vh;">
-     <!-- <aside-component/> -->
-    <el-main>CHAT
+    <el-aside width="220px" style="overflow-y: scroll;">
+        <el-menu>
+          <el-menu-item-group v-if="interlocutors">
+            <el-menu-item index="1-1" v-for="(itl, index) in interlocutors" :key="index" @click="changeChat(itl)">{{itl.furnit[0].name}}</el-menu-item>
+          </el-menu-item-group>
+    </el-menu>
+
+    </el-aside>
+    <el-main>
     <el-row>
       <el-col :span="14" :offset="5">
-        <div class="status">Frigidaire bon état
-          <span style="float:right;">{{allmsgs[0].mail}}</span>
+        <div ref="essai" class="status">{{furnitname}}
+          <span style="float:right;">{{name}}</span>
         </div>
-        <el-card style="margin-bottom:15px;">
+        <el-card ref="container" style="margin-bottom:15px;min-height: 25vh;max-height: 65vh;overflow-y: scroll; scrollbar-width: thin;">
           <div v-for="(mg, index) in allmsgs" :key="index">
             <div :class="isAuthor(allmsgs[index].author_id)">
                 <p style="font-size:12px;color:#1E969D;">
@@ -57,36 +64,64 @@ export default {
       return {
         socket: '',
         msg: '',
-        allmsgs: []
+        allmsgs: [],
+        // renters: null,
+        // loaners: null,
+        dialog_id: this.$route.params.id || null,
+        firstname: '',
+        lastname: '',
+        furnitname: '',
+        interlocutors: null,
+        interlocutor_current: this.$route.params.interlocutor_id || null
       }
   },
   computed : {
-
+     loaner () {
+        if (this.$store.getters.GET_AUTH && this.$store.getters.GET_LOAN) return true;
+        else return false;
+      },
+      name () {
+        return this.firstname + ' ' + this.lastname;
+      }
   },
   methods: {
      isAuthor (id) {
-      console.log('isAuthor');
-      console.log(id);
-      console.log(this.id);
       return {
         message: true,
         right: (id === this.id),
         left: (id !== this.id)
       }
     },
+    changeChat (interlocutor) {
+      console.log('displayChat of');
+      console.log(interlocutor);
+      // Change parameters of talking
+      this.dialog_id = interlocutor._id;
+      this.firstname = interlocutor.to[0].firstname;
+      this.lastname = interlocutor.to[0].lastname;
+      this.furnitname = interlocutor.furnit[0].name;
+      this.interlocutor_current = interlocutor.to[0]._id;
+      this.socket.emit('getChat', interlocutor._id);
+      this.msg = '';
+    },
     formatTime (time) {
       return moment(time).format('DD/MM/YY h:mm a');
     },
     sendMessage() {
       //Emit message to server
-      let data = {
+      let message = {
         author_id: this.id,
+        dest_id: this.interlocutor_current,
         mail: this.mail,
-        text: this.msg
+        text: this.msg,
+        dialog_id: this.dialog_id
       }
-      this.socket.emit('chatMessage', data);
-      this.msg = '';
+      this.socket.emit('chatMessage', message);
+      this.msg = '';  
     }
+  },
+  updated () {
+    this.$refs.container.$el.scrollTop = this.$refs.container.$el.scrollHeight;
   },
   created() {
     console.log('CREATED');
@@ -94,7 +129,11 @@ export default {
     const payload = UserService.getUser();
     this.id = payload._id;
     this.mail = payload.mail;
-
+    let dataUser = {
+      loaner: this.loaner,
+      id: this.id
+    }
+    this.socket.emit('getInterlocutors', dataUser);
     this.socket.on('chatMessage', message => {
       console.log(message);
       message.author = false
@@ -103,13 +142,18 @@ export default {
     })
     this.socket.on('output', output => {
       console.log('OUTPUT');
-      // console.log(output);
+      console.log(output);
       this.allmsgs = output;
       // console.log(this.allmsgs);
     })
-    // this.socket.on('chatMessage', message => {
-    //   this.allmsgs.push(message);
-    // })
+     this.socket.on('interlocutors', interlocutors => {
+      console.log('INTERLOCUTORS');
+      console.log(interlocutors);
+      this.interlocutors = interlocutors;
+      let lastSpokenTo =  Object.keys(interlocutors).length - 1;
+      this.changeChat(interlocutors[lastSpokenTo]);
+    })
+
   }
 }
 </script>
@@ -135,5 +179,20 @@ export default {
   background-color: #FFFAF0;
 }
 
+.status{
+  padding: 5px;
+}
+
+ .el-aside {
+    background-color:#1E969D;
+    color: white;
+    /* background: linear-gradient(to right,#B0C4DE, #1E969D); */
+  }
+  .el-aside ul li{
+
+    background-color:#1E969D;
+    color: white;
+    /* background: linear-gradient(to right,#B0C4DE, #1E969D); */
+  }
 
 </style>
