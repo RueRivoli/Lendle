@@ -34,6 +34,7 @@ module.exports = passport => {
         new JwtStrategy(opts, (jwt_payload, done) => {
             // console.log('Resultat jwt_payload');
             // console.log(jwt_payload);
+            console.log('jwt strategy');
             // console.log('OPTS');
             // console.log(jwt_payload);
             User.findById(jwt_payload._id).then(user => {

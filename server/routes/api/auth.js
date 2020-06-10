@@ -1,6 +1,7 @@
 const express = require('express');
 const mongodb = require('mongodb'); //mongodb driver
 const mongoose = require('mongoose');
+const ObjectId = mongoose.Types.ObjectId;
 const User = require('../../../model/User');
 const Token = require('../../../model/Token');
 const bcrypt = require('bcryptjs');
@@ -320,13 +321,13 @@ router.post('/login', function (req, res) {
               mail: usr.mail
             }
             const { loaner, renter, language } = usr;
-            const user = {loaner, renter, language};
+            const user = {loaner, renter, language };
             jwt.sign(payload, key, { expiresIn: 604800 }, (err, token) =>  {
-              // res.redirect('/api/users/profile');
               res.status(200).json({
                 success: true,
                 user: user,
-                 token: `${token}`,
+                id: usr._id,
+                token: `${token}`,
                 msg: "Vous êtes connecté.e"
               })
             });

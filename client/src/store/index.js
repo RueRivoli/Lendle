@@ -12,7 +12,8 @@ Vue.use(Vuex)
 const state = {
     // User store
     authentificated: false,
-    toLoan: true,
+    id: '',
+    loaner: true,
     token: '',
     isConnectedToChat: false,
     socketMessage: ''

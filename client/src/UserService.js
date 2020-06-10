@@ -8,10 +8,10 @@ class UserService {
     static getUser() {
         let token = document.cookie.split('jwt=')[1];
         var decoded = jwt.decode(token, {complete: true});
-        // console.log('Decoded payload');
-        // console.log(decoded.header);
-        // console.log(decoded.payload);
-        // console.log(decoded);
+        console.log('Decoded payload');
+        console.log(decoded.header);
+        console.log(decoded.payload);
+        console.log(decoded);
         return decoded.payload;
     }
     static getProfile(token) {
@@ -28,9 +28,9 @@ class UserService {
                 // };
                 // let token = "zffzfzffzfz78625362fzezef";
                 // let storage = document.cookie.jwt;
-                let token = document.cookie.split('jwt=')[1];
-                console.log('Cookie')
-                console.log(token);
+                // let token = document.cookie.split('jwt=')[1];
+                // console.log('Cookie')
+                // console.log(token);
                 let config = {
                     headers: {
                         // 'Content-Type': 'application/json;charset=UTF-8',

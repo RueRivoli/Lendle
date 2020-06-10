@@ -10,11 +10,14 @@ const mutations = {
     //     // axios.defaults.headers.common['Authorization'] = 'Bearer ' + localStorage.getItem('token')
     //   }
     },
-    EXIT: (state) => {
-        state.authentificated = false
+    ID: (state, id) => {
+        state.id = id
     },
-    TO_RENT: (state, value) => {
-        state.toLoan = value
+    TOKEN: (state, token) => {
+        state.token = token
+    },
+    LOANER: (state, value) => {
+        state.loaner = value
     },
     SOCKET_CONNECT(state) {
         state.isConnectedToChat = true;
@@ -24,7 +27,10 @@ const mutations = {
     },
     SOCKET_MESSAGECHANNEL(state, message) {
        state.socketMessage = message
-    }
+    },
+    EXIT: (state) => {
+        state.authentificated = false
+    },
 }
 
 export default mutations

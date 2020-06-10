@@ -125,20 +125,19 @@ export default {
             },
         }
     },
-    // created() {
-    //      VueCookie.set("jwt", 'gez78727', "1h");
-    // },
     methods: {
         toRent() {
              console.log('TO RENT');
-            this.$store.commit('TO_RENT', false);
+             console.log('commitons c est un renter');
+            this.$store.commit('LOANER', false);
             this.centerDialogVisible = false;
             this.$store.commit('AUTH');
             this.$router.push({ name: 'ProfileComponent'});
         },
         toLoan() {
             console.log('TO LOAN');
-            this.$store.commit('TO_RENT', true);
+            console.log('commitons c est un loaner');
+            this.$store.commit('LOANER', true);
             this.centerDialogVisible = false;
             this.$store.commit('AUTH');
             this.$router.push({ name: 'ProfileComponent'});
@@ -157,12 +156,32 @@ export default {
         AuthService.logUser(this.registration).then(function(data) {
             console.log('Data');
             console.log(data);
-            // let token;
-            // if (data.token) token = data.token;
-            if (data.user.renter && data.user.loaner) context.centerDialogVisible = true
+            context.$store.commit('AUTH');
+            if (data.token) {
+                let token = data.token;
+                context.$store.commit('TOKEN', token);
+            }
+            if (data.id) {
+                let id = data.id;
+                context.$store.commit('ID', id);
+            }
+            if (data.user.renter && data.user.loaner) {
+                 console.log('user is both a loaner and a renter');
+                context.centerDialogVisible = true
+            }
             else {
-                context.$store.commit('AUTH');
-                if (data.user.renter) context.$store.commit('TO_RENT');
+               
+                console.log('IS Renter ????');
+                console.log(data.user.renter);
+                console.log('IS Loaner ????');
+                console.log(data.user.loaner);
+                if (data.user.renter) {
+                    console.log('commitons c est un renter');
+                    context.$store.commit('LOANER', false);
+                } else if (data.user.loaner) {
+                    console.log('commitons c est un loaner');
+                     context.$store.commit('LOANER', true);
+                }
                 context.$router.push({ name: 'ProfileComponent'});
             }
         }).catch(function(err) {

@@ -184,7 +184,7 @@
 import NavComponent from './Navigation/NavComponent';
 import UserService from '../UserService';
 import moment from 'moment';
-
+import { mapGetters } from 'vuex'
 
 export default {
   name: 'ProfileComponent',
@@ -271,13 +271,18 @@ export default {
 },
     async created() {
         let context = this;
-        UserService.getProfile().then(function(profile) {
+        UserService.getProfile(this.token).then(function(profile) {
             context.profile = profile;
             if (profile.renter) context.activeRenter = false;
             if (profile.loaner) context.activeLoaner = false;
         }).catch(function(err) {
         console.log(err);
     });
+    },
+    computed: {
+    ...mapGetters({
+      token: 'GET_TOKEN'
+    }),
     },
     methods: {
         async editProfile() {
