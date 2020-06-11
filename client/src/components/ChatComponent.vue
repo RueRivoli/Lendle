@@ -8,7 +8,6 @@
                 <el-menu-item index="1-1" v-for="(itl, index) in interlocutors" :key="index" @click="changeChat(itl)">{{itl.furnit[0].name}}</el-menu-item>
               </el-menu-item-group>
             </el-menu>
-
         </el-aside>
         <el-main>
           <el-row>

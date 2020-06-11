@@ -1,5 +1,5 @@
 <template>
-    <el-container>
+    <div>
         <nav-component :displayTitles="true"></nav-component>
          <el-container class="furnit" style="height:85vh;">
              <el-row style="width: 100%;height: 20vh;margin-top:7vw;">
@@ -19,56 +19,18 @@
             </el-row>
            
         </el-container>
-         
-        <el-footer class="flex" style="background-color:#cfccc4; height: 200px;">
-            <div class="margin-auto lendle" style="width:40vh;line-height:40px;font-size:40px;color:black;">Lendle</div>
-            <el-main style="font-size:12px;">
-                <el-row>
-                    <el-col :span="6">
-                        <span class="pointer">Accueil</span>
-                    </el-col>
-                    <el-col :span="6">
-                        <span class="pointer">Trouver les emprunteurs</span>
-                    </el-col>
-                    <el-col :span="6">
-                        <span class="pointer">Trouver les prêteurs</span>
-                    </el-col>
-                </el-row>
-                   <el-row>
-                    <el-col :span="6">
-                        <span class="pointer">Prêter des meubles</span>
-                    </el-col>
-                    <el-col :span="6">
-                        <span class="pointer">Trouver les prêteurs</span>
-                    </el-col>
-                    <el-col :span="6">
-                         <span class="pointer">Mon compte</span>
-                    </el-col>
-                </el-row>
-                   <el-row>
-                    <el-col :span="6">
-                         <span class="pointer">Trouver des meubles</span>
-                    </el-col>
-                    <el-col :span="6">
-                        <span class="pointer">FAQ</span>
-                    </el-col>
-                    <el-col :span="6">
-                        <span class="pointer">Contact</span>
-                    </el-col>
-                </el-row>
-            </el-main>
-        </el-footer>
-    </el-container>
+         <footer-component></footer-component>
+    </div>
 </template>
 
 
 <script>
 import NavComponent from './Navigation/NavComponent';
-// import FooterComponent from './FooterComponent';
+import FooterComponent from './Footer/FooterComponent';
 
 export default {
   name: 'HomeComponent',
-  components: { NavComponent },
+  components: { NavComponent, FooterComponent},
   data() {
       return {
          furniture: {
