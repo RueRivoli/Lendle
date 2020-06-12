@@ -22,14 +22,22 @@ mongoose.connect( URI, { dbName: 'furniture-loan', useNewUrlParser: true, useUni
         //get the name of the people the user talks to (in the db dialog)
         let chats = mongoose.connection.db.collection('chats');
         let dialogs = mongoose.connection.db.collection('dialogs');
-        socket.on('getInterlocutors', (dataUser) => {
+        socket.on('addNewInterlocutor', (dataUser) => {
             console.log('getMessagesIntoDb');
             //if the user wants to speak to somebody in particular
+            console.log(dataUser.interlocutor_current);
             if (dataUser.interlocutor_current) {
+                console.log("interlocuter");
+                console.log(dataUser.interlocutor_current);
                 if (dataUser.loaner) {
+                    console.log('isLoaner');
                     let int_curr = dataUser.interlocutor_current;
                     dialogs.findOne({renter_id: ObjectId(int_curr), loaner_id: ObjectId(dataUser.id) }, (err, dl) => {
+                        console.log('DL');
+                        console.log(dl);
                         if (err) {
+                            console.log("erreur");
+                            socket.emit('updateInterlocutors');
                             throw err;
                         //if dialog hasn't be created with the user we want to speak to 
                         } else if (!dl || dl.length === 0) {
@@ -39,13 +47,22 @@ mongoose.connect( URI, { dbName: 'furniture-loan', useNewUrlParser: true, useUni
                                 furnit_id: ObjectId(dataUser.furnit_id),
                                 last_talk: new Date()
                             }
+                            console.log('new_dialog');
+                            console.log(new_dialog);
                             dialogs.insertOne(new_dialog);
+                            socket.emit('updateInterlocutors');
+                        } else {
+                            socket.emit('updateInterlocutors');
                         }
                     });
                 } else {
                     let int_curr = dataUser.interlocutor_current;
+                    console.log('as renter');
                     dialogs.findOne({loaner_id: ObjectId(int_curr), renter_id: ObjectId(dataUser.id)}, (err, dl) => {
+                        console.log('DL');
+                        console.log(dl);
                         if (err) {
+                            socket.emit('updateInterlocutors');
                             throw err;
                         } else if (!dl || dl.length === 0) {
                             let new_dialog = {
@@ -54,11 +71,18 @@ mongoose.connect( URI, { dbName: 'furniture-loan', useNewUrlParser: true, useUni
                                 furnit_id: ObjectId(dataUser.furnit_id),
                                 last_talk: new Date()
                             }
+                            console.log('new_dialog');
+                            console.log(new_dialog);
                             dialogs.insertOne(new_dialog);
+                            socket.emit('updateInterlocutors');
+                        } else {
+                            socket.emit('updateInterlocutors');
                         }
                     });
                 }
             }
+        });
+        socket.on('getInterlocutors', (dataUser) => {
             if (dataUser.loaner === true) {
                 console.log('isLoaner');
                 console.log(dataUser.id);

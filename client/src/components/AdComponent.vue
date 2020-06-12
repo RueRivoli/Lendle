@@ -1,6 +1,6 @@
 <template>
     <div>
-      <nav-component style="border-bottom: 1px solid #dfe0e6"></nav-component>
+      <nav-component></nav-component>
         <el-container style="height:85vh;">
             <el-main style="width:100%">
                   <el-form label-position="top" label-width="80px">
@@ -239,6 +239,7 @@
                 </div>
             </el-main>
         </el-container>
+        <footer-component></footer-component>
     </div>
 </template>
 
@@ -247,11 +248,11 @@ import NavComponent from './Navigation/NavComponent';
 // import RentalService from '../RentalService';
 import FurnitService from '../FurnitService';
 import './../style/style.css';
-// import moment from 'moment'
+import FooterComponent from './Footer/FooterComponent';
 
 export default {
   name: 'AdComponent',
-  components: { NavComponent },
+  components: { NavComponent, FooterComponent },
   data() {
     return {
       furnit_id: this.$route.params.id,

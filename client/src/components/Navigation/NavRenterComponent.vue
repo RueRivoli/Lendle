@@ -80,12 +80,12 @@ ul.el-dropdown-menu{
   flex-direction: column;
 }
 .el-dropdown{
- font-family: 'Gagalin';
+ /* font-family: 'Gagalin'; */
  color: #2c3e50;
 }
 
 li {
-  font-family: 'Gagalin';
+  /* font-family: 'Gagalin'; */
   list-style: none;
   cursor: pointer;
   position: relative;

@@ -1,6 +1,6 @@
 <template>
 <div>
-    <nav-component  style="border-bottom: 1px solid #dfe0e6"></nav-component>
+    <nav-component></nav-component>
  <el-container style="height: 100vh;">
       
      <!-- <aside-component/> -->
@@ -44,6 +44,7 @@
         </el-row>
   </el-main>
   </el-container>
+   <footer-component></footer-component>
   </div>
 </template>
 
@@ -51,12 +52,13 @@
 <script>
 import NavComponent from './Navigation/NavComponent';
 // import AsideComponent from './AsideComponent';
+import FooterComponent from './Footer/FooterComponent';
 import FurnitService from '../FurnitService';
 import moment from 'moment';
 
 export default {
   name: 'MyFurnitComponent',
-  components: { NavComponent },
+  components: { NavComponent, FooterComponent },
   data() {
       return {
           furnitures: '',

@@ -1,5 +1,5 @@
 <template>
-    <el-container>
+    <div>
         <nav-component :displayTitles="true"></nav-component>
        
         <el-container>
@@ -44,16 +44,17 @@
             </el-header>
             <el-main style="max-height:220vh;min-height: 55vh;margin-left: 15vw;margin-top:6vh;">
                 <el-row text-align="left">
-                    <span style="font-size:13px;">Meubles: {{ numberFurnits }}</span>
+                    <span style="font-size:13px;">Meubles: {{page_indication}} {{ total }}</span>
                 </el-row>
                <el-row :gutter="6" style="width: 100%;">
-                    <el-col v-for="(fnt, index) in furnits" v-bind:key="index" :span="5" style="margin-top:5px;">
-                        <el-card class="card opacity">
-                            <div style="background-color: #D6DCDD;height: 20vh;">
+                    <el-col v-for="(fnt, index) in furnits_current" v-bind:key="index" :span="5" style="margin-top:5px;">
+                        <el-card class="card opacity" style="height:30vh;">
+                            <div style="background-color: #D6DCDD;height: 23vh;">
                                 <!-- <img class="img pointer opacity" :src="imgUrl[index]"> -->
                                 <el-image
-                                    :src="imgUrl[index]"
+                                    :src="imgUrl[fnt.order]"
                                     fit="contain"
+                                    style="height: 23vh;"
                                     @click="display(fnt)">
                                 </el-image>
                             </div>
@@ -70,67 +71,30 @@
             </el-main>
         </el-container>
         <div style="text-align:center;margin-top:10vh;">
-
         <el-pagination
-        :page-size="20"
-        :pager-count="11"
+        :page-size="page_size"
+        :total="numberFurnits"
         layout="prev, pager, next"
-        :total="1000">
+        :current-page.sync="current_page"
+        @current-change="new_page"
+        >
         </el-pagination>
          </div>
-         
-        <el-footer class="flex" style="background-color:#cfccc4; height: 200px;">
-            <div class="margin-auto lendle" style="width:40vh;line-height:40px;font-size:40px;color:black;">Lendle</div>
-            <el-main style="font-size:12px;">
-                <el-row>
-                    <el-col :span="6">
-                        <span class="pointer">Accueil</span>
-                    </el-col>
-                    <el-col :span="6">
-                        <span class="pointer">Trouver les emprunteurs</span>
-                    </el-col>
-                    <el-col :span="6">
-                        <span class="pointer">Trouver les prêteurs</span>
-                    </el-col>
-                </el-row>
-                   <el-row>
-                    <el-col :span="6">
-                        <span class="pointer">Prêter des meubles</span>
-                    </el-col>
-                    <el-col :span="6">
-                        <span class="pointer">Trouver les prêteurs</span>
-                    </el-col>
-                    <el-col :span="6">
-                         <span class="pointer">Mon compte</span>
-                    </el-col>
-                </el-row>
-                   <el-row>
-                    <el-col :span="6">
-                         <span class="pointer">Trouver des meubles</span>
-                    </el-col>
-                    <el-col :span="6">
-                        <span class="pointer">FAQ</span>
-                    </el-col>
-                    <el-col :span="6">
-                        <span class="pointer">Contact</span>
-                    </el-col>
-                </el-row>
-            </el-main>
-        </el-footer>
-    </el-container>
+        <footer-component></footer-component>
+    </div>
 </template>
 
 
 <script>
 import NavComponent from './Navigation/NavComponent';
-// import FooterComponent from './FooterComponent';
+import FooterComponent from './Footer/FooterComponent';
 import FurnitService from '../FurnitService';
 // import FurnitComponent from './FurnitComponent';
 import moment from 'moment';
 
 export default {
   name: 'SearchComponent',
-  components: { NavComponent },
+  components: { NavComponent, FooterComponent },
   data() {
       return {
         furniture: {
@@ -138,9 +102,11 @@ export default {
             type: '',
             word: ''
         },
-        numberFurnits: '',
+        current_page: 1,
+        page_size: 4,
+        numberFurnits: 0,
         furnits: [],
-        imgUrl: [],
+        imgUrl: {},
         rulesFurniture: {
         }
   }
@@ -160,9 +126,52 @@ export default {
       context.furnits = furn.furnits;
       context.imgUrl = furn.imgUrl;
       context.numberFurnits = furn.furnits.length;
+    //   context.total = furn.furnits.length;
     }).catch(function(err) {
         console.log(err);
     });
+  },
+  computed: {
+      furnits_current: function () {
+          console.log('CALCUL SLICE');
+          console.log(this.furnits);
+          if (!this.furnits || this.furnits.length === 0) return [];
+          else if (this.furnits.length > 0){
+              return this.furnits.slice(this.first_furnit, this.last_furnit);
+          }
+          else return [];
+      },
+    //     imgUrl_current: function () {
+    //       console.log('CALCUL imgUrl');
+    //       console.log(this.imgUrl);
+
+    //       if (!this.imgUrl) return {};
+    //       if (Object.keys(this.imgUrl) === 0 ) return {};
+    //       else {
+              
+    //           return this.imgUrl.slice(this.first_furnit, this.last_furnit);
+    //       }
+    //       else return [];
+    //   },
+      first_furnit: function () {
+          return (this.current_page - 1) * this.page_size;
+      },
+      last_furnit: function () {
+          return this.first_furnit + this.page_size;
+      },
+     page_indication: function () {
+         if (!this.numberFurnits || this.numberFurnits === 0) return "0 --> 0 sur ";
+         else {
+            let first = this.first_furnit + 1;
+            let last = this.last_furnit;
+            if (this.numberFurnits < last) last = this.numberFurnits;
+            return first.toString() + " --> " + last.toString() + " sur ";
+         } 
+      },
+      total: function () {
+          if (this.numberFurnits) return this.numberFurnits;
+          else return "0";
+      }
   },
   watch: {
     // '$route.params.furniture' : {
@@ -204,6 +213,9 @@ export default {
       }
     },
     methods: {
+        new_page () {
+            console.log('NOUVELLE PAGE');
+        },
         async searchFurnits() {
             let context = this;
            console.log(this.furniture);
@@ -211,6 +223,8 @@ export default {
                 console.log('result');
                 console.log(furn);
                 context.furnits = furn.furnits;
+                console.log(furn.furnits);
+                console.log(furn.imgUrl);
                 context.imgUrl = furn.imgUrl;
                 context.numberFurnits = furn.furnits.length;
             }).catch(function(err) {
@@ -353,7 +367,7 @@ export default {
 }
 
 .el-image{
-    height: 20vh;
+    /* height: 20vh; */
     cursor: pointer;
 }
 </style>

@@ -1,5 +1,5 @@
 <template>
-    <el-container>
+    <div>
         <nav-component :displayTitles="true" @display="display"></nav-component>
          <div v-if="displayLendle">
             <lendle-component></lendle-component>
@@ -10,45 +10,8 @@
         <div v-else>
             <find-furnit-component></find-furnit-component>
         </div>
-        <el-footer class="flex" style="background-color:#cfccc4; height: 200px;">
-            <div class="margin-auto lendle" style="width:40vh;line-height:40px;font-size:40px;color:black;">Lendle</div>
-            <el-main style="font-size:12px;">
-                <el-row>
-                    <el-col span="6">
-                        <span class="pointer">Accueil</span>
-                    </el-col>
-                    <el-col span="6">
-                        <span class="pointer">Trouver les emprunteurs</span>
-                    </el-col>
-                    <el-col span="6">
-                        <span class="pointer">Trouver les prêteurs</span>
-                    </el-col>
-                </el-row>
-                   <el-row>
-                    <el-col span="6">
-                        <span class="pointer">Prêter des meubles</span>
-                    </el-col>
-                    <el-col span="6">
-                        <span class="pointer">Trouver les prêteurs</span>
-                    </el-col>
-                    <el-col span="6">
-                         <span class="pointer">Mon compte</span>
-                    </el-col>
-                </el-row>
-                   <el-row>
-                    <el-col span="6">
-                         <span class="pointer">Trouver des meubles</span>
-                    </el-col>
-                    <el-col span="6">
-                        <span class="pointer">FAQ</span>
-                    </el-col>
-                    <el-col span="6">
-                        <span class="pointer">Contact</span>
-                    </el-col>
-                </el-row>
-            </el-main>
-        </el-footer>
-    </el-container>
+    <footer-component></footer-component>
+    </div>
 </template>
 
 
@@ -57,11 +20,11 @@ import NavComponent from './Navigation/NavComponent';
 import LendleComponent from './LendleComponent';
 import LoanFurnitComponent from './LoanFurnitComponent';
 import FindFurnitComponent from './FindFurnitComponent';
-// import FooterComponent from './FooterComponent';
+import FooterComponent from './Footer/FooterComponent';
 
 export default {
   name: 'IntroComponent',
-  components: { NavComponent, LendleComponent, LoanFurnitComponent, FindFurnitComponent },
+  components: { NavComponent, LendleComponent, LoanFurnitComponent, FindFurnitComponent, FooterComponent },
   props: ['displayLoanFurnit', 'displayLendle'],
   data() {
       return {

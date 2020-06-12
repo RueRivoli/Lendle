@@ -1,7 +1,8 @@
 <template>
     <div>
-        <nav-component :displayTitles="false" style="border-bottom: 1px solid #dfe0e6"></nav-component>
-                     <div style="height:10vh;"></div>
+        <nav-component :displayTitles="false"></nav-component>
+            <div style="height:90vh;">
+                <div style="height:10vh;"></div>
                     <el-row>
                         <el-col v-if="$route.params.as === 'loaner'" class="center" style="margin-bottom: 3vh;" :span="8" :offset="8">
                             <span style="font-weight:bold;font-size:18px;">Créer un compte pour louer des meubles:</span>
@@ -81,18 +82,21 @@
                             </div>
                         </el-col>
                     </el-row>
-        </el-form>
+            </el-form>
+        </div>
+        <footer-component></footer-component>
     </div>
 </template>
 
 
 <script>
 import NavComponent from './Navigation/NavComponent';
+import FooterComponent from './Footer/FooterComponent';
 import AuthService from '../AuthService';
 
 export default {
   name: 'SignUpComponent',
-  components: { NavComponent },
+  components: { NavComponent, FooterComponent },
   data() {
       var validatePass = (rule, value, callback) => {
       if (value === '') {

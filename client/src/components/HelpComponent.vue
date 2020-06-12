@@ -1,16 +1,20 @@
 <template>
-<div>
+  <div>
      <nav-component style="width:100%;" :displayTitles="true"></nav-component>
- help
-    </div>
+      <div style="height:680px;">
+        Help
+      </div>
+      <footer-component></footer-component>
+  </div>
 </template>
 
 <script>
 import NavComponent from './Navigation/NavComponent';
+import FooterComponent from './Footer/FooterComponent';
 
 export default {
   name: 'HelpComponent',
-  components: { NavComponent },
+  components: { NavComponent, FooterComponent },
   data() {
     return {
     }

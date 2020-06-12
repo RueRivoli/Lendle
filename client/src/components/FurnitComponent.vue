@@ -1,14 +1,15 @@
 <template>
     <div>
      <nav-component :displayTitles="true"></nav-component>
-        <el-container style="height:85vh;">
+        <el-container style="height:680px;">
             <el-main style="width:100%">
-                  <el-form label-position="top" label-width="80px">
+                  <el-form label-position="top" label-width="80px" >
                        <el-col :span="10" style="">
                         <el-row style="font-size:18px;margin-bottom: 5vh;font-weight:bold;">
                             <span>{{furnit.name }}</span>
+                          
                          </el-row>
-                        
+                       
                                 <el-carousel trigger="click" height="30vh">
                                     <el-carousel-item  class="opacity" v-for="(img, index) in imgUrl" :key="index">
                                 <!-- <div style="background-color: #D6DCDD"> -->
@@ -21,14 +22,15 @@
                                         </h3>
                             <!-- </div> -->
                                     </el-carousel-item>
+                                    
                                 </el-carousel>
                                 <el-row style="margin-top:5vh;">
-                                    <el-form-item label="Disponibilité">
+                                    <el-form-item label="Période de disponibilité">
                                         <el-date-picker
                                             readonly
                                             v-model="date"
                                             type="daterange"
-                                            range-separator="à"
+                                            range-separator="au"
                                             start-placeholder="Début"
                                             end-placeholder="Fin"
                                             format="dd/MM/yyyy"
@@ -38,9 +40,14 @@
                                             </el-date-picker>
                                     </el-form-item>
                                 </el-row>
+                                <el-row>
+                            
+                                </el-row>
                         </el-col>
+                      
                             <el-col :span="8" :offset="3" style="">
                                 <el-row>
+                                
                                      <el-form-item label="Prix">
                                         <el-input
                                             type="primary"
@@ -65,7 +72,7 @@
                                         :disabled="true">
                                     </el-input>
                                 </el-form-item>
-                                    <el-button size="mini" type="primary" @click="contact">Contacter le loueur</el-button>
+                             
                                 </el-row>
                                  <el-row>
                                      <el-form-item label="Description">
@@ -88,9 +95,21 @@
                                 
                             </el-col>
                         </el-row>
+                            <el-row>
+                                <el-form :inline="true">
+                                <el-form-item>
+                                    <el-button size="mini" value="submit" type="primary" @click="contact">Faire une demande de location</el-button>
+                                </el-form-item>
+                                 <el-form-item>
+                                    <el-button size="mini" value="submit" type="success" @click="contact">Contacter le propriétaire</el-button>
+                                </el-form-item>
+                                </el-form>
+                            </el-row>
                          </el-form>
+                    
             </el-main>
         </el-container>
+        <footer-component></footer-component>
     </div>
 </template>
 
@@ -98,11 +117,11 @@
 import NavComponent from './Navigation/NavComponent';
 import FurnitService from '../FurnitService';
 import './../style/style.css';
-// import moment from 'moment'
+import FooterComponent from './Footer/FooterComponent';
 
 export default {
   name: 'FurnitComponent',
-  components: { NavComponent },
+  components: { NavComponent, FooterComponent },
   data() {
     return {
       furnit: { state: 0 },
@@ -122,7 +141,7 @@ export default {
         return "Bon état";
     },
     owner: function () {
-        if (this.furnit.owner[0]) {
+        if (this.furnit && this.furnit.owner && this.furnit.owner[0]) {
             return this.furnit.owner[0].firstname + ' ' + this.furnit.owner[0].lastname + ' \u000A' + this.furnit.owner[0].address + ', ' + this.furnit.owner[0].postcode + ' ' + this.furnit.owner[0].city;
         }
         return '';
@@ -138,7 +157,7 @@ export default {
       let a = furn.furnit.loanstart;
       let b = furn.furnit.loanend;
       context.date = [a, b];
-      context.imgUrl = furn.imgurl;
+      context.imgUrl = furn.imgUrl;
     //   context.numberFurnits = furn.furnits.length;
     }).catch(function(err) {
         console.log(err);
@@ -153,6 +172,9 @@ export default {
       },
       contact () {
           console.log('contact');
+          console.log(this.furnit._id);
+          console.log(this.furnit.owner_id);
+           this.$router.push({ name: 'Chat', params: { furnit_id: this.furnit._id, interlocutor_current: this.furnit.owner_id } });
       }
 }
 }

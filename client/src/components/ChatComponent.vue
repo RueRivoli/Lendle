@@ -1,13 +1,9 @@
 <template>
   <div>
-      <nav-component  style="border-bottom: 1px solid #dfe0e6"></nav-component>
-      <el-container style="height: 100vh;">
-        <el-aside width="220px" style="overflow-y: scroll;">{{loaner}}
-            <el-menu>
-              <el-menu-item-group v-if="interlocutors">
-                <el-menu-item index="1-1" v-for="(itl, index) in interlocutors" :key="index" @click="changeChat(itl)">{{itl.furnit[0].name}}</el-menu-item>
-              </el-menu-item-group>
-            </el-menu>
+      <nav-component></nav-component>
+      <el-container style="height:680px;">
+        <el-aside width="180px;" style="overflow-y: scroll;">
+          <div class="cursor" v-for="(itl, index) in interlocutors" :key="index" @click="changeChat(itl)">{{itl.furnit[0].name}}</div>
         </el-aside>
         <el-main>
           <el-row>
@@ -15,7 +11,7 @@
               <div ref="essai" class="status">{{furnitname}}
                 <span style="float:right;">{{name}}</span>
               </div>
-              <el-card ref="container" style="margin-bottom:15px;min-height: 25vh;max-height: 65vh;overflow-y: scroll; scrollbar-width: thin;">
+              <el-card ref="container" style="margin-bottom:15px;width:100%;min-height: 25vh;max-height: 65vh;overflow-y: scroll; scrollbar-width: thin;">
                 <div v-for="(mg, index) in allmsgs" :key="index">
                   <div :class="isAuthor(allmsgs[index].author_id)">
                       <p style="font-size:12px;color:#1E969D;">
@@ -44,6 +40,7 @@
         </el-row>
       </el-main>
     </el-container>
+    <footer-component></footer-component>
   </div>
 </template>
 
@@ -51,13 +48,14 @@
 <script>
 import NavComponent from './Navigation/NavComponent';
 // import UserService from '../UserService';
+import FooterComponent from './Footer/FooterComponent';
 import io from 'socket.io-client'
 import moment from 'moment'
 import { mapGetters } from 'vuex'
 
 export default {
   name: 'ChatComponent',
-  components: { NavComponent },
+  components: { NavComponent, FooterComponent },
   data() {
       return {
         socket: '',
@@ -71,7 +69,7 @@ export default {
         furnitname: '',
         interlocutors: null,
         //parameters to give to chat directly to somebody in particular
-        interlocutor_current: this.$route.params.interlocutor_id || null,
+        interlocutor_current: this.$route.params.interlocutor_current || null,
         furnit_id: this.$route.params.furnit_id || null
       }
   },
@@ -152,7 +150,15 @@ export default {
     }
     console.log('DATAUSER');
     console.log(dataUser);
-    this.socket.emit('getInterlocutors', dataUser);
+    if (dataUser.interlocutor_current) {
+      this.socket.emit('addNewInterlocutor', dataUser);
+    } else {
+      this.socket.emit('getInterlocutors', dataUser);
+    }
+     this.socket.on('updateInterlocutors', message => {
+       this.socket.emit('getInterlocutors', dataUser);
+    })
+
     this.socket.on('chatMessage', message => {
       console.log(message);
       message.author = false

@@ -1,6 +1,6 @@
 <template>
-<div>
-    <div class="flex column" style="height:65vh;">
+    <div>
+        <div class="flex column" style="height:65vh;">
             <div class="slogan">
                 BESOIN D'UNE TABLE, D'UN LIT, D'UNE MACHINE A LAVER ...
                 QUELQU'UN PEUT TOUT TE PRÊTER
@@ -50,7 +50,7 @@
                 </div>
         </el-container>
         <div style="height:2px;"></div>
-        </div>
+    </div>
 </template>
 
 

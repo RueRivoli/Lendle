@@ -1,6 +1,6 @@
 <template>
     <div>
-        <nav-component :displayTitles="false" style="border-bottom: 1px solid #dfe0e6"></nav-component>
+        <nav-component :displayTitles="false"></nav-component>
         <div style="height:15vh;" >
            <el-alert
                 v-if="$route.params.checkMails || checkMails"
@@ -10,7 +10,7 @@
                 show-icon>
             </el-alert>
         </div>
-            <el-form ref="registration" name="registration" style="width:100%;" :model="registration" :rules="rulesRegistration" label-position="top" label-width="130px" enctype="multipart/form-data">
+            <el-form ref="registration" name="registration" style="width:100%;height:70vh;" :model="registration" :rules="rulesRegistration" label-position="top" label-width="130px" enctype="multipart/form-data">
                     <el-row v-if="$route.params.checkMails || checkMails">
                         <el-col :span="8" :offset="8">
                             <div style="text-align:center;font-size:12px;margin-top:5px;">
@@ -79,18 +79,20 @@
                 <el-button type="primary" @click="toLoan()">Louer</el-button>
             </span>
         </el-dialog>
+        <footer-component></footer-component>
     </div>
 </template> 
 
 
 <script>
 import NavComponent from './Navigation/NavComponent';
+import FooterComponent from './Footer/FooterComponent';
 import AuthService from '../AuthService';
 // import VueCookie from 'vue-cookie'
 
 export default {
   name: 'LogInComponent',
-  components: { NavComponent },
+  components: { NavComponent, FooterComponent },
   data() {
       var validatePass = (rule, value, callback) => {
       if (value === '') {

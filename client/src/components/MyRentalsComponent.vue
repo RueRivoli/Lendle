@@ -1,6 +1,6 @@
 <template>
 <div>
-    <nav-component  @search="search" style="border-bottom: 1px solid #dfe0e6"></nav-component>
+    <nav-component  @search="search"></nav-component>
  <el-container style="height: 100vh;">
     <el-main>
     <el-row>
@@ -13,9 +13,9 @@
     <el-row>
         <el-col :span="16" :offset="7">
         <el-collapse v-model="activeNames">
-            <el-collapse-item title="En location" name="1">
-                <div v-for="(rt, index) in rentals" v-bind:key="index">
-            <el-row class="pointer opacity" v-if="rt.inprocess" style="height:90px;padding: 10px;margin-bottom:7px;">
+            <el-collapse-item title="En demande de location" name="1">
+                  <div v-for="(rt, index) in rentals" v-bind:key="index">
+            <el-row class="pointer opacity" v-if="rt.status === 0" style="height:90px;padding: 10px;margin-bottom:7px;">
             <el-col  :span="24" style="height: 100%;">
              <el-card class="box-card opacity" :body-style="{ padding: '2px', height: '90px'}">
                  <!-- <el-col :span="5" >
@@ -27,7 +27,48 @@
                                 <!-- <img class="img pointer opacity" :src="imgUrl[index]"> -->
                     <el-image
                         class="pointer full_height"
-                        :src="url.imgurl[index]"
+                        :src="imgUrl[index]"
+                        fit="contain">
+                    </el-image>
+                </div>
+                </el-col>
+                <el-col :span="5" :offset="1">
+                    <div style="margin-top: 20px;"><span class= "pointer opacity" style="font-weight:bold;">{{ rt.furnit[0].name }}</span></div>
+                </el-col>
+                <el-col :span="4" :offset="1">
+                    <div style="margin-top: 20px;">
+                        <!-- <time class="time"> <i class="el-icon-d-arrow-right"></i> {{ toFormat(rt.loan_end) }}</time> -->
+                        <div style="text-align:center;"><el-tag size="mini" type="warning" style="margin-right:20px;">Proposition</el-tag></div>
+                    </div>
+                </el-col>
+                <el-col class="flex column" :span="6" :offset="2" style="border-left: 1px solid rgb(223, 224, 230);margin-top: 20px;">
+                     <div class="m-auto">
+                        <time class="time"> Mensualité 0 €/mois</time>
+                    </div>
+                    <div class="m-auto">
+                        <el-button icon="el-icon-view" size="mini" type="primary" class="button cursor" @click="details(rt._id)">Consulter</el-button>
+                    </div>
+                </el-col>
+            </el-card>
+            </el-col>
+                </el-row>
+                </div>
+            </el-collapse-item>
+            <el-collapse-item title="En location" name="2">
+                <div v-for="(rt, index) in rentals" v-bind:key="index">
+            <el-row class="pointer opacity" v-if="rt.status === 1" style="height:90px;padding: 10px;margin-bottom:7px;">
+            <el-col  :span="24" style="height: 100%;">
+             <el-card class="box-card opacity" :body-style="{ padding: '2px', height: '90px'}">
+                 <!-- <el-col :span="5" >
+                   <img v-if="url.imgurl && url.imgurl[index]" class="image pointer opacity" :src="url.imgurl[index]">
+                   <img v-else class="image pointer opacity" src="../assets/gris.jpg">
+                </el-col> -->
+                <el-col class="full_height" :span="4" >
+                 <div class="full_height" style="background-color: #D6DCDD;max-height: 100px;">
+                                <!-- <img class="img pointer opacity" :src="imgUrl[index]"> -->
+                    <el-image
+                        class="pointer full_height"
+                        :src="imgUrl[index]"
                         fit="contain">
                     </el-image>
                 </div>
@@ -54,10 +95,10 @@
                 </el-row>
                 </div>
             </el-collapse-item>
-            <el-collapse-item title="Locations terminées" name="2">
+            <el-collapse-item title="Locations terminées" name="3">
                 
                 <div v-for="(rt, index) in rentals" v-bind:key="index">
-                <el-row class="pointer opacity"  v-if="!rt.inprocess"  style="height:90px;padding: 10px;margin-bottom:7px;">
+                <el-row class="pointer opacity"  v-if="rt.status === 2"  style="height:90px;padding: 10px;margin-bottom:7px;">
                     <el-col  :span="24" style="height: 100%;">
                         <el-card class="box-card opacity" :body-style="{ padding: '2px', height: '90px'}">
                             <el-col class="full_height" :span="4" >
@@ -65,7 +106,7 @@
                                             <!-- <img class="img pointer opacity" :src="imgUrl[index]"> -->
                                 <el-image
                                     class="pointer full_height"
-                                    :src="url.imgurl[index]"
+                                    :src="imgUrl[index]"
                                     fit="contain">
                                 </el-image>
                             </div>
@@ -97,6 +138,7 @@
 </el-row>
   </el-main>
   </el-container>
+  <footer-component></footer-component>
   </div>
 </template>
 
@@ -105,15 +147,16 @@
 import NavComponent from './Navigation/NavComponent';
 import RentalService from '../RentalService';
 import FurnitService from '../FurnitService';
+import FooterComponent from './Footer/FooterComponent';
 import moment from 'moment';
 
 export default {
   name: 'MyRentalsComponent',
-  components: { NavComponent },
+  components: { NavComponent, FooterComponent },
   data() {
       return {
           rentals: {},
-          url: [],
+          imgUrl: {},
           activeNames: ['1']
       }
   },
@@ -166,8 +209,9 @@ export default {
     console.log(picture_ids);
     if (picture_ids.length > 0) {
         FurnitService.getImagesUrlFromPicIds(picture_ids).then(function(urls) {
-            context.url = urls;
+            console.log('urlS');
             console.log(urls);
+            context.imgUrl = urls.imgUrl;
             }).catch(function(err) {
             console.log(err);
         });

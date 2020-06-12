@@ -1,7 +1,7 @@
 <template>
     <div>
-        <nav-component  style="border-bottom: 1px solid #dfe0e6"></nav-component>
-        
+        <nav-component></nav-component>
+            <div style="height:680px;">
             <el-tabs type="border-card" style="margin-left:15vh;margin-right:15vh;margin-top:5vh;">
                 <el-tab-pane>
                     <span slot="label">Profil</span>
@@ -174,21 +174,22 @@
                     </el-form>
                 </el-tab-pane>
             </el-tabs>
-   
-   
+            </div>
+   <footer-component></footer-component>
     </div>
 </template>
 
 
 <script>
 import NavComponent from './Navigation/NavComponent';
+import FooterComponent from './Footer/FooterComponent';
 import UserService from '../UserService';
 import moment from 'moment';
 import { mapGetters } from 'vuex'
 
 export default {
   name: 'ProfileComponent',
-  components: { NavComponent },
+  components: { NavComponent, FooterComponent },
   data() {
     var validatePass = (rule, value, callback) => {
       if (value === '') {

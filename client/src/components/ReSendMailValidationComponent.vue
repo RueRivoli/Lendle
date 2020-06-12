@@ -1,6 +1,6 @@
 <template>
     <div>
-        <nav-component :displayTitles="false" style="border-bottom: 1px solid #dfe0e6"></nav-component>
+        <nav-component :displayTitles="false"></nav-component>
         <div style="height:15vh;" >
            <el-alert
                 v-if="checkMails"
@@ -32,17 +32,19 @@
                         </el-col>
                     </el-row>
         </el-form>
+         <footer-component></footer-component>
     </div>
 </template>
 
 
 <script>
 import NavComponent from './Navigation/NavComponent';
+import FooterComponent from './Footer/FooterComponent';
 import AuthService from '../AuthService';
 
 export default {
   name: 'ReSendMailValidationComponent',
-  components: { NavComponent },
+  components: { NavComponent, FooterComponent },
   data() {
       return {
           validation: {

@@ -1,6 +1,6 @@
 <template>
     <div>
-      <nav-component style="border-bottom: 1px solid #dfe0e6"></nav-component>
+      <nav-component></nav-component>
         <el-container style="height:85vh;">
             <el-main style="width:100%"> 
                   <el-form label-position="top" label-width="80px">
@@ -104,11 +104,13 @@
                          </el-form>
             </el-main>
         </el-container>
+         <footer-component></footer-component>
     </div>
 </template>
 
 <script>
 import NavComponent from './Navigation/NavComponent';
+import FooterComponent from './Footer/FooterComponent';
 import RentalService from '../RentalService';
 import FurnitService from '../FurnitService';
 import './../style/style.css';
@@ -116,7 +118,7 @@ import './../style/style.css';
 
 export default {
   name: 'RentalComponent',
-  components: { NavComponent },
+  components: { NavComponent, FooterComponent },
   data() {
     return {
       rental_id: this.$route.params.id,

@@ -21,6 +21,11 @@ const RentalSchema = mongoose.Schema({
         type: Date,
         required: true
     },
+    status: {
+        type: Number,
+        required: false,
+        default: 0
+    },
     inprocess: {
         type: Boolean,
         required: true

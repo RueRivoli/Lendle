@@ -74,7 +74,7 @@ ul {
 
 
 li {
-  font-family: 'Gagalin';
+  /* font-family: 'Gagalin'; */
   list-style: none;
   cursor: pointer;
   position: relative;

@@ -7,6 +7,7 @@ const crypto = require('crypto');
 const path = require('path');
 const GridFsStorage = require('multer-gridfs-storage');
 const multer = require('multer');
+const fs = require('fs');
 const ObjectId = mongoose.Types.ObjectId;
 const URI = require('./../../config/keys').URI;
 
@@ -69,23 +70,23 @@ const upload = multer({ storage });
 //   });
 // });
 
-// Retrieve one picture for a list of furnits
+
 
 // Retrieve one picture for a list of furnits
-function retrievePictures(furnits, req, res) {
+function retrievePicturesMemory(furnits, req, res) {
   let db = mongoose.connection.db;
   let collectionChunks = db.collection('uploads.chunks');
   let picture_ids = [];
-  let finalFile = {};
+  let finalFile = [];
   furnits.forEach(function(furn){
     if (furn.picture_ids.length > 0) picture_ids.push(furn.picture_ids[0]);
     else picture_ids.push(-1);
   });
-  console.log('picture_ids');
+  console.log('Picture_ids');
   console.log(picture_ids);
   furnits.forEach(function(ft, index) {
-    if (ft.picture_ids[0]) {
-      console.log('entree');
+    if (ft.picture_ids[0] && ft.picture_ids[0] !== -1) {
+      console.log('Object Id à chercher');
       let id = ObjectId(ft.picture_ids[0]);
       console.log(id);
       gfs.files.findOne({ _id: id }, (err, fl) => {
@@ -126,6 +127,63 @@ function retrievePictures(furnits, req, res) {
   console.log(Object.keys(finalFile).length);
   console.log(picture_ids.length);
   if (Object.keys(finalFile).length === picture_ids.length) {
+    res.json({furnits: furnits, imgUrl: finalFile}); }
+}
+});
+}
+
+// original to put again
+// Retrieve only one picture for every furnit in a list of furnits
+function retrievePictures(furnits, req, res) {
+  let db = mongoose.connection.db;
+  let collectionChunks = db.collection('uploads.chunks');
+  // let picture_ids = [];
+  let finalFile = {};
+  // furnits.forEach(function(furn){
+  //   if (furn.picture_ids.length > 0) picture_ids.push(furn.picture_ids[0]);
+  //   else picture_ids.push(-1);
+  // });
+
+  let pic_len = Object.keys(furnits).length;
+  furnits.forEach(function(ft, index) {
+    ft.order = index;
+    if (ft.picture_ids && ft.picture_ids[0]) {
+      console.log('entree');
+      let id = ObjectId(ft.picture_ids[0]);
+      console.log(id);
+      gfs.files.findOne({ _id: id }, (err, fl) => {
+        console.log('Fichier trouvé => ')
+        console.log(fl);
+        if (!fl || fl.length === 0) {
+          finalFile[index] = null;
+        } else {
+          //if we find the file
+          let contentType = fl.contentType;
+          //we look for the chunks of the file
+          collectionChunks.find({files_id: id}).sort({ n: 1}).toArray(function(err, chunks) {
+          if(err){
+            finalFile[index] = null;
+          }
+          else {
+            if(!chunks || chunks.length === 0){
+              finalFile[index] = null;
+            } else {
+              let fileData = [];
+              for (let i = 0; i < chunks.length; i++) {
+                fileData.push(chunks[i].data.toString('base64'));
+              }
+              finalFile[index] = 'data:' + contentType + ';base64,' + fileData.join('');
+              if (Object.keys(finalFile).length === pic_len) {
+                res.json({furnits: furnits, imgUrl: finalFile}); 
+              }
+            }
+          }
+      });
+  }
+});
+} else {
+  finalFile[index] = null;
+  if (Object.keys(finalFile).length === pic_len) {
     res.json({furnits: furnits, imgUrl: finalFile}); }
 }
 });
@@ -271,35 +329,44 @@ router.get('/image/:filename', function (req, res) {
   })
 });
 
-router.get('/images/:pic_ids', function (req, res) {
-  // databases
+function retrieveImgUrlFromPictureIds(picture_ids, req, res) {
   let db = mongoose.connection.db;
   let collectionChunks = db.collection('uploads.chunks');
   let furnits = db.collection('furnits');
-  let picture_ids = req.params.pic_ids.split(',');
-  var finalFile = new Array();
+  var finalFile = {};
   picture_ids.forEach(function(pic, index){
-    let id = ObjectId(pic);
-    gfs.files.findOne({ _id: id }, (err, fl) => {
+    gfs.files.findOne({ _id: ObjectId(pic) }, (err, fl) => {
+      if (err) {
+        finalFile[index] = null;
+        if (Object.keys(finalFile).length === pic_ids.length) {
+          return res.json({ furnit: ft, imgUrl: finalFile});
+        }
+      }
       if (!fl || fl.length === 0) {
-        return res.status(404).render({error: err.errMsg});
+        finalFile[index] = null;
+        if (Object.keys(finalFile).length === pic_ids.length) {
+          return res.json({ furnit: ft, imgUrl: finalFile});
+        }
       } else {
         let contentType = fl.contentType;
-        collectionChunks.find({files_id: id}).sort({ n: 1}).toArray(function(err, chunks) {
+        collectionChunks.find({files_id: ObjectId(pic)}).sort({ n: 1}).toArray(function(err, chunks) {
           if(err){
-            return res.status(404).render({
-              error: err.errmsg});
+            finalFile[index] = null;
+            if (Object.keys(finalFile).length === pic_ids.length) {
+              return res.json({ furnit: ft, imgUrl: finalFile});
+            }
          }
           if(!chunks || chunks.length === 0){
-            return res.status(404).render({
-              error: err.errmsg});
+            finalFile[index] = null;
+            if (Object.keys(finalFile).length === pic_ids.length) {
+              return res.json({ furnit: ft, imgUrl: finalFile});
+            }
           }
           let fileData = [];
           for (let i=0; i<chunks.length;i++) {
             fileData.push(chunks[i].data.toString('base64'));
           }
           finalFile[index] = 'data:' + fl.contentType + ';base64,' + fileData.join('');
-          // finalFile.push('data:' + contentType + ';base64,' + fileData.join(''));
           let len = Object.keys(finalFile).length;
           if (len === picture_ids.length) {
             res.json({imgUrl: finalFile});
@@ -308,9 +375,53 @@ router.get('/images/:pic_ids', function (req, res) {
       }
       });
     });
-  });
+}
 
-//ok to modify //appeler pour FurnitComponent
+router.get('/images/:pic_ids', function (req, res) {
+  console.log('getIdentidyFromUrl');
+  let db = mongoose.connection.db;
+  let collectionChunks = db.collection('uploads.chunks');
+  let furnits = db.collection('furnits');
+  let picture_ids = req.params.pic_ids.split(',');
+  return retrieveImgUrlFromPictureIds(picture_ids, req, res);
+});
+//   var finalFile = {};
+//   picture_ids.forEach(function(pic, index){
+//     gfs.files.findOne({ _id: ObjectId(pic) }, (err, fl) => {
+//       if (err) {
+
+//       }
+//       if (!fl || fl.length === 0) {
+//         return res.status(404).render({error: err.errMsg});
+//       } else {
+//         let contentType = fl.contentType;
+//         collectionChunks.find({files_id: id}).sort({ n: 1}).toArray(function(err, chunks) {
+//           if(err){
+//             return res.status(404).render({
+//               error: err.errmsg});
+//          }
+//           if(!chunks || chunks.length === 0){
+//             return res.status(404).render({
+//               error: err.errmsg});
+//           }
+//           let fileData = [];
+//           for (let i=0; i<chunks.length;i++) {
+//             fileData.push(chunks[i].data.toString('base64'));
+//           }
+//           finalFile[index] = 'data:' + fl.contentType + ';base64,' + fileData.join('');
+//           // finalFile.push('data:' + contentType + ';base64,' + fileData.join(''));
+//           let len = Object.keys(finalFile).length;
+//           if (len === picture_ids.length) {
+//             res.json({imgUrl: finalFile});
+//           }
+//         });
+//       }
+//       });
+//     });
+//   });
+
+
+//ORIGINAL 
 router.get('/identity/:furnit_id', function (req, res) {
   console.log('getIdentidyCardFurnit');
   let db = mongoose.connection.db;
@@ -343,48 +454,46 @@ router.get('/identity/:furnit_id', function (req, res) {
       if (pic_ids && pic_ids.length > 0) {
       pic_ids.forEach(function(pid, index) {
         gfs.files.findOne({ _id: ObjectId(pid)}, (err, fl) => {
-        if (!fl || fl.length === 0) {
-          return res.status(404).json({
-            title: 'File error', 
-            message: 'Error finding file', 
-              error: err.errMsg});
-        }
         if(err){
-          return res.status(404).json({
-            title: 'Download Error', 
-            message: 'No file found'});
+            finalFile[index] = null;
+            if (Object.keys(finalFile).length === pic_ids.length) {
+              return res.json({ furnit: ft, imgUrl: finalFile});
+            }
+        } else if (!fl || fl.length === 0) {
+          finalFile[index] = null;
+          if (Object.keys(finalFile).length === pic_ids.length) {
+            return res.json({ furnit: ft, imgUrl: finalFile});
+          }
         } else {
-          
           let fileData = [];
-          collectionChunks.find({files_id: fl._id}).toArray(function(err, chunks){
+          collectionChunks.find({files_id: fl._id}).sort({n: 1}).toArray(function(err, chunks){
           if(err){
-              return res.status(404).json({
-              title: 'Download Error',
-              message: 'Error retrieving chunks',
-              error: err.errmsg});
-          }
-          if(!chunks || chunks.length === 0) {
+            finalFile[index] = null;
+            if (Object.keys(finalFile).length === pic_ids.length) {
+              return res.json({ furnit: ft, imgUrl: finalFile});
+            }
+          } else if(!chunks || chunks.length === 0) {
             //No data found
-            return res.render('index', {
-              title: 'Download Error', 
-              message: 'No data found'});
+            finalFile[index] = null;
+            if (Object.keys(finalFile).length === pic_ids.length) {
+              return res.json({ furnit: ft, imgUrl: finalFile});
+            }
+          } else {
+            for (let i = 0; i < chunks.length; i++) {
+              fileData.push(chunks[i].data.toString('base64'));
+            }
+            finalFile[index] = 'data:' + fl.contentType + ';base64,' + fileData.join('');
+            // finalFile.push('data:' + fl.contentType + ';base64,' + fileData.join(''));
+            if (Object.keys(finalFile).length === pic_ids.length) {
+              return res.json({ furnit: ft, imgUrl: finalFile});
+            }
           }
-          for (let i = 0; i < chunks.length; i++) {
-            fileData.push(chunks[i].data.toString('base64'));
-         }
-         finalFile[index] = 'data:' + fl.contentType + ';base64,' + fileData.join('');
-        console.log(pic_ids.length);
-        let len = Object.keys(finalFile).length;
-        console.log(len);
-        if (len === pic_ids.length) {
-          return res.json({ furnit: ft, imgUrl: finalFile});
-        }
       });
     };
   });
     });
   } else {
-    console.log('PAS DE PIC IDS');
+    console.log('Ce meuble n a pas de photos');
     console.log(ft)
     return res.status(201).json({ furnit: ft, imgUrl: {}});
   }

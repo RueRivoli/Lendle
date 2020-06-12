@@ -105,6 +105,7 @@
       </el-form>
       <img :src="imageprov" alt="">
   </el-main>
+  <footer-component></footer-component>
 </div>
 </template>
 
@@ -114,11 +115,12 @@
 import NavComponent from './Navigation/NavComponent';
 import FurnitService from '../FurnitService';
 import FormData from 'form-data';
-import moment from 'moment'
+import moment from 'moment';
+import FooterComponent from './Footer/FooterComponent';
 
 export default {
   name: 'AddFurnitComponent',
-  components: { NavComponent },
+  components: { NavComponent, FooterComponent },
   data() {
     var validateDates = (rule, value, callback) => {
       let dateStart = this.$refs.dateStart.value;
