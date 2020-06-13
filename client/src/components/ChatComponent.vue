@@ -1,44 +1,81 @@
 <template>
   <div>
       <nav-component></nav-component>
-      <el-container style="height:680px;">
+      <el-container style="height: 92vh;">
         <el-aside width="180px;" style="overflow-y: scroll;">
-          <div class="cursor" v-for="(itl, index) in interlocutors" :key="index" @click="changeChat(itl)">{{itl.furnit[0].name}}</div>
+          <div style="padding:8px;border-bottom: 1px solid #03A59D">
+            <div class="chat_it cursor" style="width: 155px;margin:auto;" @click="search()" >
+                <el-input
+                  placeholder="Rechercher"
+                  prefix-icon="el-icon-search"
+                  size="mini"
+                  v-model="searchName">
+                </el-input>
+            </div>
+          </div>
+
+          <div :class="isSelected(index)" v-for="(itl, index) in interlocutors" :key="index" @click="changeChat(itl, index)" style="padding:8px;border-bottom: 1px solid #03A59D">
+        
+            <div :key="30" style="align-self: flex-start;margin-right:10px;">
+              <el-avatar :size="30" src="../assets/twitter.svg"></el-avatar>
+            </div>
+            <!-- <div>
+
+            </div> -->
+            <div  style="align-self: center;padding:3px;">
+              <div style="font-size:12px">{{nameInterlocutor(itl)}}</div>
+              <div style="font-size:12px">{{itl.furnit[0].name}} / {{itl.furnit[0].type}}</div>
+            </div>
+            
+          </div>
         </el-aside>
-        <el-main>
-          <el-row>
-            <el-col :span="14" :offset="5">
-              <div ref="essai" class="status">{{furnitname}}
-                <span style="float:right;">{{name}}</span>
-              </div>
-              <el-card ref="container" style="margin-bottom:15px;width:100%;min-height: 25vh;max-height: 65vh;overflow-y: scroll; scrollbar-width: thin;">
+        <el-container style="height: 92vh;">
+            <el-header style="height:8vh;line-height:8vh;font-size: 18px;background-color:#C0C0C0;color:white;">
+                <span style="float:left;">{{name}}</span>
+                <span style="float:right;">{{furnitname}}</span>
+            </el-header>
+        <div>
+          <el-row style="height: 84vh;">
+            <el-col :span="24" :offset="0">
+              
+              <div ref="container" style="height:66vh;overflow-y: scroll; scrollbar-width: thin;padding:3px;">
                 <div v-for="(mg, index) in allmsgs" :key="index">
+                   <div style="font-size:12px;color:black;text-align:center;">
+                     <div style="background-color:#FFFAF0;border-radius:2px;margin: auto;width: 10%; padding: 3px;">
+                        <span style="font-style: italic;">{{formatTime(allmsgs[index].time)}}</span>
+                      </div>
+                  </div>
                   <div :class="isAuthor(allmsgs[index].author_id)">
-                      <p style="font-size:12px;color:#1E969D;">
-                            <span style="font-style: italic;">{{formatTime(allmsgs[index].time)}}</span>
-                          </p>
-                          <p>
-                            {{allmsgs[index].text}}
-                          </p>
+                      <div style="color:white;font-size:14px;">
+                        {{allmsgs[index].text}}
+                      </div>
                   </div>
                 </div>
-              </el-card>
-                <el-form id="chat-form">
-                    <el-form-item label="">
+              </div>
+               <div style="height:18vh;">
+                <!-- <el-button slot="append" icon="el-icon-paperclip" size="small"></el-button> -->
+                  <el-input placeholder="Message + Entrer"  :rows="4" type="textarea" v-model="msg" class="input-with-select">
+                  </el-input>
+              </div>
+           
+                   
+                    <!-- <el-form-item label="">
                       <el-input
                         type="textarea"
                         :rows="2"
-                        placeholder="Entrez quelque chose"
+                        placeholder="Message"
                         v-model="msg">
                       </el-input>
                 </el-form-item>
                 <el-form-item>
                   <el-button type="primary" size="mini" @click="sendMessage">Envoyer</el-button>
-                </el-form-item>
-              </el-form>
+                </el-form-item> -->
+             
+                 
             </el-col>
         </el-row>
-      </el-main>
+      </div>
+       </el-container>
     </el-container>
     <footer-component></footer-component>
   </div>
@@ -61,6 +98,7 @@ export default {
         socket: '',
         msg: '',
         allmsgs: [],
+        searchName: '',
         // renters: null,
         // loaners: null,
         dialog_id: this.$route.params.dialog_id || null,
@@ -68,6 +106,7 @@ export default {
         lastname: '',
         furnitname: '',
         interlocutors: null,
+        index_selected: null,
         //parameters to give to chat directly to somebody in particular
         interlocutor_current: this.$route.params.interlocutor_current || null,
         furnit_id: this.$route.params.furnit_id || null
@@ -97,6 +136,9 @@ export default {
       }
   },
   methods: {
+    nameInterlocutor (itl) {
+      return itl.to[0].firstname + ' ' + itl.to[0].lastname;
+    },
      isAuthor (id) {
       return {
         message: true,
@@ -104,7 +146,16 @@ export default {
         left: (id !== this.id)
       }
     },
-    changeChat (interlocutor) {
+    isSelected (index) {
+      return {
+        chat_it: true,
+        cursor: true,
+        flex: true,
+        selected: index === this.index_selected
+      }
+    },
+    changeChat (interlocutor, index) {
+      this.index_selected = index;
       console.log('displayChat of');
       console.log(interlocutor);
       // Change parameters of talking
@@ -133,7 +184,7 @@ export default {
     }
   },
   updated () {
-    this.$refs.container.$el.scrollTop = this.$refs.container.$el.scrollHeight;
+    this.$refs.container.scrollTop = this.$refs.container.scrollHeight;
   },
   created() {
     console.log('CREATED');
@@ -156,6 +207,7 @@ export default {
       this.socket.emit('getInterlocutors', dataUser);
     }
      this.socket.on('updateInterlocutors', message => {
+       console.log(message);
        this.socket.emit('getInterlocutors', dataUser);
     })
 
@@ -191,27 +243,31 @@ export default {
 
 <style scoped>
 
+.chat_it:hover{
+  opacity:0.7
+}
+
 .message{
-  padding: 4px;
+  padding: 6px;
   border-radius: 3px;
-  margin-bottom:8px;
+  margin:8px 8px;
   cursor: pointer;
+}
+
+.selected{
+  background-color:#1EB4B4;
 }
 
 .left{
   width: 40%;
   margin-left:2%;
-  background-color: #F0F8FF;
+  background-color: #C0C0C0;;
 }
 
 .right{
   width: 40%;
   margin-left:57%;
-  background-color: #FFFAF0;
-}
-
-.status{
-  padding: 5px;
+  background-color: #1E969D;
 }
 
  .el-aside {

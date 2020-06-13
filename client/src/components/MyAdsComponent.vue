@@ -3,16 +3,16 @@
     <nav-component></nav-component>
  <el-container style="height: 100vh;">
     <el-main>
-    <el-row>
+    <!-- <el-row>
         <el-col :span="5" style="margin-bottom:50px;">
             <span class="add__furnit__title">VOS ANNONCES</span>
         </el-col>
         <el-col :span="15" style="margin-bottom:50px;">
   
         </el-col>
-    </el-row>
-    <el-row>
-        <el-col :span="16" :offset="7">
+    </el-row> -->
+    <el-row style="margin-top:5vh;">
+        <el-col :span="18" :offset="3">
         <el-collapse v-model="activeNames">
             <el-collapse-item title="Vos annonces à pourvoir" name="1">
                 <div v-for="(ft, index) in furnits" v-bind:key="index">

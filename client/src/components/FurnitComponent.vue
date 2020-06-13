@@ -3,7 +3,7 @@
      <nav-component :displayTitles="true"></nav-component>
         <el-container style="height:680px;">
             <el-main style="width:100%">
-                  <el-form label-position="top" label-width="80px" >
+                  <el-form label-position="left" label-width="120px" >
                        <el-col :span="10" style="">
                         <el-row style="font-size:18px;margin-bottom: 5vh;font-weight:bold;">
                             <span>{{furnit.name }}</span>
@@ -25,7 +25,7 @@
                                     
                                 </el-carousel>
                                 <el-row style="margin-top:5vh;">
-                                    <el-form-item label="Période de disponibilité">
+                                    <el-form-item label="Disponibilité">
                                         <el-date-picker
                                             readonly
                                             v-model="date"
@@ -47,23 +47,12 @@
                       
                             <el-col :span="8" :offset="3" style="">
                                 <el-row>
-                                
-                                     <el-form-item label="Prix">
-                                        <el-input
-                                            type="primary"
-                                            placeholder="0€/mois"
-                                            size="mini"
-                                            :disabled="true">
-                                        </el-input>
-                                    </el-form-item>
-                                    <el-form-item :label="stateOfFurnit">
-                                        <el-slider v-model="furnit.state" :step="25"
-                                            show-stops :format-tooltip="formatTooltip" :disabled="true"></el-slider>
-                                    </el-form-item>
+                                     <h4>{{furnit.price}} €/MOIS</h4>
+                                    <tag-component state="furnit.state"></tag-component>
                                 </el-row>
 
                                 <el-row>
-                                     <el-form-item label="Propriétaire">
+                                     <!-- <el-form-item label="Propriétaire">
                                      <el-input
                                         size="mini"
                                         type="textarea"
@@ -71,11 +60,20 @@
                                         :placeholder="owner"
                                         :disabled="true">
                                     </el-input>
-                                </el-form-item>
-                             
+                                </el-form-item> -->
+                               <h4>Le propriétaire</h4>
+                               <i class="el-icon-user-solid">
+                               <span style="font-size:14px;margin-right:30px;">{{furnit.owner[0].firstname}}</span>
+                               </i>
+                                <i class="el-icon-location">
+                               <span style="font-size:14px;">
+                                   {{furnit.owner[0].city}}</span>
+                                   </i>
                                 </el-row>
                                  <el-row>
-                                     <el-form-item label="Description">
+                                       <h4>Description</h4>
+                                       <p style="font-size:14px">{{ furnit.description}}</p>
+                                     <!-- <el-form-item label="Description">
                                      <el-input
                                         size="mini"
                                         type="textarea"
@@ -83,10 +81,14 @@
                                         :placeholder="furnit.description"
                                         :disabled="true">
                                         </el-input>
-                                       </el-form-item>
+                                       </el-form-item> -->
                                  
                                 </el-row>
-                                
+                                 <el-row>
+                                        <i class="el-icon-truck">
+                                        <span style="font-size:14px;margin-left:10px;">Livraison possible par le propriétaire</span>
+                                </i>
+                                 </el-row>
                             </el-col>
                            
                      
@@ -95,13 +97,13 @@
                                 
                             </el-col>
                         </el-row>
-                            <el-row>
-                                <el-form :inline="true">
+                            <el-row style="margin-top:30px;">
+                                <el-form :inline="true" style="text-align:center;margin-top:20px;">
                                 <el-form-item>
-                                    <el-button size="mini" value="submit" type="primary" @click="contact">Faire une demande de location</el-button>
+                                    <el-button size="small" value="submit" type="primary" @click="contact">Faire une demande de location</el-button>
                                 </el-form-item>
                                  <el-form-item>
-                                    <el-button size="mini" value="submit" type="success" @click="contact">Contacter le propriétaire</el-button>
+                                    <el-button size="small" value="submit" type="success" @click="contact">Contacter le propriétaire</el-button>
                                 </el-form-item>
                                 </el-form>
                             </el-row>
@@ -115,13 +117,14 @@
 
 <script>
 import NavComponent from './Navigation/NavComponent';
+import TagComponent from './Utils/TagComponent';
 import FurnitService from '../FurnitService';
 import './../style/style.css';
 import FooterComponent from './Footer/FooterComponent';
 
 export default {
   name: 'FurnitComponent',
-  components: { NavComponent, FooterComponent },
+  components: { NavComponent, FooterComponent, TagComponent },
   data() {
     return {
       furnit: { state: 0 },
@@ -142,14 +145,14 @@ export default {
     },
     owner: function () {
         if (this.furnit && this.furnit.owner && this.furnit.owner[0]) {
-            return this.furnit.owner[0].firstname + ' ' + this.furnit.owner[0].lastname + ' \u000A' + this.furnit.owner[0].address + ', ' + this.furnit.owner[0].postcode + ' ' + this.furnit.owner[0].city;
+            return this.furnit.owner[0].firstname + ', ' + this.furnit.owner[0].city;
         }
         return '';
     }
 },
  async created() {
     let context = this;
-    console.log(this.furniture);
+    // console.log(this.furniture);
     FurnitService.getIdentityCardFurnit(this.$route.params.id).then(function(furn) {
       console.log('result');
       console.log(furn);

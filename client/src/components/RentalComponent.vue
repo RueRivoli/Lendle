@@ -26,7 +26,7 @@
                                         <el-date-picker
                                             v-model="date"
                                             type="daterange"
-                                            range-separator="à"
+                                            range-separator="au"
                                             start-placeholder="Début"
                                             end-placeholder="Fin"
                                             format="dd/MM/yyyy"
@@ -76,8 +76,6 @@
                                         :disabled="true">
                                     </el-input>
                                     </el-form-item>
-
-                                    <el-button class="pointer" size="mini" type="primary"  style="margin-top:10px;">Contacter le locataire</el-button>
                                 </el-row>
 
                                  <el-row>
@@ -94,13 +92,14 @@
                                 </el-row>
                                 
                             </el-col>
-                           
-                     
-                         <el-row style="margin-top:5vh;">
-                              <el-col :span="10" style="">
-                                
-                            </el-col>
-                        </el-row>
+                          <el-row>
+                                <el-form :inline="true">
+                                    <el-form-item>
+                                        <el-button size="mini" value="submit" type="success" @click="contact">Contacter le locataire</el-button>
+                                    </el-form-item>
+                                </el-form>
+                            </el-row>
+
                          </el-form>
             </el-main>
         </el-container>
@@ -169,7 +168,7 @@ export default {
      console.log(picture_ids);
      if (picture_ids && picture_ids.length > 0) {
         FurnitService.getImagesUrlFromPicIds(picture_ids).then(function(urls) {
-            context.url = urls.imgurl;
+            context.url = urls.imgUrl;
             console.log(context.url);
             }).catch(function(err) {
             console.log(err);

@@ -40,12 +40,13 @@
                                         <el-date-picker
                                             v-model="date"
                                             type="daterange"
-                                            range-separator="à"
+                                            range-separator="au"
                                             start-placeholder="Début"
                                             end-placeholder="Fin"
                                             format="dd/MM/yyyy"
                                             size="mini"
                                             :picker-options="readonly"
+                                            :disabled="true"
                                             >
                                             </el-date-picker>
                                     </el-form-item>

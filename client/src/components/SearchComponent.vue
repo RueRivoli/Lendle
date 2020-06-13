@@ -48,7 +48,7 @@
                 </el-row>
                <el-row :gutter="6" style="width: 100%;">
                     <el-col v-for="(fnt, index) in furnits_current" v-bind:key="index" :span="5" style="margin-top:5px;">
-                        <el-card class="card opacity" style="height:30vh;">
+                        <el-card class="card opacity" style="height:34vh;">
                             <div style="background-color: #D6DCDD;height: 23vh;">
                                 <!-- <img class="img pointer opacity" :src="imgUrl[index]"> -->
                                 <el-image
@@ -58,7 +58,7 @@
                                     @click="display(fnt)">
                                 </el-image>
                             </div>
-                            <div class="center" style="padding: 5px;">
+                            <div class="center" style="padding: 12px;">
                                 <span class="title cursor" style="font-size:12px;padding:3px;font-weight: bold;">{{ fnt.name }}</span>
                                 <div class="bottom clearfix">
                                     <time  style="font-size:12px;float:left;margin-top: 4px;font-style: italic;" class="time">{{ toFormat(fnt.loanstart)}} - {{ toFormat(fnt.loanend) }}</time>
@@ -70,8 +70,9 @@
                 </el-row>
             </el-main>
         </el-container>
-        <div style="text-align:center;margin-top:10vh;">
+        <div style="text-align:center;margin:10vh;">
         <el-pagination
+        background
         :page-size="page_size"
         :total="numberFurnits"
         layout="prev, pager, next"
@@ -103,7 +104,7 @@ export default {
             word: ''
         },
         current_page: 1,
-        page_size: 4,
+        page_size: 10,
         numberFurnits: 0,
         furnits: [],
         imgUrl: {},
@@ -282,9 +283,9 @@ export default {
 // }
 
 .search{
-    border: 1px solid rgb(223, 224, 230);
-    box-shadow: 0 2px 4px 0 rgba(0,0,0,.2);
-    border-radius: 4px;
+    // border: 1px solid rgb(223, 224, 230);
+    // box-shadow: 0 2px 4px 0 rgba(0,0,0,.2);
+    // border-radius: 4px;
     padding: 8px;
 }
 
@@ -292,7 +293,7 @@ export default {
     cursor: pointer;
 }
 
-.card:hover .title{
+.card:hover{
     color: $--color-primary;
 }
 
@@ -311,7 +312,7 @@ export default {
 }
 
 .title{
-    color: #851922;
+    color: #1E969D;
     text-align:center;
 }
 

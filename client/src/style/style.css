@@ -32,6 +32,10 @@
     justify-content: space-around;
 }
 
+.sp-between{
+  justify-content: space-between;
+}
+
 
 /* float */
 
