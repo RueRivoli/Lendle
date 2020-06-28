@@ -21,12 +21,16 @@
                     <el-row>
                         <el-col class="flex sp-around" :span="8" :offset="8">
                             <!-- <a href="http://localhost:5000/api/auth/google">CLIQUE ICI</a> -->
-                            <el-button id="ggl" value="submit" style="margin-top:5px;background-color:#6C7076;color:white;" size="mini" @click="signUpGoogle">Créer un compte avec Gmail</el-button>
+                            <a href="http://localhost:5000/api/auth/google">
+                                <el-button id="ggl" value="submit" style="margin-top:5px;background-color:#6C7076;color:white;" size="mini" >Créer un compte avec Gmail</el-button>
+                            </a>
                         </el-col>
                     </el-row>
                     <el-row>
                         <el-col class="flex sp-around" :span="8" :offset="8">
+                            <a href="http://localhost:5000/api/auth/facebook">
                             <el-button id="fb" value="submit"  style="margin-top:5px;background-color:#4773B0;color:white;" size="mini">Créer un compte avec Facebook</el-button>
+                            </a>
                         </el-col>
                     </el-row>
                     <el-row>
@@ -180,6 +184,10 @@ export default {
     },
     async signUpGoogle() {
         let result = await AuthService.signUpGoogle();
+        console.log(result);
+    },
+    async signUpFacebook() {
+        let result = await AuthService.signUpFacebook();
         console.log(result);
     }
   }

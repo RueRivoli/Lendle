@@ -4,20 +4,18 @@ var jwt = require('jsonwebtoken');
 const url = 'http://localhost:5000/api/users';
 
 class UserService {
-
+    static getUserFromToken(token) {
+        var decoded = jwt.decode(token, {complete: true});
+        var payload = decoded.payload;
+        return payload;
+    }
     static getUser() {
         let token = document.cookie.split('jwt=')[1];
         var decoded = jwt.decode(token, {complete: true});
-        console.log('Decoded payload');
-        console.log(decoded.header);
-        console.log(decoded.payload);
-        console.log(decoded);
         return decoded.payload;
     }
     static getProfile(token) {
         let url_profile = url + '/profile'
-        console.log('LE TOKEN');
-        console.log(token);
         return new Promise(function(resolve, reject) {
             try {
                 // let config = {

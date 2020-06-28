@@ -104,7 +104,7 @@ export default {
             word: ''
         },
         current_page: 1,
-        page_size: 10,
+        page_size: 4,
         numberFurnits: 0,
         furnits: [],
         imgUrl: {},

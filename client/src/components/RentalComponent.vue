@@ -64,7 +64,7 @@
                                     </el-input>
                                     </el-form-item>
 
-                                    <el-button class="pointer" size="mini" type="primary"  style="margin-top:10px;">Contacter le loueur</el-button>
+ 
                                 </el-row>
                                  <el-row v-else>
                                      <el-form-item  label="Locataire">

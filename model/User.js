@@ -9,7 +9,23 @@ const UserSchema = mongoose.Schema({
         type: String,
         required: false
     },
+    username: {
+        type: String,
+        required: false
+    },
     mail: {
+        type: String,
+        required: false
+    },
+    profilePicture: {
+        type: String,
+        required: false
+    },
+    facebookId: {
+        type: String,
+        required: false
+    },
+    googleId: {
         type: String,
         required: false
     },

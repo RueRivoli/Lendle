@@ -6,7 +6,7 @@
                 <el-tab-pane>
                     <span slot="label">Profil</span>
                     <el-form  style="width:100%;" label-position="left" label-width="130px">
-                        <el-row>
+                        <el-row v-if="!fromSocialOauth">
                             <el-col :span="6" :offset="4">
                                 <el-form-item label="Nom" prop="lastname">
                                     <span>{{ profile.lastname }}</span>
@@ -18,7 +18,14 @@
                                 </el-form-item>
                             </el-col>
                         </el-row>
-                        <el-row>
+                            <el-row v-else-if="fromSocialOauth">
+                            <el-col :span="6" :offset="4">
+                                <el-form-item label="Nom" prop="username">
+                                    <span>{{ profile.username }}</span>
+                                </el-form-item>
+                            </el-col>
+                        </el-row>
+                        <el-row v-if="!fromSocialOauth">
                             <el-col :span="6" :offset="4">
                                 <el-form-item label="Email" prop="email">
                                     <span>{{ profile.mail }}</span>
@@ -75,7 +82,7 @@
                     
                     <el-tab-pane> <span slot="label"><i class="el-icon-edit"></i> Editer</span>
                         <el-form ref="profile" name="profile" style="width:100%;" :model="profile" :rules="rulesProfile" label-position="left" label-width="130px">
-                            <el-row>
+                            <el-row v-if="!fromSocialOauth">
                                 <el-col :span="7" :offset="4">
                                     <el-form-item label="Nom" prop="lastname">
                                         <el-input placeholder="Nom" size="mini" v-model="profile.lastname"></el-input>
@@ -87,13 +94,29 @@
                                     </el-form-item>
                                 </el-col>
                             </el-row>
-                            <el-row>
+                            <el-row v-if="!fromSocialOauth">
                                 <el-col :span="7" :offset="4">
                                     <el-form-item label="Email" prop="email">
                                         <span>{{ profile.mail }}</span>
                                     </el-form-item>
                                     </el-col>
                                     <el-col :span="6" :offset="3">
+                                        <el-form-item label="Langue" prop="language">
+                                            <el-select v-model="profile.language" size="mini" placeholder="">
+                                                <el-option label="Français" value="fr"></el-option>
+                                                <el-option label="English" value="eng"></el-option>
+                                                <el-option label="Español" value="sp"></el-option>
+                                            </el-select>
+                                        </el-form-item>
+                                </el-col>
+                            </el-row>
+                            <el-row v-if="fromSocialOauth">
+                                <el-col :span="7" :offset="4">
+                                    <el-form-item label="Nom" prop="username">
+                                        <el-input placeholder="Nom" size="mini" v-model="profile.username"></el-input>
+                                    </el-form-item>
+                                    </el-col>
+                                   <el-col :span="6" :offset="3">
                                         <el-form-item label="Langue" prop="language">
                                             <el-select v-model="profile.language" size="mini" placeholder="">
                                                 <el-option label="Français" value="fr"></el-option>
@@ -144,7 +167,7 @@
                     <el-button type="primary" value="submit" @click="editProfile()" style="display:block;margin:auto;" size="mini">Valider</el-button>
                     </el-form>
                 </el-tab-pane>
-                <el-tab-pane> <span slot="label"><i class="el-icon-key"></i>Changer le mot de passe</span>
+                <el-tab-pane v-if="!fromSocialOauth"> <span slot="label"><i class="el-icon-key"></i>Changer le mot de passe</span>
                     <el-form ref="password" name="password" style="width:100%;" :model="password" :rules="rulesPassword" label-position="left" label-width="160px" enctype="multipart/form-data">
                         <el-row>
                             <el-col :span="10" :offset="4">
@@ -175,12 +198,24 @@
                 </el-tab-pane>
             </el-tabs>
             </div>
+        <el-dialog
+            title="Bienvenue, dans quel but voulez-vous vous connecter ?"
+            :visible.sync="centerDialogVisible"
+            width="50%"
+            style="border-radius:4px;"
+            center>
+            <span slot="footer" class="dialog-footer">
+                <el-button @click="toRent()">Mettre en location</el-button>
+                <el-button type="primary" @click="toLoan()">Louer</el-button>
+            </span>
+        </el-dialog>
    <footer-component></footer-component>
     </div>
 </template>
 
 
 <script>
+import VueCookies from 'vue-cookies'
 import NavComponent from './Navigation/NavComponent';
 import FooterComponent from './Footer/FooterComponent';
 import UserService from '../UserService';
@@ -211,11 +246,13 @@ export default {
       }
     }
       return {
+        centerDialogVisible: false,
         activeLoaner: true,
         activeRenter: true,
         profile: {
             lastname: '',
             firstname: '',
+            username: '',
             mail: '',
             address: '',
             postcode: '',
@@ -258,6 +295,9 @@ export default {
             lastname: [
                 { min: 3, max: 40, message: 'Length should be between 3 and 40', trigger: 'blur' }
             ],
+            username: [
+                { min: 3, max: 40, message: 'Length should be between 3 and 40', trigger: 'blur' }
+            ],
             type: [
                 { type: 'array', required: true, message: 'Sélectionner au moins un statut', trigger: 'change' }
             ],
@@ -269,13 +309,40 @@ export default {
             ],
         }
     }
-},
+},  beforeCreate() {
+    // Register connexion to Store by Google or Fb
+    // Create Cookie with token
+        if (this.$route.query.token) {
+            VueCookies.set('jwt' , this.$route.query.token , "1h");
+            let payload = UserService.getUserFromToken(this.$route.query.token);
+            this.$store.commit('AUTH');
+            this.$store.commit('ID', payload._id);
+            this.$store.commit('TOKEN', this.$route.query.token);
+        } 
+    },
     async created() {
         let context = this;
-        UserService.getProfile(this.token).then(function(profile) {
+        let token;
+        console.log('TOKKKENNNN');
+        console.log(this.$route.query.token);
+        if (this.$route.query.token) token = this.$route.query.token
+        else {
+            token = this.token;
+        }
+        UserService.getProfile(token).then(function(profile) {
             context.profile = profile;
             if (profile.renter) context.activeRenter = false;
             if (profile.loaner) context.activeLoaner = false;
+            //if we auth with Google or Fb
+            if (context.$route.query.token) {
+                if (profile.renter && profile.loaner) context.centerDialogVisible = true
+                else if (!profile.renter && !profile.loaner) context.centerDialogVisible = true
+                else if (profile.renter) {
+                    context.$store.commit('LOANER', false);
+                } else if (profile.loaner) {
+                    context.$store.commit('LOANER', true);
+                }
+            }
         }).catch(function(err) {
         console.log(err);
     });
@@ -284,8 +351,29 @@ export default {
     ...mapGetters({
       token: 'GET_TOKEN'
     }),
+    fromSocialOauth: function () {
+        return this.profile.facebookId || this.profile.googleId;
+    }
     },
     methods: {
+        toRent() {
+             console.log('User want to be a bailer');
+            this.$store.commit('LOANER', false);
+             if (!this.profile.renter) {
+                this.profile.renter = true;
+                UserService.updateUser(this.profile);
+            }
+            this.centerDialogVisible = false;
+        },
+        toLoan() {
+            console.log('User want to be a locataire');
+            this.$store.commit('LOANER', true);
+            if (!this.profile.loaner) {
+                this.profile.loaner = true;
+                UserService.updateUser(this.profile);
+            }
+            this.centerDialogVisible = false;
+        },
         async editProfile() {
             let context = this;
              console.log('Edit Profile');

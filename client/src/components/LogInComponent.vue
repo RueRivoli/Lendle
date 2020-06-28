@@ -21,12 +21,14 @@
                     <br><br>
                      <el-row>
                         <el-col class="flex sp-around" :span="8" :offset="8">
-                            <el-button value="submit" style="margin-top:5px;background-color:#6C7076;color:white;" size="mini">Connectez-vous avec Gmail</el-button>
+                            <a href="http://localhost:5000/api/auth/google"><el-button value="submit" style="margin-top:5px;background-color:#6C7076;color:white;" size="mini">Connectez-vous avec Gmail</el-button>          </a>
                         </el-col>
                     </el-row>
                     <el-row>
                         <el-col class="flex sp-around" :span="8" :offset="8">
-                            <el-button id="fb" value="submit"  style="margin-top:5px;background-color:#4773B0;color:white;" size="mini">Connectez-vous avec Facebook</el-button>
+                            <a href="http://localhost:5000/api/auth/facebook">
+                                <el-button id="fb" value="submit"  style="margin-top:5px;background-color:#4773B0;color:white;" size="mini">Connectez-vous avec Facebook</el-button>
+                            </a>
                         </el-col>
                     </el-row>
                     <el-row>

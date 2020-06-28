@@ -18,7 +18,7 @@ var cookieParser = require('cookie-parser')
 const app = express();
 
 
-// Middleware
+// Middleware  
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(methodOverride('_method'));
@@ -32,6 +32,7 @@ const furnits = require('./routes/api/furnits');
 const users = require('./routes/api/users');
 const auth = require('./routes/api/auth');
 const rentals = require('./routes/api/rentals');
+
 
 app.use('/api/auth', auth);//register login 
 app.use('/api/users', passport.authenticate('jwt', {session: false}), users);//profile...

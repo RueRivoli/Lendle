@@ -37,6 +37,7 @@ const routes = [
   { path: '/chat', name:'Chat', component: ChatComponent }
 ]
   const router = new VueRouter({
+    mode: 'history',
     routes
   })
 

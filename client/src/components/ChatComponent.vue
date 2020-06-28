@@ -54,7 +54,7 @@
               </div>
                <div style="height:18vh;">
                 <!-- <el-button slot="append" icon="el-icon-paperclip" size="small"></el-button> -->
-                  <el-input placeholder="Message + Entrer"  :rows="4" type="textarea" v-model="msg" class="input-with-select">
+                  <el-input placeholder="Message + Entrer"  :rows="4" type="textarea" v-model="msg" @keyup.enter="sendMessage" class="input-with-select">
                   </el-input>
               </div>
            

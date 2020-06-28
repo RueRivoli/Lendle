@@ -39,11 +39,11 @@ class AuthService {
                 console.log('before send to api/auth');
                 console.log(user);
                 return axios.post(url_login, user).then(function (response) {
-                    console.log('RTOUR DE LOGIN');
+                    console.log('RETOUR DE LOGIN');
                     console.log(response);
                     if (response.data.success) {
                         const token = response.data.token;
-                        VueCookies.set('jwt' , token , "1h") 
+                        VueCookies.set('jwt' , token , "1h");
                         resolve(response.data);
                     } else {
                         resolve(response);
@@ -63,13 +63,13 @@ class AuthService {
         console.log(url_google);
         return new Promise(function(resolve, reject) {
             try {
-                // let config = {
-                //     headers: {
-                //         "Access-Control-Allow-Origin": "*"
-                //     }
-                // }
-                console.log('AAABB');
-                return axios.get(url_google).then(function (response) {
+                let config = {
+                    headers: {
+                        "Access-Control-Allow-Origin": "*"
+                    }
+                }
+                console.log('Try to sign up With Google');
+                return axios.get(url_google, config).then(function (response) {
                     console.log('RETOUR');
                     console.log(response);
                     // if (response.data.success) {
@@ -87,6 +87,37 @@ class AuthService {
             }
         })
     }
+
+    static signUpFacebook() {
+        const url_fb = url + '/facebook';
+        console.log(url_fb);
+        return new Promise(function(resolve, reject) {
+            try {
+                // let config = {
+                //     headers: {
+                //         "Access-Control-Allow-Origin": "*"
+                //     }
+                // }
+                console.log('Try to sign up With Google');
+                return axios.get(url_fb).then(function (response) {
+                    console.log('Retour de signUp Fb');
+                    console.log(response);
+                    // if (response.data.success) {
+                    //     const token = response.data.token;
+                    //     localStorage.setItem('Authorization', token);
+                    //     resolve(response.data.success);
+                    // }
+                    resolve(response);
+                }).catch(function (error) {
+                    console.log(error);
+                    reject(error);
+                });
+            } catch(err) {
+                reject(err);
+            }
+        })
+    }
+
 
     static sendValidationUser(mail) {
         const url_validation = url + '/validation';

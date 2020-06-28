@@ -46,77 +46,85 @@ passport.serializeUser(function(user, done) {
 });
 
 passport.deserializeUser(function(id, done) {
-  console.log("DESERIA");
+  console.log("DESERIALISER");
   console.log(id);
   User.findById(id).then((user))
   done(null, user);
 });
 
 //scope: ['profile', 'email']
+router.get('/login',
+  function(req, res){
+    res.send('login');
+  });
+
 
 router.get('/google',
-      passport.authenticate('google', {scope: [
-        'https://www.googleapis.com/auth/plus.login',
-        'https://www.googleapis.com/auth/plus.profile.emails.read'
-      ]  }));
+passport.authenticate('google', { scope: ['profile', 'email'] }));
 
   router.get('/google/callback', 
       passport.authenticate('google', { failureRedirect: '/login' }),
     function(req, res) {
-      console.log('REQ ET RES DU CALLBACK');
-      console.log(res);
-      // console.log(req);
-      res.setHeader('Access-Control-Allow-Origin', '*');
-      if (req.method === "OPTIONS") {
-        res.setHeader('Access-Control-Allow-Headers', 'Accept, Content-type');
-      }
+
       const payload = {
         _id: req.session.passport.user,
+        loaner: req.user.loaner,
+        renter: req.user.renter
       }
+      console.log('payload before redirection');
+      console.log(payload);
       jwt.sign(payload, key, { expiresIn: 604800 }, (err, token) =>  {
         if (err) {
-          res.redirect('/api/users/profile');
+          res.redirect('http://localhost:8080/login');
         } else {
-          console.log(token);
-          res.clearCookie('jwt');
-          console.log('COOKIE PARSER');
-          console.log(req.cookies);
-          res.cookie('jwt', token);
-          console.log(req.cookies);
+          res.redirect('http://localhost:8080/profile?token=' + `${token}`);
+          // console.log(token);
+          // res.clearCookie('jwt');
+          // console.log('COOKIE PARSER');
+          // console.log(req.cookies);
+          // res.cookie('jwt', token);
+          // console.log(req.cookies);
         }
-        res.header("Access-Control-Allow-Origin", "http://localhost:8080");
-        res.redirect('/api/users/profile');
       });
-  
-    
   });
-
-// router.post('/profile', verifyToken, (req, res) => {
-//    jwt.verify(req.token, key, (err, authData) => {
-//      console.log(req.token);
-//      console.log(authData);
-//     //  console.log(err);
-//      if (err) {
-//       return res.status(403).json({
-//         err: 'Erroeffefe'
-//       });
-//      } else {
-//        res.json({
-//          message: 'Profile ok',
-//          authData
-//        });
-//      }
-//    });
-//   });
 
 
 router.get('/facebook',
-  passport.authenticate('facebook', { scope: 'email' })
-);
+  passport.authenticate('facebook', ["email", "publish_stream", "user_location", "user_hometown", "user_birthday", "read_friendlists"]));
 
 router.get('/facebook/callback',
-  passport.authenticate('facebook', { successRedirect: '/api/users/profile',
-                                      failureRedirect: '/login' }));
+  passport.authenticate('facebook', { failureRedirect: '/login' }),
+  function(req, res) {
+    // Successful authentication, redirect home.
+    // res.redirect('/api/auth/profile');
+    console.log('LA REQUETE');
+    // console.log(req);
+
+    // res.writeHead(302, {
+    //   'Location': 'http://localhost:8080/profile',
+    //   //add other headers here...
+    // });
+    // res.end();
+    const payload = {
+      _id: req.session.passport.user,
+      loaner: req.user.loaner,
+      renter: req.user.renter
+    }
+    console.log('payload before redirection');
+    console.log(payload);
+    jwt.sign(payload, key, { expiresIn: 604800 }, (err, token) =>  {
+      res.redirect('http://localhost:8080/profile?token=' + `${token}`);
+    });
+    
+  });
+
+// router.get('/facebook',
+//   passport.authenticate('facebook', { scope: 'email' })
+// );
+
+// router.get('/facebook/callback',
+//   passport.authenticate('facebook', { successRedirect: '/api/users/profile',
+//                                       failureRedirect: '/login' }));
 
 
 //Sign up a user
@@ -127,7 +135,6 @@ router.post('/signup', function (req, res) {
     passwordConfirmed,
     loaner,
     renter
-
   } = req.body;
   if (password !== passwordConfirmed) {
     return res.status(404).json({
@@ -296,6 +303,7 @@ router.post('/login', function (req, res) {
   let pswd = req.body.password;
   console.log('PASD');
   console.log(pswd);
+  console.log(mail);
   User.findOne({ mail: mail }).then(usr => {
     console.log(usr);
     if (!usr) {

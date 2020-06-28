@@ -6,9 +6,10 @@ const key = require('./keys').secret;
 var cookieParser = require('cookie-parser');
 
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
-const GOOGLE_CLIENT_ID = require('./keys').GOOGLE_CLIENT_ID;
-const GOOGLE_CLIENT_SECRET = require('./keys').GOOGLE_CLIENT_SECRET;
-
+// const GOOGLE_CLIENT_ID = require('./keys').GOOGLE_CLIENT_ID;
+// const GOOGLE_CLIENT_SECRET = require('./keys').GOOGLE_CLIENT_SECRET;
+const GOOGLE_CLIENT_ID = '822102734691-o4mdd9up7bc0va8c0qc2615gnhm7fpc6.apps.googleusercontent.com';
+const GOOGLE_CLIENT_SECRET = 'aSyRuWPwFjt1ffgNblERX_5f';
 
 const passport = require('passport');
 const FacebookStrategy = require('passport-facebook').Strategy;
@@ -35,8 +36,8 @@ module.exports = passport => {
             // console.log('Resultat jwt_payload');
             // console.log(jwt_payload);
             console.log('jwt strategy');
-            // console.log('OPTS');
-            // console.log(jwt_payload);
+            console.log('JWT PAL');
+            console.log(jwt_payload);
             User.findById(jwt_payload._id).then(user => {
                 if (user) return done(null, user)
                 return done(null, false);
@@ -45,59 +46,101 @@ module.exports = passport => {
             });
 }))
 
-    // passport.use(
-    //     new GoogleStrategy({
-    //       clientID: GOOGLE_CLIENT_ID,
-    //       clientSecret: GOOGLE_CLIENT_SECRET,
-    //       callbackURL: "/api/auth/google/callback",
-    //       passReqToCallback: true
-    //   }, (accessToken, refreshToken, profile, done) => {
-    //       User.findOne({ googleId: profile.id }).then((currentUser) => {
-    //         console.log('GOOGLE STRATEGY');
-    //         console.log(currentUser);
-    //           if (currentUser) {
-    //               done(null, currentUser);
-    //           } else {
-    //               newUser = new User();
-    //               newUser.firstname = profile.name.givenName,
-    //               newUser.lastname = profile.name.familyName,
-    //               newUser.mail = profile._json.mail,
-    //               newUser.isVerified = 'true',
-    //               newUser.language = profile._json.locale,
-    //               newUser.googleId = profile.profileId
-    //               newUser.save().then((newUser) => {
-    //                 //   console.log('new user created:' + newUser);
-    //               })
-    //           }
-    //         return done(null, newUser);
-    //       });
-    //   }
-    // ));
+// passport.use(
+//   new GoogleStrategy({
+//     clientID: GOOGLE_CLIENT_ID,
+//     clientSecret: GOOGLE_CLIENT_SECRET,
+//     callbackURL: "http://localhost:5000/api/auth/google/callback",
+//     passReqToCallback: true
+// }, (accessToken, refreshToken, profile, done) => {
+//   console.log('at least in passport gstr');
+//   console.log(GOOGLE_CLIENT_ID);
+//   console.log(GOOGLE_CLIENT_SECRET);
+//   console.log('rer');
+//   console.log(profile);
+
+//     return done(null, {});
+// }
+// ));
+
+    passport.use(
+        new GoogleStrategy({
+          clientID: GOOGLE_CLIENT_ID,
+          clientSecret: GOOGLE_CLIENT_SECRET,
+          callbackURL: "http://localhost:5000/api/auth/google/callback",
+          passReqToCallback: true
+      }, (req, accessToken, refreshToken, profile, done) => {
+        console.log('Callback passport Google Oauth');
+        console.log('Profile :');
+        console.log(profile);
+          User.findOne({ googleId: profile.id }).then((currentUser) => {
+            console.log('Current User');
+            console.log(currentUser);
+              if (currentUser) {
+                console.log('FIND google id');
+                  done(null, currentUser);
+              } else {
+                  newUser = new User();
+                  newUser.googleId = profile.id,
+                  newUser.username = profile.displayName,
+                  newUser.firstname = profile.name.givenName,
+                  newUser.lastname = profile.name.familyName,
+                  newUser.mail = profile.emails.value,
+                  newUser.isVerified = 'true',
+                  newUser.profilePicture = profile.photos[0].value,
+                  console.log('New User');
+                  console.log(newUser);
+                  newUser.save().then((newUser) => {
+                      console.log('new user created:' + newUser);
+                  })
+              }
+            return done(null, newUser);
+          });
+          // return done(null, {});
+      }
+    ));
 
     passport.use(new FacebookStrategy({
         clientID: FACEBOOK_APP_ID,
         clientSecret: FACEBOOK_APP_SECRET,
-        callbackURL: "/api/auth/facebook/callback"
+        callbackURL: "/api/auth/facebook/callback",
+        profileFields: ['id', 'displayName', 'photos', 'email']
       },
       function(accessToken, refreshToken, profile, done) {
         console.log('DONNEES RECUPEREES');
-        // console.log(accessToken);
-        // console.log(refreshToken);
-        // console.log(profile);
-        User.findOne({ fbId: profile.id }).then((currentUser) => {
+        console.log(accessToken);
+        console.log(refreshToken);
+        console.log(profile);
+        console.log('PROFILE ID');
+        console.log(profile.id);
+        User.findOne({ facebookId: profile.id }).then((currentUser) => {
+          console.log('THERE');
+          console.log(currentUser);
             if (currentUser) {
-                done(null, currentUser);
+              console.log('exist');
+                return done(null, currentUser);
             } else {
+              console.log('NO curretnusre')
                 newUser = new User();
-                newUser.firstname = profile.name.givenName,
+                newUser.facebookId = profile.id;
+                if (profile.name && profile.name.familyName) {
+                  newUser.lastname = profile.name.familyName
+                }
+                if (profile.name && profile.name.givenName) {
+                  newUser.firstname = profile.name.givenName
+                }
+                if (!profile.name.familyName || !profile.name.givenName) {
+                  if (profile.username) newUser.username = profile.username
+                  else if (profile.displayName) newUser.username = profile.displayName
+                } else newUser.username = newUser.firstname + ' ' + newUser.lastname
                 newUser.isVerified = 'true',
-                newUser.lastname = profile.name.familyName,
-                newUser.language = profile._json.locale,
-                newUser.googleId = profile.profileId
+                console.log('NEW USER');
+                console.log(newUser);
                 newUser.save().then((newUser) => {
-                  //   console.log('new user created:' + newUser);
+                    console.log('new user created:' + newUser);
                 });
+                return done(null, newUser);
             }
-          return done(null, newUser);
       });
+      // return done(null, {});
     }))};
