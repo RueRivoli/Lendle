@@ -136,6 +136,50 @@ class AuthService {
         })
     }
 
+    static passwordForgotten(mail) {
+        const url_reinit_pswd = url + '/passwordForgotten';
+        return new Promise(function(resolve, reject) {
+            try {
+                return axios.post(url_reinit_pswd, mail).then(function (response) {
+                    console.log(response);
+                    resolve(response);
+                }).catch(function (error) {
+                    console.log(error);
+                    reject(error);
+                });
+            } catch(err) {
+                reject(err);
+            }
+        })
+    }
+
+    static reinitializePassword(password, query) {
+        const url_reinit_pswd = url + '/reinitializePassword';
+        console.log(query);
+        return new Promise(function(resolve, reject) {
+            try {
+                let {token, email} = query;
+                let data = { password, token, email };
+                return axios.post(url_reinit_pswd, data).then(function (response) {
+                    console.log('RETOUR DE REINIT PSWD');
+                    console.log(response);
+                    if (response.data.success) {
+                        const token = response.data.token;
+                        VueCookies.set('jwt' , token , "1h");
+                        resolve(response.data);
+                    } else {
+                        resolve(response);
+                    }
+                }).catch(function (error) {
+                    console.log(error);
+                    reject(error);
+                });
+            } catch(err) {
+                reject(err);
+            }
+        })
+    }
+
     static getProfile() {
         // console.log(profile);
         let url_profile = url + '/profile'

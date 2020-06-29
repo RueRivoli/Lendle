@@ -65,7 +65,7 @@
                     <el-row>
                         <el-col :span="8" :offset="8">
                             <div style="text-align:center;font-size:12px;margin-top:5px;">
-                                Vous avez oublié votre <span class="pointer green">mot de passe ?</span>
+                                Vous avez oublié votre <span class="pointer green"><router-link to="/passwordForgotten" tag="span">mot de passe ?</router-link></span>
                             </div>
                         </el-col>
                     </el-row>
@@ -174,11 +174,6 @@ export default {
                 context.centerDialogVisible = true
             }
             else {
-               
-                console.log('IS Renter ????');
-                console.log(data.user.renter);
-                console.log('IS Loaner ????');
-                console.log(data.user.loaner);
                 if (data.user.renter) {
                     console.log('commitons c est un renter');
                     context.$store.commit('LOANER', false);

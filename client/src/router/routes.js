@@ -16,11 +16,15 @@ import ProfileComponent from './../components/ProfileComponent';
 import HelpComponent from './../components/HelpComponent';
 import ConditionComponent from './../components/ConditionComponent';
 import ReSendMailValidationComponent from './../components/ReSendMailValidationComponent';
+import PasswordForgottenComponent from './../components/PasswordForgottenComponent';
+import ReinitializePasswordComponent from './../components/ReinitializePasswordComponent';
 
 const routes = [
   { path: '/', name:'Home', component: HomeComponent },
   { path: '/intro/beARenter', name: 'Intro', component: IntroComponent, props: {displayLendle: true } },
   { path: '/login', name:'LogIn', component: LogInComponent },
+  { path: '/passwordForgotten', name:'passwordForgotten', component: PasswordForgottenComponent },
+  { path: '/reinitializepassword', name:'reinitializePassword', component: ReinitializePasswordComponent },
   { path: '/search', name:'Search', component: SearchComponent },
   { path: '/signup/:as', name:'SignUp', component: SignUpComponent },
   { path: '/profile', name:'ProfileComponent', component: ProfileComponent },

@@ -9,6 +9,11 @@ const TokenSchema = mongoose.Schema({
         type: String,
         required: true
     },
+    tokenExpires: {
+        type: Date,
+        required: true,
+        default: Date.now() + 3600000
+    },
     createdAt: {
         type: Date,
         required: true,
