@@ -17,26 +17,23 @@ const FACEBOOK_APP_ID = require('./keys').FACEBOOK_APP_ID;
 const FACEBOOK_APP_SECRET = require('./keys').FACEBOOK_APP_SECRET;
 
 
-var cookieExtractor = function(req) {
-  var token = null;
-  if (req && req.headers && req.headers.authorization) token = req.headers.authorization.split('Bearer ')[1]
-  if (req && req.headers && req.headers.cookie) token = req.headers.cookie.split('jwt=')[1]
-  return token;
-};
+// var cookieExtractor = function(req) {
+//   var token = null;
+//   if (req && req.headers && req.headers.authorization) token = req.headers.authorization.split('Bearer ')[1]
+//   if (req && req.headers && req.headers.cookie) token = req.headers.cookie.split('jwt=')[1]
+//   return token;
+// };
 
 const opts = {};
-
+// opts.jwtFromRequest = cookieExtractor;
 opts.jwtFromRequest = ExtractJwt.fromAuthHeaderAsBearerToken();
 
-// opts.jwtFromRequest = cookieExtractor;
+
 opts.secretOrKey = key;
 module.exports = passport => {
     passport.use(
         new JwtStrategy(opts, (jwt_payload, done) => {
-            // console.log('Resultat jwt_payload');
-            // console.log(jwt_payload);
-            console.log('jwt strategy');
-            console.log('JWT PAL');
+            console.log('Resultat jwt_payload');
             console.log(jwt_payload);
             User.findById(jwt_payload._id).then(user => {
                 if (user) return done(null, user)
@@ -45,23 +42,6 @@ module.exports = passport => {
                 console.log(err)
             });
 }))
-
-// passport.use(
-//   new GoogleStrategy({
-//     clientID: GOOGLE_CLIENT_ID,
-//     clientSecret: GOOGLE_CLIENT_SECRET,
-//     callbackURL: "http://localhost:5000/api/auth/google/callback",
-//     passReqToCallback: true
-// }, (accessToken, refreshToken, profile, done) => {
-//   console.log('at least in passport gstr');
-//   console.log(GOOGLE_CLIENT_ID);
-//   console.log(GOOGLE_CLIENT_SECRET);
-//   console.log('rer');
-//   console.log(profile);
-
-//     return done(null, {});
-// }
-// ));
 
     passport.use(
         new GoogleStrategy({

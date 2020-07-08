@@ -13,25 +13,28 @@
     <el-row style="margin-top:5vh;">
         <el-col :span="18" :offset="3">
         <el-collapse v-model="activeNames">
-            <el-collapse-item title="En demande de location" name="1">
+            <el-collapse-item name="1">
+                <template slot="title">
+                    En demande de location<el-tag type="primary" size="mini" style="margin-left: 15px;">{{quantity[0]}}</el-tag>
+                </template>
                   <div v-for="(rt, index) in rentals" v-bind:key="index">
-            <el-row class="pointer opacity" v-if="rt.status === 0" style="height:90px;padding: 10px;margin-bottom:7px;">
-            <el-col  :span="24" style="height: 100%;">
-             <el-card class="box-card opacity" :body-style="{ padding: '2px', height: '90px'}">
-                 <!-- <el-col :span="5" >
-                   <img v-if="url.imgurl && url.imgurl[index]" class="image pointer opacity" :src="url.imgurl[index]">
-                   <img v-else class="image pointer opacity" src="../assets/gris.jpg">
-                </el-col> -->
-                <el-col class="full_height" :span="4" >
-                 <div class="full_height" style="background-color: #D6DCDD;max-height: 100px;">
-                                <!-- <img class="img pointer opacity" :src="imgUrl[index]"> -->
-                    <el-image
-                        class="pointer full_height"
-                        :src="imgUrl[index]"
-                        fit="contain">
-                    </el-image>
-                </div>
-                </el-col>
+                    <el-row class="pointer opacity" v-if="rt.status === 0" style="height:90px;padding: 10px;margin-bottom:7px;">
+                        <el-col  :span="24" style="height: 100%;">
+                            <el-card class="box-card opacity" :body-style="{ padding: '2px', height: '90px'}">
+                                <!-- <el-col :span="5" >
+                                <img v-if="url.imgurl && url.imgurl[index]" class="image pointer opacity" :src="url.imgurl[index]">
+                                <img v-else class="image pointer opacity" src="../assets/gris.jpg">
+                                </el-col> -->
+                            <el-col class="full_height" :span="4" >
+                            <div class="full_height" style="background-color: #D6DCDD;max-height: 100px;">
+                                            <!-- <img class="img pointer opacity" :src="imgUrl[index]"> -->
+                                <el-image
+                                    class="pointer full_height"
+                                    :src="imgUrl[index]"
+                                    fit="contain">
+                                </el-image>
+                            </div>
+                            </el-col>
                 <el-col :span="5" :offset="1">
                     <div style="margin-top: 20px;"><span class= "pointer opacity" style="font-weight:bold;">{{ rt.furnit[0].name }}</span></div>
                 </el-col>
@@ -54,7 +57,10 @@
                 </el-row>
                 </div>
             </el-collapse-item>
-            <el-collapse-item title="En location" name="2">
+            <el-collapse-item name="2">
+                <template slot="title">
+                    En location<el-tag type="primary" size="mini" style="margin-left: 15px;">{{quantity[1]}}</el-tag>
+                </template>
                 <div v-for="(rt, index) in rentals" v-bind:key="index">
             <el-row class="pointer opacity" v-if="rt.status === 1" style="height:90px;padding: 10px;margin-bottom:7px;">
             <el-col  :span="24" style="height: 100%;">
@@ -95,8 +101,10 @@
                 </el-row>
                 </div>
             </el-collapse-item>
-            <el-collapse-item title="Locations terminées" name="3">
-                
+            <el-collapse-item name="3">
+                 <template slot="title">
+                    Locations terminées <el-tag type="primary" size="mini" style="margin-left: 15px;">{{quantity[2]}}</el-tag>
+                </template>
                 <div v-for="(rt, index) in rentals" v-bind:key="index">
                 <el-row class="pointer opacity"  v-if="rt.status === 2"  style="height:90px;padding: 10px;margin-bottom:7px;">
                     <el-col  :span="24" style="height: 100%;">
@@ -157,7 +165,8 @@ export default {
       return {
           rentals: {},
           imgUrl: {},
-          activeNames: ['1']
+          activeNames: [''],
+          quantity: [0, 0, 0]
       }
   },
   methods: {
@@ -203,6 +212,18 @@ export default {
     let picture_ids = new Array();
     context.rentals.forEach(function(rt){
         console.log(rt);
+        if (rt.status === 0) {
+            context.activeNames.push('1');
+            context.quantity[0]++;
+        }
+        if (rt.status === 1) {
+            context.activeNames.push('2');
+            context.quantity[1]++;
+        }
+        if (rt.status === 2) {
+            context.activeNames.push('3');
+            context.quantity[2]++;
+        }
         if (rt.furnit[0].picture_ids.length > 0) picture_ids.push(rt.furnit[0].picture_ids[0]);
     });
     console.log('PICIDS');

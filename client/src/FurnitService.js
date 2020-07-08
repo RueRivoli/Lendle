@@ -1,4 +1,5 @@
 import axios from 'axios';
+import store from './store'
 
 const url = 'http://localhost:5000/api/furnits/';
 
@@ -7,7 +8,9 @@ const urlupload = 'http://localhost:5000/api/furnits/upload';
 class FurnitService {
 
     static defaultsHeaders() {
-        let token = document.cookie.split('jwt=')[1];
+        let token = store.getters.GET_TOKEN;
+        console.log(token);
+        // let token = document.cookie.split('jwt=')[1];
         axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
     }
 
@@ -49,12 +52,6 @@ class FurnitService {
         this.defaultsHeaders();
         return new Promise(function(resolve, reject) {
             try {
-                // let token = document.cookie.split('jwt=')[1];
-                // let config = {
-                //     headers: {
-                //         'Authorization': `Bearer ${token}`
-                //     },
-                // };
                 axios.get(url + 'search/', furnit0).then(function (response) {
                     // handle success
                     console.log('FurnitService ==>');
@@ -74,16 +71,10 @@ class FurnitService {
 
     static getFurnitsFromRenter(){
         console.log('Gets Furnit from a renter');
-
+        this.defaultsHeaders();
         return new Promise(function(resolve, reject) {
             try {
-                let token = document.cookie.split('jwt=')[1];
-                let config = {
-                    headers: {
-                        'Authorization': `Bearer ${token}`
-                    },
-                };
-                axios.get(url + 'rent/', config).then(function (response) {
+                axios.get(url + 'rent/').then(function (response) {
                     // handle success
                     console.log('Response of getFurnitsFromRenter ==>');
                     console.log(response);
@@ -122,10 +113,9 @@ class FurnitService {
     //pour myFurnitComponent
     static getImagesUrlFromPicIds(pic_ids) {
         let url_new = url + 'images/';
+        this.defaultsHeaders();
         return new Promise(function(resolve, reject) {
             try {
-                let token = document.cookie.split('jwt=')[1];
-                axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
                 axios.get(`${url_new}${pic_ids}`).then(function (response) {
                     // handle success
                     const data = response.data;
@@ -192,15 +182,10 @@ class FurnitService {
 
     // insert a new furniture from the form page
     static insertFurniture(furnit) {
+        this.defaultsHeaders();
         return new Promise(function(resolve, reject) {
             try {
-                let token = document.cookie.split('jwt=')[1];
-                let config = {
-                    headers: {
-                        'Authorization': `Bearer ${token}`
-                    },
-                };
-                return axios.post(url, config, furnit).then(function (response) {
+                return axios.post(url, furnit).then(function (response) {
                     console.log('Response');
                     console.log(response);
                     if (response.data) resolve(response.data);

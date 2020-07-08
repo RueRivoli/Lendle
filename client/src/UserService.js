@@ -1,9 +1,18 @@
 import axios from 'axios';
+import store from './store'
 var jwt = require('jsonwebtoken');
 
 const url = 'http://localhost:5000/api/users';
 
 class UserService {
+
+    static defaultsHeaders() {
+        let token = store.getters.GET_TOKEN;
+        console.log(token);
+        // let token = document.cookie.split('jwt=')[1];
+        axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+    }
+
     static getUserFromToken(token) {
         var decoded = jwt.decode(token, {complete: true});
         var payload = decoded.payload;
@@ -14,59 +23,27 @@ class UserService {
         var decoded = jwt.decode(token, {complete: true});
         return decoded.payload;
     }
-    static getProfile(token) {
-        let url_profile = url + '/profile'
+    static getProfile() {
+        let url_profile = url + '/profile';
+        this.defaultsHeaders();
         return new Promise(function(resolve, reject) {
             try {
-                // let config = {
-                //     headers: {
-                //         'Content-Type': 'application/json;charset=UTF-8',
-                //         "Authorization": localStorage.getItem('JWT'),
-                //     }
-                // };
-                // let token = "zffzfzffzfz78625362fzezef";
-                // let storage = document.cookie.jwt;
-                // let token = document.cookie.split('jwt=')[1];
-                // console.log('Cookie')
-                // console.log(token);
-                let config = {
-                    headers: {
-                        // 'Content-Type': 'application/json;charset=UTF-8',
-                        // "Authorization": localStorage.getItem('JWT'),
-                        // "Access-Control-Allow-Origin": "http://localhost:8080",
-                        //    "Access-Control-Allow-Credentials": true,
-                        'Authorization': `Bearer ${token}`
-                           
-                    },
-                };
-                // axios.defaults.withCredentials = true;
-                // require('axios-debug-log');
-
-                return axios.get(url_profile, config).then(function (response) {
+                
+                return axios.get(url_profile).then(function (response) {
                     console.log(response);
                     resolve(response.data.profile);
                 }).catch(function (error) {
-                    console.log('ERROR');
+                    console.log('Error');
                     if (error.response) {
-                        console.log('RESPOOONNSE');
-                        /*
-                         * The request was made and the server responded with a
-                         * status code that falls out of the range of 2xx
-                         */
+                        console.log('Response');
                         console.log(error.response.data);
                         console.log(error.response.status);
                         console.log(error.response.headers);
                     } else if (error.request) {
-                        console.log('REQQEUUUEST');
-                        /*
-                         * The request was made but no response was received, `error.request`
-                         * is an instance of XMLHttpRequest in the browser and an instance
-                         * of http.ClientRequest in Node.js
-                         */
+                        console.log('Request');
                         console.log(error.request);
                     } else {
-                        console.log('ELLLSEE');
-                        // Something happened in setting up the request and triggered an Error
+                        console.log('Else');
                         console.log('Error', error.message);
                     }
                 });
@@ -79,17 +56,11 @@ class UserService {
 
     static updateUser(user) {
         const url_update = url + '/update';
+        this.defaultsHeaders();
         console.log('updateUser');
         return new Promise(function(resolve, reject) {
             try {
-                let token = document.cookie.split('jwt=')[1];
-                let config = {
-                    headers: {
-                        'Authorization': `Bearer ${token}`
-                           
-                    },
-                };
-                return axios.post(url_update, user, config).then(function (response) {
+                return axios.post(url_update, user).then(function (response) {
                     console.log(response.data.msg);
                     resolve(response.data.msg);
                 }).catch(function (error) {
@@ -112,16 +83,10 @@ class UserService {
     static changePassword(pswd) {
         const url_change_pswd = url + '/password';
         console.log('change Password ==>');
+        this.defaultsHeaders();
         return new Promise(function(resolve, reject) {
             try {
-                let token = document.cookie.split('jwt=')[1];
-                let config = {
-                    headers: {
-                        'Authorization': `Bearer ${token}`
-                           
-                    },
-                };
-                return axios.post(url_change_pswd, pswd, config).then(function (response) {
+                return axios.post(url_change_pswd, pswd).then(function (response) {
                     console.log(response.data.msg);
                     resolve(response.data.msg);
                 }).catch(function (error) {

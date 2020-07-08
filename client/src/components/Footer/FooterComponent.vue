@@ -15,7 +15,7 @@
             <el-row>
                 <el-col :span="5" :offset="2">
                     <el-row class="line-h">
-                        <span class="pointer"><router-link to="/home" tag="span">Accueil</router-link></span>
+                        <span class="pointer"><router-link to="/" tag="span">Accueil</router-link></span>
                     </el-row>
                     <el-row class="line-h">
                         <span class="pointer"><router-link to="/intro/beARenter" tag="span">Comment louer des meubles</router-link></span>

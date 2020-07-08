@@ -22,61 +22,111 @@ mongoose.connect( URI, { dbName: 'furniture-loan', useNewUrlParser: true, useUni
         //get the name of the people the user talks to (in the db dialog)
         let chats = mongoose.connection.db.collection('chats');
         let dialogs = mongoose.connection.db.collection('dialogs');
+        let furnits = mongoose.connection.db.collection('furnits');
+
+        //Check if user want to speak to somebody at first and create dialog if doesnt exist
         socket.on('addNewInterlocutor', (dataUser) => {
             console.log('getMessagesIntoDb');
             //if the user wants to speak to somebody in particular
-            console.log(dataUser.interlocutor_current);
-            if (dataUser.interlocutor_current) {
-                console.log("interlocuter");
-                console.log(dataUser.interlocutor_current);
+            console.log(dataUser.interlocutor_id);
+            let  itl_id = dataUser.interlocutor_id;
+            if (itl_id) {
+                console.log("User wants to speak to a specific person");
+                console.log(dataUser.interlocutor_id);
                 if (dataUser.loaner) {
-                    console.log('isLoaner');
-                    let int_curr = dataUser.interlocutor_current;
-                    dialogs.findOne({renter_id: ObjectId(int_curr), loaner_id: ObjectId(dataUser.id) }, (err, dl) => {
-                        console.log('DL');
+                    console.log('The curent user is a locataire');
+                    dialogs.findOne({renter_id: ObjectId(itl_id), loaner_id: ObjectId(dataUser.id) }, (err, dl) => {
+                        console.log('Dialog entre user et interlocutor wanted');
                         console.log(dl);
                         if (err) {
-                            console.log("erreur");
+                            console.log("Erreur dans la recherche de dialog entre les 2 utilisateurs");
                             socket.emit('updateInterlocutors');
                             throw err;
                         //if dialog hasn't be created with the user we want to speak to 
                         } else if (!dl || dl.length === 0) {
                             let new_dialog = {
                                 loaner_id: ObjectId(dataUser.id),
-                                renter_id: ObjectId(int_curr),
-                                furnit_id: ObjectId(dataUser.furnit_id),
+                                renter_id: ObjectId(itl_id),
+                                furnit_id: new Array(ObjectId(dataUser.furnit_id)),
                                 last_talk: new Date()
                             }
-                            console.log('new_dialog');
+                            console.log('New dialog created');
                             console.log(new_dialog);
-                            dialogs.insertOne(new_dialog);
-                            socket.emit('updateInterlocutors');
+                            dialogs.insertOne(new_dialog, (err, result) => {
+                                console.log('Dialog inséré');
+                                console.log(result.ops);
+                                let firstMessage = {
+                                    author_id: dataUser.id,
+                                    dest_id: result.ops[0].renter_id,
+                                    // mail: this.mail,
+                                    text: "J'aimerais entrer en contact avec vous (message automatique)",
+                                    dialog_id: result.ops[0]._id
+                                  }
+                                  chats.insert(firstMessage);
+                                  console.log('firstMessage');
+                                  console.log(firstMessage);
+                            });
+                           socket.emit('updateInterlocutors');
                         } else {
-                            socket.emit('updateInterlocutors');
+                            // Dialog has been iniciated
+                            if (dl.furnit_id.includes(dataUser.furnit_id)) {
+                                socket.emit('updateInterlocutors');
+                            } else {
+                                let new_array = dl.furnit_id;
+                                new_array.push(ObjectId(dataUser.furnit_id));
+                                dialogs.updateOne(
+                                    { _id : ObjectId(dl._id) },
+                                    { $set: { "furnit_id" : new_array } }
+                                 );
+                                 socket.emit('updateInterlocutors');
+                            }
                         }
                     });
                 } else {
-                    let int_curr = dataUser.interlocutor_current;
-                    console.log('as renter');
-                    dialogs.findOne({loaner_id: ObjectId(int_curr), renter_id: ObjectId(dataUser.id)}, (err, dl) => {
-                        console.log('DL');
+                    console.log('The current user is a bailleur');
+                    dialogs.findOne({loaner_id: ObjectId(itl_id), renter_id: ObjectId(dataUser.id)}, (err, dl) => {
+                        console.log('Dialog between user and interlocutor wanted');
                         console.log(dl);
                         if (err) {
+                            console.log("Erreur dans la recherche de dialog entre les 2 utilisateurs");
                             socket.emit('updateInterlocutors');
                             throw err;
                         } else if (!dl || dl.length === 0) {
                             let new_dialog = {
                                 renter_id: ObjectId(dataUser.id),
-                                loaner_id: ObjectId(int_curr),
-                                furnit_id: ObjectId(dataUser.furnit_id),
+                                loaner_id: ObjectId(itl_id),
+                                furnit_id: new Array(ObjectId(dataUser.furnit_id)),
                                 last_talk: new Date()
                             }
-                            console.log('new_dialog');
+                            console.log('New dialog created');
                             console.log(new_dialog);
-                            dialogs.insertOne(new_dialog);
-                            socket.emit('updateInterlocutors');
+                            dialogs.insertOne(new_dialog, (err, result) => {
+                                console.log('Dialog inséré');
+                                console.log(result.ops);
+                                let firstMessage = {
+                                    author_id: dataUser.id,
+                                    dest_id: result.ops[0].loaner_id,
+                                    // mail: this.mail,
+                                    text: "J'aimerais entrer en contact avec vous (message automatique)",
+                                    dialog_id: result.ops[0]._id
+                                  }
+                                  chats.insert(firstMessage);
+                                  console.log('firstMessage');
+                                  console.log(firstMessage);
+                            });
+                           socket.emit('updateInterlocutors');
                         } else {
-                            socket.emit('updateInterlocutors');
+                            if (dl.furnit_id.includes(dataUser.furnit_id)) {
+                                socket.emit('updateInterlocutors');
+                            } else {
+                                let new_array = dl.furnit_id;
+                                new_array.push(ObjectId(dataUser.furnit_id));
+                                dialogs.updateOne(
+                                    { _id : ObjectId(dl._id) },
+                                    { $set: { "furnit_id" : new_array } }
+                                 );
+                                 socket.emit('updateInterlocutors');
+                            }
                         }
                     });
                 }
@@ -84,7 +134,7 @@ mongoose.connect( URI, { dbName: 'furniture-loan', useNewUrlParser: true, useUni
         });
         socket.on('getInterlocutors', (dataUser) => {
             if (dataUser.loaner === true) {
-                console.log('isLoaner');
+                console.log('User is a loaner');
                 console.log(dataUser.id);
                 dialogs.aggregate([
                     { "$match": { "loaner_id": ObjectId(dataUser.id) } },
@@ -95,21 +145,48 @@ mongoose.connect( URI, { dbName: 'furniture-loan', useNewUrlParser: true, useUni
                         "let": { "id": "$renter_id" },
                         "pipeline": [
                           { "$match": { "$expr": { "$eq": ["$_id", "$$id"] }}},
-                          { "$project": { "firstname": 1, "lastname": 1 }}
+                          { "$project": { "firstname": 1, "lastname": 1, "username": 1, "_id": 0 }}
                         ],
                         "as": "to"
                         }
                       },
                       { "$lookup": {
                         "from": "furnits",
-                        "let": { "id": "$furnit_id" },
-                        "pipeline": [
-                          { "$match": { "$expr": { "$eq": ["$_id", "$$id"] }}},
-                          { "$project": { "name": 1, "type": 1 }}
-                        ],
+                        "localField": "furnit_id",
+                        "foreignField": "_id",
                         "as": "furnit"
                       }
-                    }
+                    },
+                    { $unwind: "$to" },
+                    // { $unwind: "$furnit" },
+                        { 
+                            $set: { interlocutor_firstname: "$to.firstname",
+                            interlocutor_lastname: "$to.lastname", interlocutor_username: "$to.username", interlocutor_id: "$renter_id",
+                            dialog_id: "$_id"
+                        } 
+                    },
+                    { $unset: ["to","renter_id", "_id" ] },
+                    // {
+                    //     "$bucket": {
+                    //         "groupBy": "$renter_id" ,
+                    //         boundaries: [ 1840, 1850, 1860, 1870, 1880 ],                       // Field to group by
+                    //         // "default": "Other",                             // Bucket id for documents which do not fall into a bucket
+                    //         // "output": {                                     // Output for each bucket
+                    //         //   "count": { $sum: 1 },
+                    //         // //   "artists" :
+                    //         // //     {
+                    //         // //       $push: {
+                    //         // //         "name": { $concat: [ "$first_name", " ", "$last_name"] },
+                    //         // //         "year_born": "$year_born"
+                    //         // //       }
+                    //         // //     }
+                    //         // }
+                    //     }
+                    // },
+            //         { "$group": { _id: "$renter_id", furnit: {$push:"$furnit"}, interlocutor_id : { $first: '$renter_id' },
+            //         firstname : { $first: '$firstname' }, lastname : { $first: '$lastname' }, username : { $first: '$username' },
+            //     }
+            // },
                 ]).toArray(function(err, interlocutors) {
                     console.log('INTERLOCUTORS');
                     console.log(interlocutors);
@@ -120,7 +197,7 @@ mongoose.connect( URI, { dbName: 'furniture-loan', useNewUrlParser: true, useUni
                         }
                     });
             } else {
-                console.log('is a renter');
+                console.log('User is a bailleur');
                 console.log(dataUser.id);
                 dialogs.aggregate([
                     { "$match": { "renter_id": ObjectId(dataUser.id) } },
@@ -131,21 +208,27 @@ mongoose.connect( URI, { dbName: 'furniture-loan', useNewUrlParser: true, useUni
                         "let": { "id": "$loaner_id" },
                         "pipeline": [
                           { "$match": { "$expr": { "$eq": ["$_id", "$$id"] }}},
-                          { "$project": { "firstname": 1, "lastname": 1 }}
+                          { "$project": { "firstname": 1, "lastname": 1, "_id": 0  }}
                         ],
                         "as": "to"
                       }
                     },
                     { "$lookup": {
                         "from": "furnits",
-                        "let": { "id": "$furnit_id" },
-                        "pipeline": [
-                          { "$match": { "$expr": { "$eq": ["$_id", "$$id"] }}},
-                          { "$project": { "name": 1, "type": 1 }}
-                        ],
+                        "localField": "furnit_id",
+                        "foreignField": "_id",
                         "as": "furnit"
                       }
                     },
+                    { $unwind: "$to" },
+                    // { $unwind: "$furnit" },
+                        { 
+                            $set: { interlocutor_firstname: "$to.firstname",
+                            interlocutor_lastname: "$to.lastname", interlocutor_username: "$to.username", interlocutor_id: "$loaner_id",
+                            dialog_id: "$_id"
+                        } 
+                    },
+                    { $unset: ["to","loaner_id", "_id" ] },
                 ]).toArray(function(err, interlocutors) {
                     console.log(interlocutors);
                         if (err) {
@@ -159,19 +242,44 @@ mongoose.connect( URI, { dbName: 'furniture-loan', useNewUrlParser: true, useUni
             }
         });
             
+        socket.on('getNewInterlocutor', (furnit_id) => {
+                console.log('The new interlocutor is a renter because loaners speak first');
+                console.log('Meuble num');
+                console.log(furnit_id);
+                furnits.aggregate([
+                    { "$match": { "_id": ObjectId(furnit_id) } },
+                    { "$project": { "owner_id": 1, "name": 1, "type": 1 } },
+                    { "$lookup": {
+                        "from": "users",
+                        "let": { "id": "$owner_id" },
+                        "pipeline": [
+                          { "$match": { "$expr": { "$eq": ["$_id", "$$id"] }}},
+                          { "$project": { "firstname": 1, "lastname": 1 }}
+                        ],
+                        "as": "to"
+                        }
+                      },
+                ]).toArray(function(err, newItlc) {
+                    console.log('The new interlocutor');
+                    console.log(newItlc);
+                        if (err) {
+                            throw err;
+                        } else {
+                            socket.emit('newInterlocutor', newItlc);
+                        }
+                    });
+        });
+
             socket.on('getChat', (dialog_id) => {
-                dialog = dialog_id;
-                console.log('Voici le nom de la room: (dialog_id)');
-                console.log(dialog);
-                let room_name = 'room_' + dialog;
+                let room_name = 'room_' + dialog_id;
+                socket.join(room_name);
                 console.log('room_name');
                 console.log(room_name);
-                socket.join(room_name);
                 chats.find({dialog_id: ObjectId(dialog_id)}).limit(100).sort({ 'time': 1}).toArray(function(err, res){
                     if (err) {
                         throw err;
                     }
-                    socket.emit('output', res);
+                    socket.emit('allChat', res);
                 });
         });
 
@@ -187,18 +295,23 @@ mongoose.connect( URI, { dbName: 'furniture-loan', useNewUrlParser: true, useUni
             io.emit('message', formatMessage(botName, 'A user has left the chat'));
         });
         //If a user wrote a message
-        socket.on('chatMessage', data => {
+        socket.on('newMessage', data => {
+            console.log('NEW MESSAGE');
             console.log(data);
             data.dialog_id = ObjectId(data.dialog_id);
             data.dest_id = ObjectId(data.dest_id);
             data.author_id = ObjectId(data.author_id);
             data.time = new Date();
             chats.insertOne(data);
-            let room_name = 'room_' + dialog;
-            // io.emit('chatMessage', data);
-            console.log('envoie son message dans room_name:');
+            dialogs.updateOne(
+                { _id : ObjectId(data.dialog_id) },
+                { $set: { "last_talk" : data.time  } }
+             );
+            let room_name = 'room_' + data.dialog_id;
+            // io.emit('newMessage', data);
+            console.log('Envoie son message dans room_name:');
             console.log(room_name);
-            io.in(room_name).emit('chatMessage', data);
+            io.in(room_name).emit('newMessage', data);
         })
 
     }),
@@ -209,9 +322,5 @@ mongoose.connect( URI, { dbName: 'furniture-loan', useNewUrlParser: true, useUni
    console.log('Connected to the db');
 });
 
-
-app.get('/', (req, res) => {
-    res.json({ prop: 'test'});
-});
 
 

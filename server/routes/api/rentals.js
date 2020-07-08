@@ -95,7 +95,8 @@ router.get('/details/rent/:rental_id', function (req, res) {
 router.get('/loan', function (req, res) {
   let db = mongoose.connection.db;
   let id = req.user._id.toString();
-  
+  console.log('PAR ICI');
+  console.log(id);
   db.collection("rentals").aggregate([
     { "$match": { "loaner_id": ObjectId(id) } },
     { 
@@ -106,11 +107,12 @@ router.get('/loan', function (req, res) {
             "as": 'furnit' 
         } 
     }]).toArray(function(err, rentals) {
+      console.log(rentals);
     if(err){
       return res.status(404).json({
           err: 'Erreur d editions'
       });
-    } else if(!rentals || rentals.length === 0){
+    } else if(!rentals){
       return res.status(404).json({
         err: 'Pas de resultat'
       });

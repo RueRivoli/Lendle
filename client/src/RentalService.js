@@ -1,25 +1,23 @@
 import axios from 'axios';
-
+import store from './store'
 const url = 'http://localhost:5000/api/rentals/';
 
 
 class RentalService {
-
+    static defaultsHeaders() {
+        let token = store.getters.GET_TOKEN;
+        axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+    }
 
     static getRentals(as_loaner){
+        this.defaultsHeaders();
         return new Promise(function(resolve, reject) {
             try {
                 let url_rentals;
                 console.log(as_loaner);
                 if (as_loaner) url_rentals = url + 'loan/';
                 else url_rentals = url + 'rent/';
-                let token = document.cookie.split('jwt=')[1];
-                let config = {
-                    headers: {
-                        'Authorization': `Bearer ${token}`
-                    },
-                };
-                axios.get(url_rentals, config).then(function (response) {
+                axios.get(url_rentals).then(function (response) {
                     const data = response.data;
                     console.log('success');
                     console.log(data);
@@ -36,6 +34,7 @@ class RentalService {
     }
 
     static getRentalById(rental_id, as_loaner){
+        this.defaultsHeaders();
         console.log('get Rental By Id');
         console.log(rental_id);
         console.log(as_loaner);
@@ -44,13 +43,7 @@ class RentalService {
         else url_rental = url + `details/rent/${rental_id}`;
         return new Promise(function(resolve, reject) {
             try {
-                let token = document.cookie.split('jwt=')[1];
-                let config = {
-                    headers: {
-                        'Authorization': `Bearer ${token}`
-                    },
-                };
-                axios.get(url_rental, config).then(function (response) {
+                axios.get(url_rental).then(function (response) {
                     const data = response.data;
                     console.log('success');
                     console.log(data);

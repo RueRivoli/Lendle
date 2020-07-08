@@ -2,8 +2,10 @@
   <div>
       <nav-component></nav-component>
       <el-container style="height: 92vh;">
-        <el-aside width="180px;" style="overflow-y: scroll;">
-          <div style="padding:8px;border-bottom: 1px solid #03A59D">
+        <el-aside width="180px;" style="overflow-y: scroll;width:18vw;">
+
+          <!-- a search input -->
+          <!-- <div style="padding:8px;border-bottom: 1px solid #03A59D">
             <div class="chat_it cursor" style="width: 155px;margin:auto;" @click="search()" >
                 <el-input
                   placeholder="Rechercher"
@@ -12,32 +14,35 @@
                   v-model="searchName">
                 </el-input>
             </div>
-          </div>
-
-          <div :class="isSelected(index)" v-for="(itl, index) in interlocutors" :key="index" @click="changeChat(itl, index)" style="padding:8px;border-bottom: 1px solid #03A59D">
-        
+          </div> -->
+          <div :class="isSelected(itl)" v-for="(itl, index) in interlocutors" :key="index" @click="changeChat(itl)" style="padding:8px;border-bottom: 1px solid #03A59D">
             <div :key="30" style="align-self: flex-start;margin-right:10px;">
               <el-avatar :size="30" src="../assets/twitter.svg"></el-avatar>
             </div>
-            <!-- <div>
 
-            </div> -->
-            <div  style="align-self: center;padding:3px;">
-              <div style="font-size:12px">{{nameInterlocutor(itl)}}</div>
-              <div style="font-size:12px">{{itl.furnit[0].name}} / {{itl.furnit[0].type}}</div>
+            <div style="align-self: center;padding:3px;">
+              <div style="font-size:12px;">{{nameInterlocutor(itl)}}</div>
+              <!-- <div style="font-size:12px">{{itl.furnit[0].name}} / {{itl.furnit[0].type}}</div> -->
             </div>
             
           </div>
         </el-aside>
         <el-container style="height: 92vh;">
-            <el-header style="height:8vh;line-height:8vh;font-size: 18px;background-color:#C0C0C0;color:white;">
-                <span style="float:left;">{{name}}</span>
-                <span style="float:right;">{{furnitname}}</span>
+            <el-header class="center" style="height:8vh;line-height:8vh;font-size: 18px;background-color:#C0C0C0;color:white;">
+                <span>{{name}}</span>
+                <!-- <span class="pointer opacity" style="float:right;"><router-link :to="{ name: 'Furnit', params: { id: furnit_id }}" tag="span">{{furnitname}}</router-link></span> -->
+            </el-header>
+            <el-header class="center" style="height:5vh;line-height:5vh;font-size: 18px;background-color:#F0F8FF;color:white;">
+                <span class="cursor" v-for="(ft, index) in furnits" :key="index">
+                  <router-link :to="{ name: 'Furnit', params: { id: ft._id }}" tag="span">
+                  <el-tag :type="colorType(ft.type)" size="mini">{{ft.name}}</el-tag>
+                  </router-link>
+                </span>
+                <!-- <span class="pointer opacity" style="float:right;"><router-link :to="{ name: 'Furnit', params: { id: furnit_id }}" tag="span">{{furnitname}}</router-link></span> -->
             </el-header>
         <div>
           <el-row style="height: 84vh;">
             <el-col :span="24" :offset="0">
-              
               <div ref="container" style="height:66vh;overflow-y: scroll; scrollbar-width: thin;padding:3px;">
                 <div v-for="(mg, index) in allmsgs" :key="index">
                    <div style="font-size:12px;color:black;text-align:center;">
@@ -54,23 +59,9 @@
               </div>
                <div style="height:18vh;">
                 <!-- <el-button slot="append" icon="el-icon-paperclip" size="small"></el-button> -->
-                  <el-input placeholder="Message + Entrer"  :rows="4" type="textarea" v-model="msg" @keyup.enter="sendMessage" class="input-with-select">
+                  <el-input placeholder="Message + Entrer"  :rows="4" type="textarea" v-model="msg" @change="sendMessage" class="input-with-select">
                   </el-input>
               </div>
-           
-                   
-                    <!-- <el-form-item label="">
-                      <el-input
-                        type="textarea"
-                        :rows="2"
-                        placeholder="Message"
-                        v-model="msg">
-                      </el-input>
-                </el-form-item>
-                <el-form-item>
-                  <el-button type="primary" size="mini" @click="sendMessage">Envoyer</el-button>
-                </el-form-item> -->
-             
                  
             </el-col>
         </el-row>
@@ -98,18 +89,16 @@ export default {
         socket: '',
         msg: '',
         allmsgs: [],
-        searchName: '',
-        // renters: null,
-        // loaners: null,
-        dialog_id: this.$route.params.dialog_id || null,
+        // searchName: '',
+        // dialog_id: this.$route.params.dialog_id || null,
+          //parameters to give to chat directly to somebody in particular
+        interlocutor_id: this.$route.params.interlocutor_id || null,
+        furnit_id: this.$route.params.furnit_id || null,
         firstname: '',
         lastname: '',
         furnitname: '',
         interlocutors: null,
-        index_selected: null,
-        //parameters to give to chat directly to somebody in particular
-        interlocutor_current: this.$route.params.interlocutor_current || null,
-        furnit_id: this.$route.params.furnit_id || null
+        // interlocutor_id: null,
       }
   },
   computed : {
@@ -118,26 +107,27 @@ export default {
       id: 'GET_ID',
       token: 'GET_TOKEN'
     }),
-    //  loaner () {
-    //    console.log('loaner');
-    //    console.log(this.$store.getters.GET_LOAN);
-    //     if (this.$store.getters.GET_AUTH && this.$store.getters.GET_LOAN) 
-    //     {
-    //       console.log('LOANER TRUE');
-    //       return true;
-    //     }
-    //     else {
-    //       console.log('LOANER FALSE');
-    //       return false;
-    //     }
-    //   },
       name () {
-        return this.firstname + ' ' + this.lastname;
+        if (this.username) return this.username;
+        else {
+          return this.firstname + ' ' + this.lastname;
+        }
       }
   },
   methods: {
+    colorType (type) {
+      if (type === "machinealaver") return 'primary'
+      if (type === "armoire") return 'success'
+      if (type === "chaise") return 'info'
+      if (type === "fauteuil") return 'warning'
+      if (type === "frigidaire") return 'danger'
+      if (type === "sechelinge") return 'essai'
+    },
     nameInterlocutor (itl) {
-      return itl.to[0].firstname + ' ' + itl.to[0].lastname;
+      if (itl.interlocutor_username) return itl.interlocutor_username
+      else {
+        return itl.interlocutor_firstname + ' ' + itl.interlocutor_lastname
+      }
     },
      isAuthor (id) {
       return {
@@ -146,25 +136,28 @@ export default {
         left: (id !== this.id)
       }
     },
-    isSelected (index) {
+    isSelected (itl) {
+      console.log('ITL');
+      console.log(itl._id);
+      console.log(this.interlocutor_id);
       return {
         chat_it: true,
         cursor: true,
         flex: true,
-        selected: index === this.index_selected
+        selected: itl.interlocutor_id === this.interlocutor_id
       }
     },
-    changeChat (interlocutor, index) {
-      this.index_selected = index;
-      console.log('displayChat of');
-      console.log(interlocutor);
-      // Change parameters of talking
-      this.dialog_id = interlocutor._id;
-      this.firstname = interlocutor.to[0].firstname;
-      this.lastname = interlocutor.to[0].lastname;
-      this.furnitname = interlocutor.furnit[0].name;
-      this.interlocutor_current = interlocutor.to[0]._id;
-      this.socket.emit('getChat', interlocutor._id);
+    changeChat (itl) {
+      console.log('Change Chat to speak to');
+      console.log(itl);
+      // Change parameters of current interlocutor
+      this.interlocutor_id = itl.interlocutor_id;
+      this.dialog_id = itl.dialog_id;
+      this.firstname = itl.interlocutor_firstname;
+      this.lastname = itl.interlocutor_lastname;
+      this.username = itl.interlocutor_username;
+      this.furnits = itl.furnit;
+      this.socket.emit('getChat', itl.dialog_id);
       this.msg = '';
     },
     formatTime (time) {
@@ -174,12 +167,14 @@ export default {
       //Emit message to server
       let message = {
         author_id: this.id,
-        dest_id: this.interlocutor_current,
-        mail: this.mail,
+        dest_id: this.interlocutor_id,
+        // mail: this.mail,
         text: this.msg,
         dialog_id: this.dialog_id
       }
-      this.socket.emit('chatMessage', message);
+      console.log('EMIT MESSSAGE');
+      console.log(message);
+      this.socket.emit('newMessage', message);
       this.msg = '';  
     }
   },
@@ -187,8 +182,7 @@ export default {
     this.$refs.container.scrollTop = this.$refs.container.scrollHeight;
   },
   created() {
-    console.log('CREATED');
-    console.log('TEST STORE');
+    console.log('Chat Component created');
     this.socket = io('http://localhost:3000/');
     // const payload = UserService.getUser();
     // this.id = payload._id;
@@ -196,45 +190,62 @@ export default {
     let dataUser = {
       loaner: this.loaner,
       id: this.id,
-      interlocutor_current: this.interlocutor_current,
+      interlocutor_id: this.interlocutor_id,
       furnit_id: this.furnit_id,
     }
     console.log('DATAUSER');
     console.log(dataUser);
-    if (dataUser.interlocutor_current) {
+    if (dataUser.interlocutor_id) {
+      this.index_selected = dataUser.interlocutor_id;
       this.socket.emit('addNewInterlocutor', dataUser);
     } else {
       this.socket.emit('getInterlocutors', dataUser);
     }
-     this.socket.on('updateInterlocutors', message => {
+
+    this.socket.on('updateInterlocutors', message => {
        console.log(message);
        this.socket.emit('getInterlocutors', dataUser);
     })
 
-    this.socket.on('chatMessage', message => {
+    this.socket.on('newMessage', message => {
+      console.log('receive new message');
       console.log(message);
-      message.author = false
-      if (message.author_id === this.id) message.class = true
+      // message.author = false
+      // if (message.author_id === this.id) message.class = true
       this.allmsgs.push(message);
     })
-    this.socket.on('output', output => {
+    this.socket.on('allChat', output => {
       console.log('OUTPUT');
       console.log(output);
       this.allmsgs = output;
-      // console.log(this.allmsgs);
     })
+
      this.socket.on('interlocutors', interlocutors => {
-      console.log('INTERLOCUTORS');
+      console.log('List of interlocutors is ');
       console.log(interlocutors);
       this.interlocutors = interlocutors;
       let index_interlocutorWanted =  Object.keys(interlocutors).length - 1;
-      if (this.interlocutor_current) {
-        const isInterlocutorWanted = (element) => element._id === this.interlocutor_current;
+      console.log('index W');
+      console.log(index_interlocutorWanted);
+      if (this.interlocutor_id) {
+        console.log('interlocutor id');
+        console.log(this.interlocutor_id);
+        const isInterlocutorWanted = (element) => element.interlocutor_id == this.interlocutor_id;
         let index_interlocutorWanted = interlocutors.findIndex(isInterlocutorWanted);
         console.log('index interlocutor');
         console.log(index_interlocutorWanted);
+        // if (index_interlocutorWanted === -1) {
+        //   console.log('ENTRANCE');
+        //   this.socket.emit('getNewInterlocutor', this.$route.params.furnit_id);
+        // }
+        this.changeChat(interlocutors[index_interlocutorWanted]);
       }
-      this.changeChat(interlocutors[index_interlocutorWanted]);
+      else {
+        console.log('there');
+        console.log(interlocutors[index_interlocutorWanted]);
+        this.changeChat(interlocutors[index_interlocutorWanted]);
+      }
+      
     })
 
   }

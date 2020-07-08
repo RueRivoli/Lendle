@@ -131,8 +131,8 @@ export default {
     },
     methods: {
         toRent() {
-             console.log('TO RENT');
-             console.log('commitons c est un renter');
+            console.log('TO RENT');
+            console.log('commitons c est un renter');
             this.$store.commit('LOANER', false);
             this.centerDialogVisible = false;
             this.$store.commit('AUTH');

@@ -215,12 +215,12 @@
 
 
 <script>
-import VueCookies from 'vue-cookies'
+// import VueCookies from 'vue-cookies'
 import NavComponent from './Navigation/NavComponent';
 import FooterComponent from './Footer/FooterComponent';
 import UserService from '../UserService';
 import moment from 'moment';
-import { mapGetters } from 'vuex'
+// import { mapGetters } from 'vuex'
 
 export default {
   name: 'ProfileComponent',
@@ -313,7 +313,7 @@ export default {
     // Register connexion to Store by Google or Fb
     // Create Cookie with token
         if (this.$route.query.token) {
-            VueCookies.set('jwt' , this.$route.query.token , "1h");
+            // VueCookies.set('jwt' , this.$route.query.token , "1h");
             let payload = UserService.getUserFromToken(this.$route.query.token);
             this.$store.commit('AUTH');
             this.$store.commit('ID', payload._id);
@@ -322,14 +322,14 @@ export default {
     },
     async created() {
         let context = this;
-        let token;
-        console.log('TOKKKENNNN');
-        console.log(this.$route.query.token);
-        if (this.$route.query.token) token = this.$route.query.token
-        else {
-            token = this.token;
-        }
-        UserService.getProfile(token).then(function(profile) {
+        // let token;
+        // console.log('TOKKKENNNN');
+        // console.log(this.$route.query.token);
+        // if (this.$route.query.token) token = this.$route.query.token
+        // else {
+        //     token = this.token;
+        // }
+        UserService.getProfile().then(function(profile) {
             context.profile = profile;
             if (profile.renter) context.activeRenter = false;
             if (profile.loaner) context.activeLoaner = false;
@@ -348,9 +348,9 @@ export default {
     });
     },
     computed: {
-    ...mapGetters({
-      token: 'GET_TOKEN'
-    }),
+    // ...mapGetters({
+    //   token: 'GET_TOKEN'
+    // }),
     fromSocialOauth: function () {
         return this.profile.facebookId || this.profile.googleId;
     }

@@ -177,7 +177,7 @@ export default {
           console.log('contact');
           console.log(this.furnit._id);
           console.log(this.furnit.owner_id);
-           this.$router.push({ name: 'Chat', params: { furnit_id: this.furnit._id, interlocutor_current: this.furnit.owner_id } });
+           this.$router.push({ name: 'Chat', params: { furnit_id: this.furnit._id, interlocutor_id: this.furnit.owner_id } });
       }
 }
 }

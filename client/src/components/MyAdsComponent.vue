@@ -14,7 +14,10 @@
     <el-row style="margin-top:5vh;">
         <el-col :span="18" :offset="3">
         <el-collapse v-model="activeNames">
-            <el-collapse-item title="Vos annonces à pourvoir" name="1">
+            <el-collapse-item name="1">
+                <template slot="title">
+                    Vos annonces à pourvoir <el-tag :type="{primary: quantity}" size="mini" style="margin-left: 15px;">{{quantity}}</el-tag>
+                </template>
                 <div v-for="(ft, index) in furnits" v-bind:key="index">
             <el-row class="pointer opacity" style="height:90px;padding: 10px;margin-bottom:7px;">
             <el-col  :span="24" style="height: 100%;">
@@ -74,7 +77,8 @@ export default {
       return {
           furnits: {},
           url: [],
-          activeNames: ['1']
+          activeNames: [],
+          quantity: 0
       }
   },
   methods: {
@@ -105,6 +109,10 @@ export default {
        context.url = furnits.imgUrl;
       console.log(context.furnits);
       console.log(context.url);
+      context.quantity = Object.keys(context.furnits).length;
+      context.quantity > 0 ? context.activeNames.push('1'): '';
+      
+
     // let picture_ids = new Array();
     // context.rentals.forEach(function(ft){
     //     console.log(ft);
