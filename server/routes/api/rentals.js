@@ -47,8 +47,33 @@ router.get('/details/loan/:rental_id', function (req, res) {
     });
 });
 
+router.post('/', function (req, res) {
+  console.log('POST RENTAL');
+  console.log(req.body);
+  var rental = new Rental();
+  rental.furnit_id =  ObjectId(req.body.furnit_id);
+  rental.loaner_id =  ObjectId(req.body.loaner_id);
+  rental.renter_id =  ObjectId(req.body.renter_id);
+  rental.loan_start = req.body.loan_start;
+  rental.loan_end = req.body.loan_end;
+  rental.status = req.body.status;
+  rental.paid = req.body.paid;
+  console.log('RENTAL');
+  console.log(rental);
+  rental.save(function (err) {
+    if (err) {
+      console.log('Error');
+      res.send(err);
+    }
+    return res.status(201).json({
+      rental: rental,
+      msg: 'Bravo, votre location a été proposée'
+    });
+  });
+});
+
 // called for RentalComponent
-// retrieve the rental that is rental_id and retrieve furnit and loaner data
+// retrieve the rental that is rental_id and retrieve rental and loaner data
 // This part is for the renter
 router.get('/details/rent/:rental_id', function (req, res) {
   let db = mongoose.connection.db;

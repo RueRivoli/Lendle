@@ -2,22 +2,22 @@ const mongoose = require('mongoose');
 
 const RentalSchema = mongoose.Schema({
     furnit_id: {
-        type: String,
+        type: mongoose.Schema.Types.ObjectId,
         required: true
     },
     renter_id: {
-        type: String,
+        type: mongoose.Schema.Types.ObjectId,
         required: true
     },
     loaner_id: {
-        type: String,
+        type: mongoose.Schema.Types.ObjectId,
         required: true
     },
-    loanstart: {
+    loan_start: {
         type: Date,
         required: true
     },
-    loanend: {
+    loan_end: {
         type: Date,
         required: true
     },
@@ -28,7 +28,7 @@ const RentalSchema = mongoose.Schema({
     },
     inprocess: {
         type: Boolean,
-        required: true
+        required: false
     },
     paid: {
         type: Boolean,

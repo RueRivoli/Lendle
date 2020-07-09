@@ -59,6 +59,28 @@ class RentalService {
         })
     }
 
+    static postRental(rental){
+        this.defaultsHeaders();
+        console.log('create new Rental');
+        console.log(rental);
+        return new Promise(function(resolve, reject) {
+            try {
+                axios.post(url, rental).then(function (response) {
+                    console.log('postRental result');
+                    const data = response.data;
+                    console.log(data);
+                    resolve(data);
+                  })
+                  .catch(function (error) {
+                    console.log('Error');
+                    console.log(error);
+                  });
+            } catch(err) {
+                reject(err);
+            }
+        })
+    }
+
 }
 
 

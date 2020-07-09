@@ -22,11 +22,11 @@ const UserSchema = mongoose.Schema({
         required: false
     },
     facebookId: {
-        type: String,
+        type: mongoose.Schema.Types.ObjectId,
         required: false
     },
     googleId: {
-        type: String,
+        type: mongoose.Schema.Types.ObjectId,
         required: false
     },
     pswd: {
@@ -45,14 +45,6 @@ const UserSchema = mongoose.Schema({
         type: String,
         required: false
     },
-    // token: {
-    //     type: String,
-    //     required: false
-    // },
-    // tokenExpires: {
-    //     type: Date,
-    //     required: false
-    // },
     isVerified: {
         type: Boolean,
         default: false

@@ -20,6 +20,10 @@
     display:flex;
 }
 
+.opacity:hover{
+  opacity: 0.8;
+}
+
 .f-auto{
     flex: auto;
 }
@@ -64,7 +68,6 @@
 .m-auto{
   margin: auto;
 }
-
 
 
 .full_height{

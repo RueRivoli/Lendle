@@ -2,11 +2,11 @@ const mongoose = require('mongoose');
 
 const UserSchema = mongoose.Schema({
     author_id: {
-        type: String,
+        type: mongoose.Schema.Types.ObjectId,
         required: false
     },
     dest_id: {
-        type: String,
+        type: mongoose.Schema.Types.ObjectId,
         required: false
     },
     mail: {

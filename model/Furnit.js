@@ -6,7 +6,7 @@ const FurnitSchema = mongoose.Schema({
         required: true
     },
     owner_id: {
-        type: String,
+        type: mongoose.Schema.Types.ObjectId,
         required: true
     },
     type: {

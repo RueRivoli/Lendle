@@ -3,16 +3,14 @@
      <nav-component :displayTitles="true"></nav-component>
         <el-container style="height:680px;">
             <el-main style="width:100%">
-                  <el-form label-position="left" label-width="120px" >
-                       <el-col :span="10" style="">
-                        <el-row style="font-size:18px;margin-bottom: 5vh;font-weight:bold;">
-                            <span>{{furnit.name }}</span>
-                          
-                         </el-row>
-                       
+                  <!-- <el-form label-position="left" label-width="120px" > -->
+                      <el-row>
+                       <el-col :span="10">
+                            <el-row style="font-size:18px;margin-bottom: 5vh;font-weight:bold;">
+                                <span>{{furnit.name }}</span>
+                            </el-row>
                                 <el-carousel trigger="click" height="30vh">
                                     <el-carousel-item  class="opacity" v-for="(img, index) in imgUrl" :key="index">
-                                <!-- <div style="background-color: #D6DCDD"> -->
                                         <h3 class="small">
                                             <el-image class="imgcarousel"
                                                 :src="imgUrl[index]"
@@ -20,11 +18,11 @@
                                                 @click="display(fnt)">
                                             </el-image>
                                         </h3>
-                            <!-- </div> -->
                                     </el-carousel-item>
                                     
                                 </el-carousel>
                                 <el-row style="margin-top:5vh;">
+                                    <el-form>
                                     <el-form-item label="Disponibilité">
                                         <el-date-picker
                                             readonly
@@ -39,75 +37,81 @@
                                             :default-value="[furnit.loanstart, furnit.loanend]">
                                             </el-date-picker>
                                     </el-form-item>
+                                    </el-form>
                                 </el-row>
                                 <el-row>
                             
                                 </el-row>
+                                                      
                         </el-col>
-                      
-                            <el-col :span="8" :offset="3" style="">
+                    
+                     
+                            <el-col :span="8" :offset="3">
                                 <el-row>
                                      <h4>{{furnit.price}} €/MOIS</h4>
                                     <tag-component state="furnit.state"></tag-component>
                                 </el-row>
-
                                 <el-row>
-                                     <!-- <el-form-item label="Propriétaire">
-                                     <el-input
-                                        size="mini"
-                                        type="textarea"
-                                        :rows="2"
-                                        :placeholder="owner"
-                                        :disabled="true">
-                                    </el-input>
-                                </el-form-item> -->
-                               <h4>Le propriétaire</h4>
-                               <i class="el-icon-user-solid">
-                               <span style="font-size:14px;margin-right:30px;">{{furnit.owner[0].firstname}}</span>
-                               </i>
-                                <i class="el-icon-location">
-                               <span style="font-size:14px;">
-                                   {{furnit.owner[0].city}}</span>
-                                   </i>
-                                </el-row>
-                                 <el-row>
-                                       <h4>Description</h4>
-                                       <p style="font-size:14px">{{ furnit.description}}</p>
-                                     <!-- <el-form-item label="Description">
-                                     <el-input
-                                        size="mini"
-                                        type="textarea"
-                                        :rows="4"
-                                        :placeholder="furnit.description"
-                                        :disabled="true">
-                                        </el-input>
-                                       </el-form-item> -->
-                                 
-                                </el-row>
-                                 <el-row>
-                                        <i class="el-icon-truck">
-                                        <span style="font-size:14px;margin-left:10px;">Livraison possible par le propriétaire</span>
-                                </i>
-                                 </el-row>
+                                    <h4>Le propriétaire</h4>
+                                       <el-card class="pointer opacity" style="padding: 5px;height:8vh;line-height:8vh;">
+                                           <span style="margin-right:10px;float:left;">
+                                                <el-avatar :size="50" src="../assets/twitter.svg" style="vertical-align: middle;"></el-avatar>
+                                            </span>
+                                            <span style="padding:3px;float:center;">
+                                                <span style="font-size:14px;">{{nameOwner(furnit)}}</span>
+                                            </span>
+                                          
+                                        <!-- <i class="el-icon-user-solid">
+                                            <span style="font-size:14px;margin-right:30px;"></span>
+                                        </i>
+                                        <i class="el-icon-location">
+                                            <span style="font-size:14px;">
+                                                {{furnit.owner[0].city}}</span>
+                                        </i> -->
+                                            <span style="padding:3px;float:right;" v-if="loaner">
+                                              
+
+                                              
+                                                        <el-button size="mini" type="primary"  value="submit" @click="contact" round>
+                                                                Contacter
+                                    
+                                                        </el-button>
+                                                  
+                                                
+                                            </span>
+                                        </el-card>
+                                          
+                                        </el-row>
+          
+                                    <el-row>
+                                        <h4>Description</h4>
+                                        <p style="font-size:14px">{{ furnit.description}}</p>                                 
+                                    </el-row>
+                                    <el-row>
+                                            <i class="el-icon-truck">
+                                                <span style="font-size:14px;margin-left:10px;">Livraison possible par le propriétaire</span>
+                                            </i>
+                                    </el-row>
                             </el-col>
-                           
+   </el-row>
                      
                          <el-row style="margin-top:5vh;">
                               <el-col :span="10" style="">
                                 
                             </el-col>
                         </el-row>
-                            <el-row style="margin-top:30px;">
+                        
+                            <el-row style="margin-top:30px;" v-if="loaner">
                                 <el-form :inline="true" style="text-align:center;margin-top:20px;">
-                                <el-form-item>
-                                    <el-button size="small" value="submit" type="primary" @click="contact">Faire une demande de location</el-button>
-                                </el-form-item>
-                                 <el-form-item>
-                                    <el-button size="small" value="submit" type="success" @click="contact">Contacter le propriétaire</el-button>
-                                </el-form-item>
+                                    
+                                    <el-form-item>
+                                        <el-button size="small" value="submit" type="primary" @click="makeAnOffer">
+                                                Faire une demande de location
+                                        </el-button>
+                                    </el-form-item>
                                 </el-form>
                             </el-row>
-                         </el-form>
+                         <!-- </el-form> -->
                     
             </el-main>
         </el-container>
@@ -121,6 +125,7 @@ import TagComponent from './Utils/TagComponent';
 import FurnitService from '../FurnitService';
 import './../style/style.css';
 import FooterComponent from './Footer/FooterComponent';
+import { mapGetters } from 'vuex'
 
 export default {
   name: 'FurnitComponent',
@@ -136,6 +141,9 @@ export default {
     }
   },
   computed: {
+    ...mapGetters({
+      loaner: 'GET_LOAN'
+    }),
     stateOfFurnit: function () {
         if (this.furnit.state === 100) return "Excellent état";
         if (this.furnit.state === 75) return "Bon état";
@@ -170,14 +178,27 @@ export default {
       readonly () {
           return true;
     },
+    nameOwner (ft) {
+        console.log('name Owner');
+        console.log(ft);
+        if (ft.owner) {
+            if (ft.owner[0].username) return ft.owner[0].username;
+            else {
+            return ft.owner[0].firstname + ' ' + ft.owner[0].lastname;
+            }
+        }
+        else {
+            return '';
+        }
+    },
     formatTooltip(val) {
         return val/100;
       },
       contact () {
-          console.log('contact');
-          console.log(this.furnit._id);
-          console.log(this.furnit.owner_id);
            this.$router.push({ name: 'Chat', params: { furnit_id: this.furnit._id, interlocutor_id: this.furnit.owner_id } });
+      },
+      makeAnOffer () {
+          this.$router.push({ name: 'MyRentals', params: { id: this.furnit._id }});
       }
 }
 }
@@ -194,6 +215,11 @@ export default {
 //   padding: 0px !important;
 //   line-height: 10px !important;
 // }
+
+
+.el-card__body{
+    display: flex !important; 
+}
 
 .el-header, .el-footer {
   background-color: #B3C0D1;
@@ -230,6 +256,9 @@ export default {
     margin: auto !important;
 }
 
+.el-card.pointer{
+    cursor: pointer;
+}
 
 .el-form-item{
     margin-bottom: 2px !important;
