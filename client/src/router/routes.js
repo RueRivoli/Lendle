@@ -1,34 +1,31 @@
 import VueRouter from 'vue-router'
 
-import AddFurnitComponent from './../components/Furnit/AddFurnitComponent';
-import FurnitComponent from './../components/Furnit/FurnitComponent';
-import MyFurnitComponent from './../components/Furnit/MyFurnitComponent';
+import ProfileComponent from './../components/Account/ProfileComponent';
 
 import AdComponent from './../components/Advertisement/AdComponent';
 import MyAdsComponent from './../components/Advertisement/MyAdsComponent';
-
-
-
-
-import MyRentalsComponent from './../components/Rental/MyRentalsComponent';
-import RentalComponent from './../components/Rental/RentalComponent';
-
-import SearchComponent from './../components/Intro/SearchComponent';
-import HomeComponent from './../components/Intro/HomeComponent';
-import IntroComponent from './../components/Intro/IntroComponent';
-
-import HelpComponent from './../components/Information/HelpComponent';
-import ConditionComponent from './../components/Information/ConditionComponent';
-
-import ChatComponent from './../components/Chat/ChatComponent';
-
-import ProfileComponent from './../components/Account/ProfileComponent';
 
 import LogInComponent from './../components/Authentication/LogInComponent';
 import SignUpComponent from './../components/Authentication/SignUpComponent';
 import ReSendMailValidationComponent from './../components/Authentication/ReSendMailValidationComponent';
 import PasswordForgottenComponent from './../components/Authentication/PasswordForgottenComponent';
 import ReinitializePasswordComponent from './../components/Authentication/ReinitializePasswordComponent';
+
+import ChatComponent from './../components/Chat/ChatComponent';
+
+import AddFurnitComponent from './../components/Furnit/AddFurnitComponent';
+import FurnitComponent from './../components/Furnit/FurnitComponent';
+import MyFurnitComponent from './../components/Furnit/MyFurnitComponent';
+
+import HelpComponent from './../components/Information/HelpComponent';
+import ConditionComponent from './../components/Information/ConditionComponent';
+
+import SearchComponent from './../components/Intro/SearchComponent';
+import HomeComponent from './../components/Intro/HomeComponent';
+import IntroComponent from './../components/Intro/IntroComponent';
+
+import MyRentalsComponent from './../components/Rental/MyRentalsComponent';
+import RentalComponent from './../components/Rental/RentalComponent';
 
 const routes = [
   { path: '/', name:'Home', component: HomeComponent },
