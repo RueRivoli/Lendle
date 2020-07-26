@@ -112,11 +112,11 @@
 <script>
 
 /* Dans template Si class=el-upload-list-thumbnail images pleines dans img class= el-upload-list__item-thumbnail*/
-import NavComponent from './Navigation/NavComponent';
-import FurnitService from '../FurnitService';
+import NavComponent from '../Navigation/NavComponent';
+import FurnitService from '../../Service/FurnitService';
 import FormData from 'form-data';
 import moment from 'moment';
-import FooterComponent from './Footer/FooterComponent';
+import FooterComponent from '../Footer/FooterComponent';
 
 export default {
   name: 'AddFurnitComponent',

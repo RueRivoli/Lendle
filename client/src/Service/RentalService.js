@@ -1,5 +1,5 @@
 import axios from 'axios';
-import store from './store'
+import store from './../store'
 const url = 'http://localhost:5000/api/rentals/';
 
 
@@ -67,6 +67,30 @@ class RentalService {
             try {
                 axios.post(url, rental).then(function (response) {
                     console.log('postRental result');
+                    const data = response.data;
+                    console.log(data);
+                    resolve(data);
+                  })
+                  .catch(function (error) {
+                    console.log('Error');
+                    console.log(error);
+                  });
+            } catch(err) {
+                reject(err);
+            }
+        })
+    }
+
+    static updateRental(rental){
+        this.defaultsHeaders();
+        console.log('update new Rental');
+        console.log(rental);
+        let url_update = url + 'update/';
+        return new Promise(function(resolve, reject) {
+            try {
+                axios.post(url_update, rental).then(function (response) {
+                    console.log('updateRental result');
+                    console.log(response);
                     const data = response.data;
                     console.log(data);
                     resolve(data);

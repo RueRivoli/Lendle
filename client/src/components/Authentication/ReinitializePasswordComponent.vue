@@ -49,9 +49,9 @@
 
 
 <script>
-import NavComponent from './Navigation/NavComponent';
-import FooterComponent from './Footer/FooterComponent';
-import AuthService from '../AuthService';
+import NavComponent from './../Navigation/NavComponent';
+import FooterComponent from './../Footer/FooterComponent';
+import AuthService from './../../Service/AuthService';
 
 export default {
   name: 'ReinitializePasswordComponent',
@@ -167,6 +167,6 @@ export default {
 
 <style lang="scss" scoped>
 
-@import "./../style/element-variables.scss";
+@import "./../../style/element-variables.scss";
 
 </style>

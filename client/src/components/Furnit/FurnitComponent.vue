@@ -39,9 +39,16 @@
                                     </el-form-item>
                                     </el-form>
                                 </el-row>
-                                <el-row>
-                            
-                                </el-row>
+                                  <el-row style="margin-top:30px;" v-if="loaner">
+                                <el-form :inline="true" style="text-align:left;">
+                                    
+                                    <el-form-item>
+                                        <el-button v-if="authentificated" size="small" value="submit" type="success" @click="makeAnOffer">
+                                                Faire une demande de location
+                                        </el-button>
+                                    </el-form-item>
+                                </el-form>
+                            </el-row>
                                                       
                         </el-col>
                     
@@ -55,7 +62,7 @@
                                     <h4>Le propriétaire</h4>
                                        <el-card class="pointer opacity" style="padding: 5px;height:8vh;line-height:8vh;">
                                            <span style="margin-right:10px;float:left;">
-                                                <el-avatar :size="50" src="../assets/twitter.svg" style="vertical-align: middle;"></el-avatar>
+                                                <el-avatar :size="50" :src="avatar(furnit.owner)" style="vertical-align: middle;"></el-avatar>
                                             </span>
                                             <span style="padding:3px;float:center;">
                                                 <span style="font-size:14px;">{{nameOwner(furnit)}}</span>
@@ -72,7 +79,7 @@
                                               
 
                                               
-                                                        <el-button size="mini" type="primary"  value="submit" @click="contact" round>
+                                                        <el-button v-if="authentificated" size="mini" type="primary"  value="submit" @click="contact" round>
                                                                 Contacter
                                     
                                                         </el-button>
@@ -101,16 +108,7 @@
                             </el-col>
                         </el-row>
                         
-                            <el-row style="margin-top:30px;" v-if="loaner">
-                                <el-form :inline="true" style="text-align:center;margin-top:20px;">
-                                    
-                                    <el-form-item>
-                                        <el-button size="small" value="submit" type="primary" @click="makeAnOffer">
-                                                Faire une demande de location
-                                        </el-button>
-                                    </el-form-item>
-                                </el-form>
-                            </el-row>
+                          
                          <!-- </el-form> -->
                     
             </el-main>
@@ -120,11 +118,11 @@
 </template>
 
 <script>
-import NavComponent from './Navigation/NavComponent';
-import TagComponent from './Utils/TagComponent';
-import FurnitService from '../FurnitService';
-import './../style/style.css';
-import FooterComponent from './Footer/FooterComponent';
+import NavComponent from '../Navigation/NavComponent';
+import TagComponent from '../Utils/TagComponent';
+import FurnitService from '../../Service/FurnitService';
+import './../../style/style.css';
+import FooterComponent from '../Footer/FooterComponent';
 import { mapGetters } from 'vuex'
 
 export default {
@@ -142,7 +140,8 @@ export default {
   },
   computed: {
     ...mapGetters({
-      loaner: 'GET_LOAN'
+      loaner: 'GET_LOAN',
+      authentificated: 'GET_AUTH'
     }),
     stateOfFurnit: function () {
         if (this.furnit.state === 100) return "Excellent état";
@@ -177,6 +176,10 @@ export default {
   methods: {
       readonly () {
           return true;
+    },
+    avatar (usr) {
+        if (usr && usr[0].profilePicture) return usr[0].profilePicture
+        else return '../assets/twitter.svg'
     },
     nameOwner (ft) {
         console.log('name Owner');

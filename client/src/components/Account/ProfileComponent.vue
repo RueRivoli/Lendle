@@ -216,9 +216,9 @@
 
 <script>
 // import VueCookies from 'vue-cookies'
-import NavComponent from './Navigation/NavComponent';
-import FooterComponent from './Footer/FooterComponent';
-import UserService from '../UserService';
+import NavComponent from './../Navigation/NavComponent';
+import FooterComponent from './../Footer/FooterComponent';
+import UserService from './../../Service/UserService';
 import moment from 'moment';
 // import { mapGetters } from 'vuex'
 
@@ -313,11 +313,13 @@ export default {
     // Register connexion to Store by Google or Fb
     // Create Cookie with token
         if (this.$route.query.token) {
-            // VueCookies.set('jwt' , this.$route.query.token , "1h");
+            this.$store.commit('TOKEN', this.$route.query.token);
             let payload = UserService.getUserFromToken(this.$route.query.token);
+            console.log(payload);
             this.$store.commit('AUTH');
             this.$store.commit('ID', payload._id);
-            this.$store.commit('TOKEN', this.$route.query.token);
+            this.$store.commit('USERNAME', payload.username);
+            this.$store.commit('AVATAR', payload.avatar);
         } 
     },
     async created() {
@@ -424,7 +426,7 @@ export default {
 
 <style lang="scss" scoped>
 
-@import "./../style/element-variables.scss";
+@import "./../../style/element-variables.scss";
 
 #fb:hover{
   background-color:#7490B8 !important;

@@ -11,7 +11,7 @@ router.get('/details/loan/:rental_id', function (req, res) {
   let db = mongoose.connection.db;
   let id = req.user._id.toString();
   let rental_id = ObjectId(req.params.rental_id);
-
+  console.log('DETAILS LOAN TENTAL ID');
   db.collection("rentals").aggregate([
     { "$match": { "_id": ObjectId(rental_id) } },
     { 
@@ -48,28 +48,80 @@ router.get('/details/loan/:rental_id', function (req, res) {
 });
 
 router.post('/', function (req, res) {
-  console.log('POST RENTAL');
-  console.log(req.body);
+  console.log('post Rental');
   var rental = new Rental();
+  rental._id =  req.body._id;
   rental.furnit_id =  ObjectId(req.body.furnit_id);
   rental.loaner_id =  ObjectId(req.body.loaner_id);
   rental.renter_id =  ObjectId(req.body.renter_id);
   rental.loan_start = req.body.loan_start;
   rental.loan_end = req.body.loan_end;
-  rental.status = req.body.status;
   rental.paid = req.body.paid;
-  console.log('RENTAL');
-  console.log(rental);
+  rental.status = 0;
   rental.save(function (err) {
     if (err) {
       console.log('Error');
       res.send(err);
+    } else {
+      return res.status(201).json({
+        rental: rental,
+        msg: 'Bravo, votre location a été proposée'
+      });
     }
-    return res.status(201).json({
-      rental: rental,
-      msg: 'Bravo, votre location a été proposée'
-    });
   });
+});
+
+
+router.post('/update', function (req, res) {
+  console.log('Update a rental');
+  let db = mongoose.connection.db;
+  console.log(req.body._id);
+  console.log(req.body.loan_start);
+  console.log(req.body.loan_end);
+  // var rental = new Rental();
+  // rental._id =  req.body._id;
+  // rental.furnit_id =  ObjectId(req.body.furnit_id);
+  // rental.loaner_id =  ObjectId(req.body.loaner_id);
+  // rental.renter_id =  ObjectId(req.body.renter_id);
+  // rental.loan_start = req.body.loan_start;
+  // rental.loan_end = req.body.loan_end;
+  // rental.status = req.body.status;
+  // rental.paid = req.body.paid;
+  db.collection("rentals").findAndModify(
+    { "_id" : ObjectId(req.body._id) }, [], 
+    { $set: { "loan_start" : new Date(req.body.loan_start), "loan_end": new Date(req.body.loan_end) } },
+    {new: true}, // Return the updated doc rather than the original
+    function(err, result) {
+      console.log('rest');
+      // console.log(result);
+      if (err) {
+        console.log('Error');
+        res.send(err);
+      }
+      else {
+        return res.status(201).json({
+          rental: result.value,
+          msg: 'Bravo, votre location a été mise à jour'
+        });
+      }
+    }
+);
+
+//   db.collection("rentals").updateOne(
+//     { "_id" : ObjectId(req.body._id) },
+//     { $set: { "loan_start" : new Date(req.body.loan_start), "loan_end": new Date(req.body.loan_end) } }
+//  , (err) => {
+//     if (err) {
+//       console.log('Error');
+//       res.send(err);
+//     }
+//     else {
+//       return res.status(201).json({
+//         // rental: rt,
+//         msg: 'Bravo, votre location a été mise à jour'
+//       });
+//     }
+//   });
 });
 
 // called for RentalComponent
@@ -79,7 +131,7 @@ router.get('/details/rent/:rental_id', function (req, res) {
   let db = mongoose.connection.db;
   let id = req.user._id.toString();
   let rental_id = ObjectId(req.params.rental_id);
-
+  console.log('DETAILS rebt TENTAL ID')
   db.collection("rentals").aggregate([
     { "$match": { "_id": ObjectId(rental_id) } },
     { 

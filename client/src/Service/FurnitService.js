@@ -1,5 +1,5 @@
 import axios from 'axios';
-import store from './store'
+import store from './../store'
 
 const url = 'http://localhost:5000/api/furnits/';
 

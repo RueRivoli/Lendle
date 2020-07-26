@@ -38,9 +38,9 @@
 
 
 <script>
-import NavComponent from './Navigation/NavComponent';
-import FooterComponent from './Footer/FooterComponent';
-import AuthService from '../AuthService';
+import NavComponent from './../Navigation/NavComponent';
+import FooterComponent from './../Footer/FooterComponent';
+import AuthService from './../../Service/AuthService';
 
 export default {
   name: 'ReSendMailValidationComponent',
@@ -97,7 +97,7 @@ export default {
 
 <style lang="scss" scoped>
 
-@import "./../style/element-variables.scss";
+@import "./../../style/element-variables.scss";
 
 #fb:hover{
   background-color:#7490B8 !important;

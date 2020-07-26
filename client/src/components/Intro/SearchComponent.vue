@@ -1,19 +1,18 @@
 <template>
     <div>
         <nav-component :displayTitles="true"></nav-component>
-       
         <el-container>
             <el-header>
                  <el-row style="margin-top:2vh;margin-left: 15vw;margin-right:15vw;">
                     <el-form class="search" ref="furniture" name="furniture"  :inline="true" :model="furniture" :rules="rulesFurniture" enctype="multipart/form-data">
                     <el-row>
                          <el-col :span="3" :offset="0">
-                          <el-select placeholder="Ville" v-model="furniture.city" size="mini">
-                               <i class="el-icon-edit el-input__icon" slot="suffix"></i>
-                                <el-option label="Paris" value="Paris"></el-option>
-                                <el-option label="Lyon" value="Lyon"></el-option>
-                                <el-option label="Lille" value="Lille"></el-option>
-                            </el-select>
+                            <el-select placeholder="Ville" v-model="furniture.city" size="mini">
+                                <i class="el-icon-edit el-input__icon" slot="suffix"></i>
+                                    <el-option label="Paris" value="Paris"></el-option>
+                                    <el-option label="Lyon" value="Lyon"></el-option>
+                                    <el-option label="Lille" value="Lille"></el-option>
+                                </el-select>
                         </el-col>
                         <el-col :span="10" :offset="5">
                          <el-input placeholder="Nom" size="mini" v-model="furniture.word" class="input-with-select">
@@ -87,10 +86,9 @@
 
 
 <script>
-import NavComponent from './Navigation/NavComponent';
-import FooterComponent from './Footer/FooterComponent';
-import FurnitService from '../FurnitService';
-// import FurnitComponent from './FurnitComponent';
+import NavComponent from './../Navigation/NavComponent';
+import FooterComponent from './../Footer/FooterComponent';
+import FurnitService from './../../Service/FurnitService';
 import moment from 'moment';
 
 export default {
@@ -99,9 +97,9 @@ export default {
   data() {
       return {
         furniture: {
-            city: '',
-            type: '',
-            word: ''
+            city: localStorage.city,
+            type: localStorage.type,
+            word: localStorage.word
         },
         current_page: 1,
         page_size: 4,
@@ -112,25 +110,15 @@ export default {
         }
   }
   },
+  mounted() {
+    //   if (localStorage.city) this.furniture.city = localStorage.city;
+    //   if (localStorage.type) this.furniture.type = localStorage.type;
+    //   if (localStorage.name) this.furniture.name = localStorage.name;
+  },
   async created() {
-      this.identified = false;
-    if (this.$route.params && this.$route.params.furniture && this.$route.params.furniture.type) this.furniture.type = this.$route.params.furniture.type;
-    if (this.$route.params && this.$route.params.furniture && this.$route.params.furniture.city) this.furniture.city = this.$route.params.furniture.city;
-    if (this.$route.params && this.$route.params.furniture && this.$route.params.furniture.word) this.furniture.word = this.$route.params.furniture.word;
-    let context = this;
-    console.log('THIS FURNITURE');
-    console.log(this.$route.params);
+    console.log('This furniture');
     console.log(this.furniture);
-    FurnitService.getFurnit(this.furniture).then(function(furn) {
-      console.log('result');
-      console.log(furn);
-      context.furnits = furn.furnits;
-      context.imgUrl = furn.imgUrl;
-      context.numberFurnits = furn.furnits.length;
-    //   context.total = furn.furnits.length;
-    }).catch(function(err) {
-        console.log(err);
-    });
+    this.searchFurnits();
   },
   computed: {
       furnits_current: function () {
@@ -142,18 +130,6 @@ export default {
           }
           else return [];
       },
-    //     imgUrl_current: function () {
-    //       console.log('CALCUL imgUrl');
-    //       console.log(this.imgUrl);
-
-    //       if (!this.imgUrl) return {};
-    //       if (Object.keys(this.imgUrl) === 0 ) return {};
-    //       else {
-              
-    //           return this.imgUrl.slice(this.first_furnit, this.last_furnit);
-    //       }
-    //       else return [];
-    //   },
       first_furnit: function () {
           return (this.current_page - 1) * this.page_size;
       },
@@ -175,39 +151,17 @@ export default {
       }
   },
   watch: {
-    // '$route.params.furniture' : {
-    //   //Your code here
-    //   handler: function(search) {
-    //       console.log('HANDLER');
-    //        console.log(search);
-    //        let context = this;
-    //        FurnitService.getFurnitWithSearch(search).then(function(furn) {
-    //             console.log('result');
-    //             console.log(furn);
-    //             context.furnits = furn.furnits;
-    //             context.imgUrl = furn.imgUrl;
-    //             context.numberFurnits = furn.furnits.length;
-    //         }).catch(function(err) {
-    //             console.log(err);
-    //         });
-    //     },
-    //     deep: true,
-    //     immediate: true
-    //   }
     'furniture.city' : {
-      //Your code here
       handler: function() {
             this.searchFurnits();
         },
       },
        'furniture.type' : {
-      //Your code here
       handler: function() {
             this.searchFurnits();
         },
       },
        'furniture.word' : {
-      //Your code here
       handler: function() {
             this.searchFurnits();
         },
@@ -221,7 +175,7 @@ export default {
             let context = this;
            console.log(this.furniture);
            FurnitService.getFurnit(this.furniture).then(function(furn) {
-                console.log('result');
+                console.log('Furnits');
                 console.log(furn);
                 context.furnits = furn.furnits;
                 console.log(furn.furnits);
@@ -244,16 +198,8 @@ export default {
               return false
              }
              console.log('formulaire validé');
-             let context = this;
-              FurnitService.getFurnit(this.furniture).then(function(furn) {
-                console.log('result');
-                console.log(furn);
-                context.furnits = furn.furnits;
-                context.imgUrl = furn.imgUrl;
-                context.numberFurnits = furn.furnits.length;
-                }).catch(function(err) {
-                    console.log(err);
-                });
+            //  let context = this;
+             this.searchFurnits();
             });
         },
         toFormat (date) {
@@ -268,7 +214,7 @@ export default {
 <style lang="scss">
 
 
-@import "./../style/element-variables.scss";
+@import "./../../style/element-variables.scss";
 
 /* .el-button{
     PADDING:

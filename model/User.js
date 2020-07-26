@@ -22,11 +22,11 @@ const UserSchema = mongoose.Schema({
         required: false
     },
     facebookId: {
-        type: mongoose.Schema.Types.ObjectId,
+        type: String,
         required: false
     },
     googleId: {
-        type: mongoose.Schema.Types.ObjectId,
+        type: String,
         required: false
     },
     pswd: {

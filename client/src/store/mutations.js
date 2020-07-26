@@ -5,6 +5,12 @@ const mutations = {
     ID: (state, id) => {
         state.id = id
     },
+    USERNAME: (state, username) => {
+        state.username = username
+    },
+    AVATAR: (state, avatar) => {
+        state.avatar = avatar
+    },
     TOKEN: (state, token) => {
         state.token = token
     },

@@ -51,11 +51,14 @@ router.get('/google',
 router.get('/google/callback', 
       passport.authenticate('google', { failureRedirect: '/login' }),
     function(req, res) {
-
+      console.log('REEEQQQ');
+      console.log(req.user);
       const payload = {
         _id: req.session.passport.user,
         loaner: req.user.loaner,
-        renter: req.user.renter
+        renter: req.user.renter,
+        avatar: req.user.profilePicture,
+        username: req.user.username
       }
       console.log('payload before redirection');
       console.log(payload);
@@ -81,10 +84,14 @@ router.get('/facebook',
 router.get('/facebook/callback',
   passport.authenticate('facebook', { failureRedirect: '/login' }),
   function(req, res) {
+    console.log('REQ');
+    console.log(req.user);
     const payload = {
       _id: req.session.passport.user,
       loaner: req.user.loaner,
-      renter: req.user.renter
+      renter: req.user.renter,
+      avatar: req.user.profilePicture,
+      username: req.user.username,
     }
     jwt.sign(payload, key, { expiresIn: 604800 }, (err, token) =>  {
       res.redirect('http://localhost:8080/profile?token=' + `${token}`);
@@ -411,13 +418,12 @@ router.post('/login', function (req, res) {
               _id: usr._id,
               mail: usr.mail
             }
-            const { loaner, renter, language } = usr;
-            const user = {loaner, renter, language };
+            const { _id, loaner, renter, mail, language, username, firstname, lastname, profilePicture } = usr;
+            const user = { _id, loaner, renter, mail, language, username, firstname, lastname, profilePicture };
             jwt.sign(payload, key, { expiresIn: 604800 }, (err, token) =>  {
               res.status(200).json({
                 success: true,
                 user: user,
-                id: usr._id,
                 token: `${token}`,
                 msg: "Vous êtes connecté.e"
               })

@@ -15,21 +15,30 @@
                 </el-input>
             </div>
           </div> -->
-          <div :class="isSelected(itl)" v-for="(itl, index) in interlocutors" :key="index" @click="changeChat(itl)" style="padding:8px;border-bottom: 1px solid #03A59D">
-            <div :key="30" style="align-self: flex-start;margin-right:10px;">
-              <el-avatar :size="30" src="../assets/twitter.svg"></el-avatar>
-            </div>
+          <div v-if="interlocutors.length > 0">
+            <div :class="isSelected(itl)" v-for="(itl, index) in interlocutors" :key="index" @click="changeChat(itl)" style="padding:8px;border-bottom: 1px solid #03A59D">
+              <div :key="30" style="align-self: flex-start;margin-right:10px;">
+                <el-avatar :size="30" src="../assets/twitter.svg"></el-avatar>
+              </div>
 
-            <div style="align-self: center;padding:3px;">
-              <div style="font-size:12px;">{{nameInterlocutor(itl)}}</div>
-              <!-- <div style="font-size:12px">{{itl.furnit[0].name}} / {{itl.furnit[0].type}}</div> -->
+              <div style="align-self: center;padding:3px;">
+                <div style="font-size:12px;">{{nameInterlocutor(itl)}}</div>
+                <!-- <div style="font-size:12px">{{itl.furnit[0].name}} / {{itl.furnit[0].type}}</div> -->
+              </div>
             </div>
-            
-          </div>
+            </div>
+            <div v-else style="height:8vh;line-height:8vh;border-bottom: 1px solid #03A59D">
+              <div style="align-self: center;text-align:center;">
+                <div style="font-size:12px;"> Pas de conversation</div>
+              </div>
+            </div>
+          
+         
         </el-aside>
         <el-container style="height: 92vh;">
             <el-header class="center" style="height:8vh;line-height:8vh;font-size: 18px;background-color:#C0C0C0;color:white;">
-                <span>{{name}}</span>
+                <span v-if="interlocutors && interlocutors.length > 0">{{name}}</span>
+                <span v-else>Chat</span>
                 <!-- <span class="pointer opacity" style="float:right;"><router-link :to="{ name: 'Furnit', params: { id: furnit_id }}" tag="span">{{furnitname}}</router-link></span> -->
             </el-header>
             <el-header class="center" style="height:5vh;line-height:5vh;font-size: 18px;background-color:#F0F8FF;color:white;">
@@ -41,9 +50,9 @@
                 <!-- <span class="pointer opacity" style="float:right;"><router-link :to="{ name: 'Furnit', params: { id: furnit_id }}" tag="span">{{furnitname}}</router-link></span> -->
             </el-header>
         <div>
-          <el-row style="height: 84vh;">
-            <el-col :span="24" :offset="0">
-              <div ref="container" style="height:66vh;overflow-y: scroll; scrollbar-width: thin;padding:3px;">
+          <el-row style="height: 79vh;">
+            <el-col :span="24" :offset="0" style="display:flex;flex-direction:column;justify-content:space-between;height:100%;">
+              <div ref="container" style="overflow-y: scroll; scrollbar-width: thin;padding:3px;">
                 <div v-for="(mg, index) in allmsgs" :key="index">
                    <div style="font-size:12px;color:black;text-align:center;">
                      <div style="background-color:#FFFAF0;border-radius:2px;margin: auto;width: 10%; padding: 3px;">
@@ -57,9 +66,9 @@
                   </div>
                 </div>
               </div>
-               <div style="height:18vh;">
+               <div v-if="interlocutors && interlocutors.length > 0" style="height:75px;align-self:flex-end;width:100%;">
                 <!-- <el-button slot="append" icon="el-icon-paperclip" size="small"></el-button> -->
-                  <el-input placeholder="Message + Entrer"  :rows="4" type="textarea" v-model="msg" @change="sendMessage" class="input-with-select">
+                  <el-input placeholder="Message + Entrer"  :rows="3" type="textarea" v-model="msg" @change="sendMessage" class="input-with-select">
                   </el-input>
               </div>
                  
@@ -74,9 +83,8 @@
 
 
 <script>
-import NavComponent from './Navigation/NavComponent';
-// import UserService from '../UserService';
-import FooterComponent from './Footer/FooterComponent';
+import NavComponent from './../Navigation/NavComponent';
+import FooterComponent from './../Footer/FooterComponent';
 import io from 'socket.io-client'
 import moment from 'moment'
 import { mapGetters } from 'vuex'
@@ -227,7 +235,7 @@ export default {
       let index_interlocutorWanted =  Object.keys(interlocutors).length - 1;
       console.log('index W');
       console.log(index_interlocutorWanted);
-      if (this.interlocutor_id) {
+      if (this.interlocutors && this.interlocutors.length > 0 && this.interlocutor_id) {
         console.log('interlocutor id');
         console.log(this.interlocutor_id);
         const isInterlocutorWanted = (element) => element.interlocutor_id == this.interlocutor_id;

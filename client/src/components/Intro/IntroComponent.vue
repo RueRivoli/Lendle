@@ -16,11 +16,11 @@
 
 
 <script>
-import NavComponent from './Navigation/NavComponent';
+import NavComponent from './../Navigation/NavComponent';
 import LendleComponent from './LendleComponent';
-import LoanFurnitComponent from './LoanFurnitComponent';
-import FindFurnitComponent from './FindFurnitComponent';
-import FooterComponent from './Footer/FooterComponent';
+import LoanFurnitComponent from './../Furnit/LoanFurnitComponent';
+import FindFurnitComponent from './../Furnit/FindFurnitComponent';
+import FooterComponent from './../Footer/FooterComponent';
 
 export default {
   name: 'IntroComponent',

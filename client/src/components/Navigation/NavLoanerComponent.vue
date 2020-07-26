@@ -1,10 +1,12 @@
 <template>
     <nav style="border-bottom: 1px solid #dfe0e6;width:100%;">
         <ul role="menubar" class="" style="height: 50px;">
-            <li tabindex="0" class="mright" v-bind:class="{ 'selected': displayLendle, 'pointer': true, 'lendle': true }"><router-link to="/" tag="span">LENDLE</router-link></li>
+            <li tabindex="0" class="mleft selected pointer lendle"><router-link to="/" tag="span">LENDLE</router-link></li>
             <div class="f-auto" style="width:25%;"></div>
             <div class="f-auto" style="flex-grow: 1;">
-                <el-button class="pointer f-r" type="text" icon="el-icon-search" size="mini" @click="searchFurnit">Chercher</el-button>
+                 <li tabindex="0" class="pointer" style="float:right;color:#1E969D;" ><router-link to="/search" tag="span">
+                 <i class="el-icon-search el-icon--right"></i>
+                 Chercher</router-link></li>
             </div>
             <div class="f-auto" style="flex-grow: 2;">
                  <li tabindex="0" class="pointer" style="float:right;" ><router-link to="/myrentals" tag="span">Mes meubles</router-link></li>
@@ -13,10 +15,10 @@
                 <li tabindex="0" class="pointer" style="float:right;"><router-link to="/chat" tag="span">Messagerie</router-link></li>
             </div>
             <div class="f-auto" style="flex-grow: 2;">
-                <!-- <li tabindex="0" class="pointer" style="float:right;margin-right: 10px;"><router-link to="/profile" tag="span">Mon compte</router-link></li> -->
-                
                 <el-dropdown trigger="click" style="float:right;">
-                    <span class="el-dropdown-link pointer" >Mon compte<i class="el-icon-arrow-down el-icon--right"></i>
+                    <span class="el-dropdown-link pointer" style="vertical-align:middle;margin:auto;">
+                        <span style="vertical-align:middle;margin:auto;margin-right:5px;">{{ username }}</span>
+                        <el-avatar size="small" :src="avatar"></el-avatar>
                     </span>
                     <el-dropdown-menu slot="dropdown">
                         <el-dropdown-item icon="el-icon-setting"><router-link to="/profile" tag="span">Profil</router-link></el-dropdown-item>
@@ -32,23 +34,24 @@
 
 <script>
 
+import { mapGetters } from 'vuex'
+
 export default {
   name: 'NavLoanerComponent',
   data() {
       return {
-          display: 1
           }
         },
     methods: {
       searchFurnit() {
-          console.log('searchFurnit');
           this.$router.push({ name: 'Search' });
       }
   },
   computed: {
-      displayLendle () {
-          return this.display === 0;
-      },
+    ...mapGetters({
+      avatar: 'GET_AVATAR',
+      username: 'GET_USERNAME'
+    }),
   }
 }
 </script>
@@ -56,7 +59,7 @@ export default {
 <style scoped>
 
 
-.mright{
+.mleft{
     margin-left: 18px;
 }
 
@@ -97,6 +100,12 @@ li {
 
 nav ul{
     justify-content: space-between;
+}
+
+.el-avatar{
+    vertical-align:middle;
+    margin:auto;
+    margin-right:3px;
 }
 
 </style>

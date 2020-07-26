@@ -9,7 +9,7 @@
                 
             </div>
             <div>
-                <img src="../assets/fauteuilrouge.png" alt="" style="float:right;height:100%;width:50vw;">
+                <img src="./../../assets/fauteuilrouge.png" alt="" style="float:right;height:100%;width:50vw;">
             </div>
         </el-container>
         <div style="height:2px;"></div>
@@ -24,13 +24,13 @@
                     </div>
                 </div>
                 <div class="flex margin-auto">
-                    <img class="m-auto" src="../assets/meuble.png" alt="" style="padding: 20px;">
+                    <img class="m-auto" src="./../../assets/meuble.png" alt="" style="padding: 20px;">
                 </div>
         </el-container>
         <div style="height:2px;"></div>
            <el-container style="height:50vh;">
                <div class="flex m-auto">
-                    <img class="m-auto" src="../assets/preteur.png" alt="" style="padding: 20px;">
+                    <img class="m-auto" src="./../../assets/preteur.png" alt="" style="padding: 20px;">
                 </div>
                 <div class="flex" style="background-color:#1F939B;width:68%;padding:25px;color:white;text-align:left;">
                     <div style="margin:auto;">

@@ -11,21 +11,21 @@
         <el-container style="height:50vh;">
             <div class="flex" style="background-color:#1F939B;width:100%;justify-content:space-around;padding:25px;color:white;text-align:right;">
                 <div class="center">
-                    <img src="../assets/cochon.png" alt="">
+                    <img src="../../assets/cochon.png" alt="">
                     <h2>ECONOMIQUE</h2>
                     <span>
                     Utiliser Lendle c'est gratuit
                     </span>
                 </div>
                 <div class="center">
-                    <img src="../assets/facile.png" alt="">
+                    <img src="../../assets/facile.png" alt="">
                     <h2 style="">FACILE</h2>
                     <span>
                     Quand ta location se termine, tu as juste à rendre ce que tu as emprunté
                     </span>
                 </div>
                 <div class="center">
-                    <img src="../assets/lampe.png" alt="">
+                    <img src="../../assets/lampe.png" alt="">
                     <div>
                     <h2 style="">UTILE A TOUS</h2>
                     <span>
@@ -38,7 +38,7 @@
         <div style="height:2px;"></div>
            <el-container style="height:65vh;">
                <div class="flex m-auto">
-                    <img class="m-auto" src="../assets/preteur.png" alt="" style="padding: 20px;">
+                    <img class="m-auto" src="../../assets/preteur.png" alt="" style="padding: 20px;">
                 </div>
                 <div class="flex" style="background-color:#252627;width:68%;padding:25px;color:white;text-align:left;">
                     <div class="m-auto">

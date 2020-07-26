@@ -4,12 +4,16 @@ const ExtractJwt = require('passport-jwt').ExtractJwt;
 const User = require('../../model/User');
 const key = require('./keys').secret;
 var cookieParser = require('cookie-parser');
+const mongoose = require('mongoose');
+const ObjectId = mongoose.Types.ObjectId;
 
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
-// const GOOGLE_CLIENT_ID = require('./keys').GOOGLE_CLIENT_ID;
-// const GOOGLE_CLIENT_SECRET = require('./keys').GOOGLE_CLIENT_SECRET;
-const GOOGLE_CLIENT_ID = '822102734691-o4mdd9up7bc0va8c0qc2615gnhm7fpc6.apps.googleusercontent.com';
-const GOOGLE_CLIENT_SECRET = 'aSyRuWPwFjt1ffgNblERX_5f';
+const GOOGLE_CLIENT_ID = require('./keys').GOOGLE_CLIENT_ID;
+const GOOGLE_CLIENT_SECRET = require('./keys').GOOGLE_CLIENT_SECRET;
+// const GOOGLE_CLIENT_ID = '822102734691-o4mdd9up7bc0va8c0qc2615gnhm7fpc6.apps.googleusercontent.com';
+// const GOOGLE_CLIENT_SECRET = 'aSyRuWPwFjt1ffgNblERX_5f';
+
+
 
 const passport = require('passport');
 const FacebookStrategy = require('passport-facebook').Strategy;
@@ -53,20 +57,23 @@ module.exports = passport => {
         console.log('Callback passport Google Oauth');
         console.log('Profile :');
         console.log(profile);
+        console.log('Profile  ID:');
+        console.log(profile.id);
           User.findOne({ googleId: profile.id }).then((currentUser) => {
             console.log('Current User');
             console.log(currentUser);
               if (currentUser) {
                 console.log('FIND google id');
-                  done(null, currentUser);
+                  return done(null, currentUser);
               } else {
+                console.log("CREATION NEW USER");
                   newUser = new User();
                   newUser.googleId = profile.id,
                   newUser.username = profile.displayName,
                   newUser.firstname = profile.name.givenName,
                   newUser.lastname = profile.name.familyName,
                   newUser.mail = profile.emails.value,
-                  newUser.isVerified = 'true',
+                  newUser.isVerified = true,
                   newUser.profilePicture = profile.photos[0].value,
                   console.log('New User');
                   console.log(newUser);
@@ -100,7 +107,7 @@ module.exports = passport => {
               console.log('exist');
                 return done(null, currentUser);
             } else {
-              console.log('NO curretnusre')
+              console.log('no current User')
                 newUser = new User();
                 newUser.facebookId = profile.id;
                 if (profile.name && profile.name.familyName) {
@@ -114,6 +121,7 @@ module.exports = passport => {
                   else if (profile.displayName) newUser.username = profile.displayName
                 } else newUser.username = newUser.firstname + ' ' + newUser.lastname
                 newUser.isVerified = 'true',
+                newUser.profilePicture = profile.photos[0].value;
                 console.log('NEW USER');
                 console.log(newUser);
                 newUser.save().then((newUser) => {

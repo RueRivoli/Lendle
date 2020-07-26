@@ -65,9 +65,9 @@
 
 
 <script>
-import NavComponent from './Navigation/NavComponent';
-import FooterComponent from './Footer/FooterComponent';
-import FurnitService from '../FurnitService';
+import NavComponent from './../Navigation/NavComponent';
+import FooterComponent from './../Footer/FooterComponent';
+import FurnitService from './../../Service/FurnitService';
 import moment from 'moment';
 
 export default {
@@ -137,7 +137,7 @@ export default {
 
 <style lang="scss" scoped>
 
-@import "./../style/element-variables.scss";
+@import "./../../style/element-variables.scss";
 
 
 .box-card{

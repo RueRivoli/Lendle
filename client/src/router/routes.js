@@ -1,23 +1,34 @@
 import VueRouter from 'vue-router'
-import AddFurnitComponent from './../components/AddFurnitComponent';
-import FurnitComponent from './../components/FurnitComponent';
-import RentalComponent from './../components/RentalComponent';
-import MyFurnitComponent from './../components/MyFurnitComponent';
-import MyRentalsComponent from './../components/MyRentalsComponent';
-import AdComponent from './../components/AdComponent';
-import MyAdsComponent from './../components/MyAdsComponent';
-import ChatComponent from './../components/ChatComponent';
-import HomeComponent from './../components/HomeComponent';
-import SignUpComponent from './../components/SignUpComponent';
-import SearchComponent from './../components/SearchComponent';
-import LogInComponent from './../components/LogInComponent';
-import IntroComponent from './../components/IntroComponent';
-import ProfileComponent from './../components/ProfileComponent';
-import HelpComponent from './../components/HelpComponent';
-import ConditionComponent from './../components/ConditionComponent';
-import ReSendMailValidationComponent from './../components/ReSendMailValidationComponent';
-import PasswordForgottenComponent from './../components/PasswordForgottenComponent';
-import ReinitializePasswordComponent from './../components/ReinitializePasswordComponent';
+
+import AddFurnitComponent from './../components/Furnit/AddFurnitComponent';
+import FurnitComponent from './../components/Furnit/FurnitComponent';
+import MyFurnitComponent from './../components/Furnit/MyFurnitComponent';
+
+import AdComponent from './../components/Advertisement/AdComponent';
+import MyAdsComponent from './../components/Advertisement/MyAdsComponent';
+
+
+
+
+import MyRentalsComponent from './../components/Rental/MyRentalsComponent';
+import RentalComponent from './../components/Rental/RentalComponent';
+
+import SearchComponent from './../components/Intro/SearchComponent';
+import HomeComponent from './../components/Intro/HomeComponent';
+import IntroComponent from './../components/Intro/IntroComponent';
+
+import HelpComponent from './../components/Information/HelpComponent';
+import ConditionComponent from './../components/Information/ConditionComponent';
+
+import ChatComponent from './../components/Chat/ChatComponent';
+
+import ProfileComponent from './../components/Account/ProfileComponent';
+
+import LogInComponent from './../components/Authentication/LogInComponent';
+import SignUpComponent from './../components/Authentication/SignUpComponent';
+import ReSendMailValidationComponent from './../components/Authentication/ReSendMailValidationComponent';
+import PasswordForgottenComponent from './../components/Authentication/PasswordForgottenComponent';
+import ReinitializePasswordComponent from './../components/Authentication/ReinitializePasswordComponent';
 
 const routes = [
   { path: '/', name:'Home', component: HomeComponent },

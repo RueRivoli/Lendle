@@ -12,8 +12,10 @@ Vue.use(Vuex)
 const state = {
     // User store
     authentificated: false,
+    username: '',
     id: '',
     loaner: true,
+    avatar: '../assets/twitter.svg',
     token: '',
     isConnectedToChat: false,
     socketMessage: ''

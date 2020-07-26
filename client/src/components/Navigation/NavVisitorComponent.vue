@@ -1,9 +1,7 @@
 <template>
     <nav style="border-bottom: 1px solid #dfe0e6; width: 100%;">
         <ul role="menubar" class="" style="height: 50px;">
-            <li tabindex="0" class="mright" v-bind:class="{ 'selected': displayLendle, 'pointer': true, 'lendle': true }"><router-link to="/" tag="span">LENDLE</router-link></li>
-            <!-- <li v-if="displayTitles" tabindex="0" v-bind:class="{ 'selected': displayLoanFurnit, 'pointer': true }" style="float:right;margin-right:5px;" @click="select(1)"> Prêter des meubles</li>
-            <li v-if="displayTitles" tabindex="0" v-bind:class="{ 'selected': displayFindFurnit, 'pointer': true }" style="float:right;margin-left:5px;" @click="select(2)">Trouver des meubles</li> -->
+            <li tabindex="0" class="mright selected pointer lendle"><router-link to="/" tag="span">LENDLE</router-link></li>
             <div v-if="displayTitles" style="width:50%;"></div>
             <div class="f-auto" v-if="displayTitles">
                 <el-button type="primary" size="mini" plain><router-link to="/intro/beARenter" tag="span">J'ai des meubles</router-link></el-button>
@@ -13,9 +11,7 @@
                 <span style="float:right;margin-right: 5px;" v-if="displayTitles" >|</span>
                  <li tabindex="0" class="pointer" style="float:right;margin-right: 5px;" v-if="displayTitles" ><router-link to="/signup/loaner" tag="span">Inscription</router-link></li>
             </div>
-             <!-- <div class="f-auto" v-if="displayTitles">
-                <li tabindex="0" class="pointer" style="float:right;margin-right: 5px;" v-if="displayTitles" ><router-link to="/signup" tag="span">Inscription</router-link></li>
-            </div> -->
+            
             <div class="f-auto" v-if="displayTitles" style="width:5%;">
                 <li tabindex="0" class="pointer" style="float:right;margin-right: 10px;"><router-link to="/help" tag="span">Aide</router-link></li>
             </div>
@@ -34,23 +30,8 @@ export default {
   props: ['displayTitles'],
   data() {
       return {
-          display: 1,
-          searchWord: ''
         }
     },
-    methods: {
-  },
-  computed: {
-      displayLendle () {
-          return this.display === 0;
-      },
-      displayLoanFurnit () {
-          return this.display === 1;
-      },
-       displayFindFurnit () {
-          return this.display === 2;
-      }
-  }
 }
 </script>
 

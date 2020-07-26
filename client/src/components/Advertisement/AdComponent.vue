@@ -245,11 +245,10 @@
 </template>
 
 <script>
-import NavComponent from './Navigation/NavComponent';
-// import RentalService from '../RentalService';
-import FurnitService from '../FurnitService';
-import './../style/style.css';
-import FooterComponent from './Footer/FooterComponent';
+import NavComponent from './../Navigation/NavComponent';
+import FurnitService from './../../Service/FurnitService';
+import './../../style/style.css';
+import FooterComponent from './../Footer/FooterComponent';
 
 export default {
   name: 'AdComponent',

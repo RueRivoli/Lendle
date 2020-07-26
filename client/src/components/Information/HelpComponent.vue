@@ -28,8 +28,8 @@
 </template>
 
 <script>
-import NavComponent from './Navigation/NavComponent';
-import FooterComponent from './Footer/FooterComponent';
+import NavComponent from './../Navigation/NavComponent';
+import FooterComponent from './../Footer/FooterComponent';
 
 export default {
   name: 'HelpComponent',

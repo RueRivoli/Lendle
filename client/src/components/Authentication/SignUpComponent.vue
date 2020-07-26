@@ -94,9 +94,9 @@
 
 
 <script>
-import NavComponent from './Navigation/NavComponent';
-import FooterComponent from './Footer/FooterComponent';
-import AuthService from '../AuthService';
+import NavComponent from './../Navigation/NavComponent';
+import FooterComponent from './../Footer/FooterComponent';
+import AuthService from './../../Service/AuthService';
 
 export default {
   name: 'SignUpComponent',
@@ -184,6 +184,7 @@ export default {
     },
     async signUpGoogle() {
         let result = await AuthService.signUpGoogle();
+        console.log('GOOGLE RESULT');
         console.log(result);
     },
     async signUpFacebook() {
@@ -197,7 +198,7 @@ export default {
 
 <style lang="scss" scoped>
 
-@import "./../style/element-variables.scss";
+@import "./../../style/element-variables.scss";
 
 #fb:hover{
   opacity: 0.7;

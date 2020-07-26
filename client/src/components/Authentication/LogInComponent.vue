@@ -87,9 +87,9 @@
 
 
 <script>
-import NavComponent from './Navigation/NavComponent';
-import FooterComponent from './Footer/FooterComponent';
-import AuthService from '../AuthService';
+import NavComponent from './../Navigation/NavComponent';
+import FooterComponent from './../Footer/FooterComponent';
+import AuthService from './../../Service/AuthService';
 // import VueCookie from 'vue-cookie'
 
 export default {
@@ -165,9 +165,25 @@ export default {
                 let token = data.token;
                 context.$store.commit('TOKEN', token);
             }
-            if (data.id) {
-                let id = data.id;
+            if (data.user._id) {
+                let id = data.user._id;
                 context.$store.commit('ID', id);
+            }
+             if (data.user.username) {
+                let username = data.user.username;
+                context.$store.commit('USERNAME', username);
+            }
+            else if (data.user.firstname || data.user.lastname) {
+                let username = data.user.firstname + ' ' + data.user.lastname;
+                context.$store.commit('USERNAME', username);
+            }
+            else if (data.user.mail){
+                let mail = data.user.mail;
+                context.$store.commit('USERNAME', mail);
+            }
+              if (data.user.profilePicture) {
+                let avatar = data.user.profilePicture;
+                context.$store.commit('avatar', avatar);
             }
             if (data.user.renter && data.user.loaner) {
                  console.log('user is both a loaner and a renter');
@@ -185,10 +201,10 @@ export default {
             }
         }).catch(function(err) {
             if (err.response && err.response.data.type === 0) {
-                let msg = "Il y a une erreur dans la création du compte";
+                let msg = "Il y a une erreur de connexion";
               if (err.response.data.err) {
                 msg = err.response.data.err;
-                }
+              }
                  context.$message({
                     message: msg,
                     type: 'warning'
@@ -206,7 +222,7 @@ export default {
 
 <style lang="scss" scoped>
 
-@import "./../style/element-variables.scss";
+@import "./../../style/element-variables.scss";
 
 #fb:hover{
   background-color:#7490B8 !important;

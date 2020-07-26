@@ -15,7 +15,7 @@
              <el-card class="box-card" :body-style="{ padding: '2px'}">
                  <el-col :span="5" >
                    <img v-if="url.imgurl && url.imgurl[index]" class="image pointer opacity" :src="url.imgurl[index]">
-                   <img v-else class="image pointer opacity" src="../assets/gris.jpg">
+                   <img v-else class="image pointer opacity" src="../../assets/gris.jpg">
                 </el-col>
                 <el-col :span="5" :offset="1">
                     <div style="margin-top:35px;"><span class= "pointer opacity" style="font-weight:bold;">{{ fnt.name }}</span></div>
@@ -50,10 +50,9 @@
 
 
 <script>
-import NavComponent from './Navigation/NavComponent';
-// import AsideComponent from './AsideComponent';
-import FooterComponent from './Footer/FooterComponent';
-import FurnitService from '../FurnitService';
+import NavComponent from '../Navigation/NavComponent';
+import FooterComponent from '../Footer/FooterComponent';
+import FurnitService from '../../Service/FurnitService';
 import moment from 'moment';
 
 export default {

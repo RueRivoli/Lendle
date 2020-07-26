@@ -22,9 +22,10 @@
                                     </el-carousel-item>
                                 </el-carousel>
                                 <el-row style="margin-top:5vh;">
-                                    <el-form-item label="Période">
+                                    <el-form-item label="Période de disponibilité">
+                                     
                                         <el-date-picker
-                                            v-model="date"
+                                            v-model="dateDisponibility"
                                             type="daterange"
                                             range-separator="au"
                                             start-placeholder="Début"
@@ -32,13 +33,52 @@
                                             format="dd/MM/yyyy"
                                             size="mini"
                                             :picker-options="readonly"
-                                            :default-value="[rental.loan_start, rental.loan_end]">
+                                            :disabled="true">
                                             </el-date-picker>
                                     </el-form-item>
                                 </el-row>
                         </el-col>
                             <el-col :span="8" :offset="3" style="">
-                                <el-row>
+                                <el-row v-if="isLoaner && rental.status == 0">
+                                   <h4>Votre proposition de location</h4>
+                                   <div v-if="!editMode">
+
+                                        <p>Du {{ format(dateStart) }} Au {{ format(dateEnd) }}</p>
+                                        <p>
+                                            Statut: En attente de réponse
+                                        </p>  
+                                        <el-button type="success" size="mini" plain @click="editMode = true">Editer</el-button>
+                                            <el-button type="danger" size="mini" plain @click="cancelRental">Annuler la demande</el-button>
+                                   </div>
+                                   <div v-else>
+                                   <el-form-item label="Période de location">
+                                     
+                                        <el-date-picker
+                                            v-model="dateRental"
+                                            type="daterange"
+                                            range-separator="au"
+                                            start-placeholder="Début"
+                                            end-placeholder="Fin"
+                                            format="dd/MM/yyyy"
+                                            size="mini"
+                                            >
+                                            </el-date-picker>
+                                    </el-form-item>
+                                     <el-button type="success" size="mini" plain @click="modifyRental">Modifier</el-button>
+                                    <el-button type="warning" size="mini" plain @click="editMode = false">Revenir</el-button>
+                                   </div>
+                                     <el-table
+                                        :data="tableData"
+                                        style="width: 100%">
+                                        <el-table-column
+                                            prop="date"
+                                            label="Date"
+                                            width="180">
+                                        </el-table-column>
+                                    </el-table>
+                                </el-row>
+
+                                <!-- <el-row>
                                      <el-form-item label="Prix">
                                         <el-input
                                             type="primary"
@@ -51,9 +91,9 @@
                                         <el-slider v-model="rental.furnit[0].state" :step="25"
                                             show-stops :format-tooltip="formatTooltip" :disabled="true"></el-slider>
                                     </el-form-item>
-                                </el-row>
+                                </el-row> -->
 
-                                <el-row v-if="isLoaner">
+                                <!-- <el-row v-if="isLoaner">
                                      <el-form-item  label="Propriétaire">
                                      <el-input
                                         size="mini"
@@ -89,16 +129,16 @@
                                         </el-input>
                                        </el-form-item>
                                  
-                                </el-row>
+                                </el-row> -->
                                 
                             </el-col>
-                          <el-row>
+                          <!-- <el-row>
                                 <el-form :inline="true">
                                     <el-form-item>
                                         <el-button size="mini" value="submit" type="success" @click="contact">Contacter le locataire</el-button>
                                     </el-form-item>
                                 </el-form>
-                            </el-row>
+                            </el-row> -->
 
                          </el-form>
             </el-main>
@@ -108,22 +148,43 @@
 </template>
 
 <script>
-import NavComponent from './Navigation/NavComponent';
-import FooterComponent from './Footer/FooterComponent';
-import RentalService from '../RentalService';
-import FurnitService from '../FurnitService';
-import './../style/style.css';
-// import moment from 'moment'
+import NavComponent from './../Navigation/NavComponent';
+import FooterComponent from './../Footer/FooterComponent';
+import RentalService from './../../Service/RentalService';
+import FurnitService from './../../Service/FurnitService';
+import './../../style/style.css';
+const toFormat = require('./../../utils/format');
 
 export default {
   name: 'RentalComponent',
   components: { NavComponent, FooterComponent },
   data() {
     return {
+                  tableData: [{
+            date: '2016-05-03',
+            name: 'Tom',
+            address: 'No. 189, Grove St, Los Angeles'
+          }, {
+            date: '2016-05-02',
+            name: 'Tom',
+            address: 'No. 189, Grove St, Los Angeles'
+          }, {
+            date: '2016-05-04',
+            name: 'Tom',
+            address: 'No. 189, Grove St, Los Angeles'
+          }, {
+            date: '2016-05-01',
+            name: 'Tom',
+            address: 'No. 189, Grove St, Los Angeles'
+          }],
       rental_id: this.$route.params.id,
       rental: {},
       url: {},
-      date: [],
+      dateStart: '',
+      dateEnd: '',
+      dateDisponibility: [],
+      dateRental: [],
+      editMode: false
     }
   },
   computed: {
@@ -160,9 +221,10 @@ export default {
       console.log(rental);
       context.rental = rental.rental;
       console.log(context.rental);
-      let dateStart = context.rental.loan_start;
-      let dateEnd = context.rental.loan_end;
-      context.date = [dateStart, dateEnd];
+      context.dateStart = context.rental.loan_start;
+      context.dateEnd = context.rental.loan_end;
+      context.dateRental = [context.dateStart, context.dateEnd];
+      context.dateDisponibility = [context.rental.furnit[0].loanstart, context.rental.furnit[0].loanend];
       console.log(context.date);
      let picture_ids = context.rental.furnit[0].picture_ids;
      console.log(picture_ids);
@@ -179,7 +241,39 @@ export default {
     });
   },
   methods: {
-      readonly () {
+    format (date) {
+        return toFormat(date);
+    },
+    async modifyRental ()
+    {
+        let context = this;
+        this.rental.loan_start = this.dateRental[0];
+        this.rental.loan_end = this.dateRental[1];
+        this.dateStart = this.dateRental[0];
+        this.dateEnd = this.dateRental[1];
+        this.dateRental = [this.dateRental[0], this.dateRental[1]];
+        this.editMode = false;
+        console.log('Rental to be modified');
+         console.log(this.rental);
+          RentalService.updateRental(this.rental).then(function(rt) {
+            console.log('Update rental');
+            console.log(rt.rental);
+            context.rental = rt.rental;
+            // context.dateStart = rt.rental.loan_start;
+            // context.dateEnd = rt.rental.loan_end;
+            // context.dateRental = [rt.rental.loan_start, rt.rental.loan_end];
+            //   context.editMode = false;
+            //   rt.rental.furnit = [];
+            //   rt.rental.furnit[0] = context.furnit_proposition.furnit;
+            //   let index = Object.keys(context.imgUrl).length;
+            //   context.imgUrl[index] = context.furnit_proposition.imgUrl[0];
+            //  context.rentals.push(rt.rental);
+            //  context.proposition_id = null;
+          }).catch(function(err) {
+              console.log(err);
+          }) 
+    },
+    readonly () {
           return true;
     },
     formatTooltip(val) {
