@@ -21,6 +21,10 @@ const RentalSchema = mongoose.Schema({
         type: Date,
         required: true
     },
+    confirmation: {
+        type: Date,
+        required: false
+    },
     status: {
         type: Number,
         required: false,

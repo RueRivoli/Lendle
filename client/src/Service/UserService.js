@@ -23,6 +23,32 @@ class UserService {
         var decoded = jwt.decode(token, {complete: true});
         return decoded.payload;
     }
+    static getIfProfileComplete(isLoaner) {
+        let url_profile_completed = url + `/isComplete/${isLoaner}`;
+        this.defaultsHeaders();
+        return new Promise(function(resolve, reject) {
+            try {
+                return axios.get(url_profile_completed).then(function (response) {
+                    console.log('PROFILE IS Complete');
+                    console.log(response);
+                    resolve(response.data);
+                }).catch(function (error) {
+                    console.log('Donne une erreur');
+                    if (error.response) {
+                        console.log(error.response.data);
+                        console.log(error.response.status);
+                        console.log(error.response.headers);
+                      }
+                      console.log(error);
+                    reject(error.response.data.err);
+                });
+            } catch(err) {
+                console.log('Erreur de promesse');
+                console.log(err);
+                reject(err);
+            }
+        })
+    }
     static getProfile() {
         let url_profile = url + '/profile';
         this.defaultsHeaders();

@@ -2,6 +2,7 @@ const express = require('express');
 const mongodb = require('mongodb'); //mongodb driver
 const mongoose = require('mongoose');
 const User = require('../../../model/User');
+const ObjectId = mongoose.Types.ObjectId;
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const passport = require('passport');
@@ -27,6 +28,61 @@ router.get('/', function (req, res) {
     }
     res.json(usrs);
   });
+});
+
+
+router.get('/isComplete/:isLoaner', function (req, res) {
+  console.log('/isComplete/:isLoaner');
+  console.log(req.user);
+  let complete = true;
+  let fields = [];
+  if (((!req.user.firstname || req.user.firstname === '') || (!req.user.lastname || req.user.lastname === '')) && (!req.user.username || req.user.username === '')) {
+    complete = false;
+    if (!req.user.firstname || req.user.firstname === '') fields.push('firstname');
+    if (!req.user.lastname || req.user.lastname === '') fields.push('lastname');
+    fields.push('username');
+  } else if ((req.user.firstname && req.user.firstname.length > 0) && (req.user.lastname && req.user.lastname.length > 0) && (!req.user.username || req.user.username === '')) {
+    username = req.user.firstname + ' ' + req.user.lastname;
+    User.updateOne( {_id: ObjectId(req.user._id) }, { username }, function (err) {
+      if (err) {
+        return res.status(201).json({
+          complete: false,
+          fields: ['username']
+        });
+      }
+    })
+  }
+  if (req.params.isLoaner === true) {
+    console.log("isLoaner");
+    req.user.mail && req.user.mail.length > 0 ? '' : (complete = false,fields.push('mail'));
+    if (!complete) {
+      return res.status(201).json({
+        complete: false,
+        fields: fields
+      });
+    } else {
+      return res.status(201).json({
+        complete: true
+      });
+    }
+  } else {
+    console.log('test');
+    req.user.mail && req.user.mail.length > 0 ? '' : (complete = false,fields.push('mail'));
+    req.user.address && req.user.address.length > 0 ? '' : (complete = false, fields.push('address'));
+    req.user.postcode ? '' : (complete = false, fields.push('postcode'));
+    req.user.city && req.user.city.length > 0 ? '' : (complete = false, fields.push('city'));
+    if (!complete) {
+      return res.status(201).json({
+        complete: false,
+        fields: fields
+      });
+    } else {
+      return res.status(201).json({
+        complete: true
+      });
+    }
+  }
+
 });
 
 // router.get('/profile', passport.authenticate('jwt', { session: false}),

@@ -28,9 +28,6 @@ export default {
   props: ['displayLoanFurnit', 'displayLendle'],
   data() {
       return {
-        //   displayLendle: false,
-        //   displayLoanFurnit: true,
-        //   displayFindFurnit: false,
       }
   },
     methods: {

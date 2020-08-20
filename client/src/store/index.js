@@ -15,7 +15,7 @@ const state = {
     username: '',
     id: '',
     loaner: true,
-    avatar: '../assets/twitter.svg',
+    avatar: null,
     token: '',
     isConnectedToChat: false,
     socketMessage: ''

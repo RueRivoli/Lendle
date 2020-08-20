@@ -3,7 +3,7 @@
         <el-container style="height:65vh;">
             <div class="slogan">
                 PRÊTEZ VOS MEUBLES A CEUX QUI EN CHERCHENT
-                <router-link to="/signup/loan">
+                <router-link to="/signup/loaner">
                      <el-button type="primary" value="submit"  style="float:center" size="mini">S'inscrire</el-button>
                 </router-link>
                 
@@ -20,7 +20,7 @@
                         Trouvez la personne près de chez vous qui saura prendre soin de vos meubles.
                         Entrez vos dates de prêt, partagez vos photos de frigo, machine à laver, sèche-linge ...<br>
                         Et choisissez parmi toutes les personnes intéressées
-                        <h3 class="pointer hovering" style="color:#1E969D;margin-top:40px;text-decoration: underline;">Prêter des meubles</h3>
+                        <h3 class="pointer hovering" style="color:#1E969D;margin-top:40px;text-decoration: underline;"><router-link to="/signup/renter">Prêter des meubles</router-link></h3>
                     </div>
                 </div>
                 <div class="flex margin-auto">
@@ -37,7 +37,7 @@
                         <h2>EMPRUNTEUR</h2>
                         Trouvez des meubles pour votre stage, votre année d'étude ou tout autre séjour à durée moyenne.
                         Entrez vos dates d'emprunt et cherchez un propriétaire qui sera content de vous prêter son mobilier.
-                        <h3 class="pointer hovering" style="color:black;margin-top:40px;text-decoration: underline;">Trouver des meubles</h3>
+                        <h3 class="pointer hovering" style="color:black;margin-top:40px;text-decoration: underline;"><router-link to="/signup/loaner">Trouver des meubles</router-link></h3>
                     </div>
                 </div>
         </el-container>

@@ -1,6 +1,7 @@
 <template>
     <div>
         <nav-component :displayTitles="true"></nav-component>
+        <BreadcrumpComponent v-bind:field1="{title: 'Chercher', path: '/search'}" ></BreadcrumpComponent>
         <el-container>
             <el-header>
                  <el-row style="margin-top:2vh;margin-left: 15vw;margin-right:15vw;">
@@ -40,6 +41,11 @@
                         </el-row>
                     </el-form>
             </el-row>
+            <el-row style="margin-top:2vh;margin-left: 15vw;margin-right:15vw;">
+                <h4>
+                    Top Catégories
+                </h4>
+            </el-row>
             </el-header>
             <el-main style="max-height:220vh;min-height: 55vh;margin-left: 15vw;margin-top:6vh;">
                 <el-row text-align="left">
@@ -71,12 +77,12 @@
         </el-container>
         <div style="text-align:center;margin:10vh;">
         <el-pagination
-        background
-        :page-size="page_size"
-        :total="numberFurnits"
-        layout="prev, pager, next"
-        :current-page.sync="current_page"
-        @current-change="new_page"
+            background
+            :page-size="page_size"
+            :total="numberFurnits"
+            layout="prev, pager, next"
+            :current-page.sync="current_page"
+            @current-change="new_page"
         >
         </el-pagination>
          </div>
@@ -87,13 +93,14 @@
 
 <script>
 import NavComponent from './../Navigation/NavComponent';
+import BreadcrumpComponent from './../Utils/BreadcrumpComponent';
 import FooterComponent from './../Footer/FooterComponent';
 import FurnitService from './../../Service/FurnitService';
 import moment from 'moment';
 
 export default {
   name: 'SearchComponent',
-  components: { NavComponent, FooterComponent },
+  components: { NavComponent, FooterComponent, BreadcrumpComponent },
   data() {
       return {
         furniture: {
@@ -107,7 +114,8 @@ export default {
         furnits: [],
         imgUrl: {},
         rulesFurniture: {
-        }
+        },
+        imgCategories: ["./../assets/fauteuil.png", "./../../assets/machinealaver.png"]
   }
   },
   mounted() {
@@ -297,6 +305,12 @@ export default {
   .clearfix:after {
     clear: both
   }
+
+.imgcarousel{
+    height: 30vh;
+    cursor: pointer;
+    background-color: #D6DCDD;
+}
 
 
 </style>

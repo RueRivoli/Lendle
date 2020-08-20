@@ -1,28 +1,40 @@
 <template>
     <div>
-     <nav-component :displayTitles="true"></nav-component>
+        <nav-component :displayTitles="true"></nav-component>
+            <BreadcrumpComponent v-bind:field1="{title: 'Meubles', path: '/search'}" v-bind:field2="{title: furnit.name + ' ' + furnit._id , path: '/furniture/' + furnit._id}"></BreadcrumpComponent>
         <el-container style="height:680px;">
             <el-main style="width:100%">
-                  <!-- <el-form label-position="left" label-width="120px" > -->
-                      <el-row>
-                       <el-col :span="10">
+                <el-dialog
+                    title="Profile incomplet"
+                    :visible.sync="dialogProfileVisible"
+                    width="50%">
+                    <span>Pour demander une location, veuillez d'abord renseigner dans votre profil : </span>
+                    <div v-for="(fd, ind) in fieldsMissings" :key="ind">
+                        <span>{{fd}}</span>
+                    </div>
+                    <span slot="footer" class="dialog-footer">
+                        <el-button @click="dialogProfileVisible = false">Annuler</el-button>
+                        <el-button type="primary" @click="fillProfile">Compléter le profil</el-button>
+                    </span>
+                </el-dialog>
+                <el-row>
+                    <el-col :span="10">
                             <el-row style="font-size:18px;margin-bottom: 5vh;font-weight:bold;">
                                 <span>{{furnit.name }}</span>
                             </el-row>
-                                <el-carousel trigger="click" height="30vh">
-                                    <el-carousel-item  class="opacity" v-for="(img, index) in imgUrl" :key="index">
-                                        <h3 class="small">
-                                            <el-image class="imgcarousel"
-                                                :src="imgUrl[index]"
-                                                fit="contain"
-                                                @click="display(fnt)">
-                                            </el-image>
-                                        </h3>
-                                    </el-carousel-item>
-                                    
-                                </el-carousel>
-                                <el-row style="margin-top:5vh;">
-                                    <el-form>
+                            <el-carousel trigger="click" height="30vh">
+                                <el-carousel-item  class="opacity" v-for="(img, index) in imgUrl" :key="index">
+                                    <h3 class="small">
+                                        <el-image class="imgcarousel"
+                                            :src="imgUrl[index]"
+                                            fit="contain"
+                                            @click="display(fnt)">
+                                        </el-image>
+                                    </h3>
+                                </el-carousel-item>
+                            </el-carousel>
+                            <el-row style="margin-top:5vh;">
+                                <el-form>
                                     <el-form-item label="Disponibilité">
                                         <el-date-picker
                                             readonly
@@ -35,24 +47,21 @@
                                             size="mini"
                                             :picker-options="readonly"
                                             :default-value="[furnit.loanstart, furnit.loanend]">
-                                            </el-date-picker>
-                                    </el-form-item>
-                                    </el-form>
-                                </el-row>
-                                  <el-row style="margin-top:30px;" v-if="loaner">
-                                <el-form :inline="true" style="text-align:left;">
-                                    
-                                    <el-form-item>
-                                        <el-button v-if="authentificated" size="small" value="submit" type="success" @click="makeAnOffer">
-                                                Faire une demande de location
-                                        </el-button>
+                                        </el-date-picker>
                                     </el-form-item>
                                 </el-form>
                             </el-row>
-                                                      
+                                <el-row style="margin-top:30px;" v-if="loaner">
+                                    <el-form :inline="true" style="text-align:left;">
+                                        
+                                        <el-form-item>
+                                            <el-button v-if="authentificated" size="small" value="submit" type="success" @click="makeAnOffer">
+                                                    Faire une demande de location
+                                            </el-button>
+                                        </el-form-item>
+                                    </el-form>
+                                </el-row>
                         </el-col>
-                    
-                     
                             <el-col :span="8" :offset="3">
                                 <el-row>
                                      <h4>{{furnit.price}} €/MOIS</h4>
@@ -60,36 +69,22 @@
                                 </el-row>
                                 <el-row>
                                     <h4>Le propriétaire</h4>
-                                       <el-card class="pointer opacity" style="padding: 5px;height:8vh;line-height:8vh;">
+                                       <el-card class="pointer opacity" style="padding: 5px;height:8vh;line-height:8vh;background-color:#1E969D">
                                            <span style="margin-right:10px;float:left;">
-                                                <el-avatar :size="50" :src="avatar(furnit.owner)" style="vertical-align: middle;"></el-avatar>
+                                                <avatar-component :name="nameOwner(furnit)" :size="40"></avatar-component>
                                             </span>
                                             <span style="padding:3px;float:center;">
                                                 <span style="font-size:14px;">{{nameOwner(furnit)}}</span>
                                             </span>
-                                          
-                                        <!-- <i class="el-icon-user-solid">
-                                            <span style="font-size:14px;margin-right:30px;"></span>
-                                        </i>
-                                        <i class="el-icon-location">
-                                            <span style="font-size:14px;">
-                                                {{furnit.owner[0].city}}</span>
-                                        </i> -->
-                                            <span style="padding:3px;float:right;" v-if="loaner">
-                                              
-
-                                              
-                                                        <el-button v-if="authentificated" size="mini" type="primary"  value="submit" @click="contact" round>
-                                                                Contacter
-                                    
-                                                        </el-button>
-                                                  
-                                                
+                                             <span :class="{'f-right': !loaner, 'f-center': loaner }"  style="padding:3px;">
+                                                <span style="font-size:14px;">{{markOwner(furnit)}}</span>
                                             </span>
+                                            <span style="padding:3px;float:right;" v-if="loaner">
+                                                <el-button v-if="authentificated" size="mini" type="success"  value="submit" @click="contact" round>Contacter</el-button>
+                                            </span>
+                                           
                                         </el-card>
-                                          
                                         </el-row>
-          
                                     <el-row>
                                         <h4>Description</h4>
                                         <p style="font-size:14px">{{ furnit.description}}</p>                                 
@@ -100,16 +95,13 @@
                                             </i>
                                     </el-row>
                             </el-col>
-   </el-row>
+                            </el-row>
                      
                          <el-row style="margin-top:5vh;">
                               <el-col :span="10" style="">
                                 
                             </el-col>
                         </el-row>
-                        
-                          
-                         <!-- </el-form> -->
                     
             </el-main>
         </el-container>
@@ -121,27 +113,30 @@
 import NavComponent from '../Navigation/NavComponent';
 import TagComponent from '../Utils/TagComponent';
 import FurnitService from '../../Service/FurnitService';
+import BreadcrumpComponent from './../Utils/BreadcrumpComponent';
+import UserService from '../../Service/UserService';
 import './../../style/style.css';
 import FooterComponent from '../Footer/FooterComponent';
+import AvatarComponent from './../Utils/AvatarComponent';
 import { mapGetters } from 'vuex'
 
 export default {
   name: 'FurnitComponent',
-  components: { NavComponent, FooterComponent, TagComponent },
+  components: { NavComponent, FooterComponent, AvatarComponent, TagComponent, BreadcrumpComponent },
   data() {
     return {
       furnit: { state: 0 },
-      dialogImageUrl: '',
+      dialogProfileVisible: false,
+      fieldsMissings: [],
       file: null,
-    //   furnit: '',
       date: [],
-      imgUrl: '',
+      imgUrl: ''
     }
   },
   computed: {
     ...mapGetters({
-      loaner: 'GET_LOAN',
-      authentificated: 'GET_AUTH'
+        loaner: 'GET_LOAN',
+        authentificated: 'GET_AUTH'
     }),
     stateOfFurnit: function () {
         if (this.furnit.state === 100) return "Excellent état";
@@ -174,6 +169,9 @@ export default {
     });
   },
   methods: {
+    fillProfile() {
+       this.$router.push({ name: 'ProfileComponent', fields: this.fieldsMissings});
+    },
       readonly () {
           return true;
     },
@@ -194,6 +192,19 @@ export default {
             return '';
         }
     },
+    markOwner (ft) {
+        console.log('mark Owner');
+        console.log(ft);
+        if (ft.owner) {
+            if (ft.owner[0].mark) return ft.owner[0].mark + ' / 5';
+            else {
+                return '? / 5';
+            }
+        }
+        else {
+            return '? / 5';
+        }
+    },
     formatTooltip(val) {
         return val/100;
       },
@@ -201,7 +212,18 @@ export default {
            this.$router.push({ name: 'Chat', params: { furnit_id: this.furnit._id, interlocutor_id: this.furnit.owner_id } });
       },
       makeAnOffer () {
-          this.$router.push({ name: 'MyRentals', params: { id: this.furnit._id }});
+          console.log('MAKE AN OFFER');
+          console.log(this.furnit._id);
+          let context = this;
+          UserService.getIfProfileComplete(this.loaner).then(function(result) {
+              if (result.complete) context.$router.push({ name: 'MyRentals', params: { furnit_id: context.furnit._id, display: 'Demands'}});
+              else {
+                  context.dialogProfileVisible = true;
+                  context.fieldsMissings = result.fields;
+              }
+            }).catch(function(err) {
+            console.log(err);
+        });
       }
 }
 }
@@ -230,7 +252,7 @@ export default {
   text-align: center;
   line-height: 60px;
 }
-
+  
 
 .imgcarousel{
     height: 30vh;

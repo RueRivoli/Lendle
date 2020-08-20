@@ -1,6 +1,8 @@
 <template>
   <div>
       <nav-component></nav-component>
+             <!-- <BreadcrumpComponent :field1="{title: 'Messagerie', path: '/chat'}" :field2="{title: name(this.interlocutor_id), path: '/chat/' + interlocutor_id}"></BreadcrumpComponent> -->
+       <BreadcrumpComponent :field1="{title: 'Messagerie', path: '/chat'}" :field2="{title: username, path: '/chat/' + interlocutor_id}"></BreadcrumpComponent>
       <el-container style="height: 92vh;">
         <el-aside width="180px;" style="overflow-y: scroll;width:18vw;">
 
@@ -18,7 +20,7 @@
           <div v-if="interlocutors.length > 0">
             <div :class="isSelected(itl)" v-for="(itl, index) in interlocutors" :key="index" @click="changeChat(itl)" style="padding:8px;border-bottom: 1px solid #03A59D">
               <div :key="30" style="align-self: flex-start;margin-right:10px;">
-                <el-avatar :size="30" src="../assets/twitter.svg"></el-avatar>
+                <avatar-component :name="nameInterlocutor(itl)" :size="30"></avatar-component>
               </div>
 
               <div style="align-self: center;padding:3px;">
@@ -37,7 +39,7 @@
         </el-aside>
         <el-container style="height: 92vh;">
             <el-header class="center" style="height:8vh;line-height:8vh;font-size: 18px;background-color:#C0C0C0;color:white;">
-                <span v-if="interlocutors && interlocutors.length > 0">{{name}}</span>
+                <span v-if="interlocutors && interlocutors.length > 0">{{username}}</span>
                 <span v-else>Chat</span>
                 <!-- <span class="pointer opacity" style="float:right;"><router-link :to="{ name: 'Furnit', params: { id: furnit_id }}" tag="span">{{furnitname}}</router-link></span> -->
             </el-header>
@@ -85,13 +87,15 @@
 <script>
 import NavComponent from './../Navigation/NavComponent';
 import FooterComponent from './../Footer/FooterComponent';
+import AvatarComponent from './../Utils/AvatarComponent';
+import BreadcrumpComponent from './../Utils/BreadcrumpComponent';
 import io from 'socket.io-client'
 import moment from 'moment'
 import { mapGetters } from 'vuex'
 
 export default {
   name: 'ChatComponent',
-  components: { NavComponent, FooterComponent },
+  components: { NavComponent, AvatarComponent, FooterComponent, BreadcrumpComponent },
   data() {
       return {
         socket: '',
@@ -114,13 +118,14 @@ export default {
       loaner: 'GET_LOAN',
       id: 'GET_ID',
       token: 'GET_TOKEN'
-    }),
-      name () {
-        if (this.username) return this.username;
-        else {
-          return this.firstname + ' ' + this.lastname;
-        }
-      }
+    })
+    // name () {
+    //     console.log('NAMME');
+    //     if (this.username) return this.username;
+    //     else {
+    //       return this.firstname + ' ' + this.lastname;
+    //     }
+    //   }
   },
   methods: {
     colorType (type) {
@@ -146,7 +151,6 @@ export default {
     },
     isSelected (itl) {
       console.log('ITL');
-      console.log(itl._id);
       console.log(this.interlocutor_id);
       return {
         chat_it: true,
@@ -232,7 +236,7 @@ export default {
       console.log('List of interlocutors is ');
       console.log(interlocutors);
       this.interlocutors = interlocutors;
-      let index_interlocutorWanted =  Object.keys(interlocutors).length - 1;
+      let index_interlocutorWanted =  interlocutors.length - 1;
       console.log('index W');
       console.log(index_interlocutorWanted);
       if (this.interlocutors && this.interlocutors.length > 0 && this.interlocutor_id) {

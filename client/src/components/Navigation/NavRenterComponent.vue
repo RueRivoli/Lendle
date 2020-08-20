@@ -1,7 +1,7 @@
 <template>
-    <nav style="border-bottom: 1px solid #dfe0e6;width:100%;">
-        <ul role="menubar" class="" style="height: 50px;">
-            <li tabindex="0" class="mright selected pointer lednle" v-bind:class="{ 'selected': displayLendle, 'pointer': true, 'lendle': true }"><router-link to="/" tag="span">LENDLE</router-link></li>
+    <nav class="full_width underligned">
+        <ul role="menubar" style="height: 50px;">
+            <li tabindex="0" class="mleft selected pointer lendle"><router-link to="/" tag="span">LENDLE</router-link></li>
             <div class="f-auto" style="width:25%;"></div>
             <div class="f-auto" style="flex-grow: 1;">
                 <li tabindex="0" class="pointer" style="float:right;color:#1E969D;" ><router-link to="/search" tag="span">
@@ -9,22 +9,21 @@
                  Chercher</router-link></li>
             </div>
             <div class="f-auto" style="flex-grow: 2;">
-                 <li tabindex="0" class="pointer" style="float:right;" ><router-link to="/addfurnit" tag="span">Créer une annonce</router-link></li>
+                 <li tabindex="0" class="pointer f-right"><router-link to="/addfurnit" tag="span">Créer une annonce</router-link></li>
             </div>
             <div class="f-auto" style="flex-grow: 2;">
-                 <li tabindex="0" class="pointer" style="float:right;" ><router-link to="/myads" tag="span">Mes annonces</router-link></li>
+                 <li tabindex="0" class="pointer f-right"><router-link to="/myads" tag="span">Mes annonces</router-link></li>
             </div>
             <div class="f-auto" style="flex-grow: 2;">
-                 <li tabindex="0" class="pointer" style="float:right;" ><router-link to="/myrentals" tag="span">Mes locations</router-link></li>
+                 <li tabindex="0" class="pointer f-right"><router-link to="/myrentals/Demands" tag="span">Mes locations</router-link></li>
             </div>
             <div class="f-auto" style="flex-grow: 2;">
-                <li tabindex="0" class="pointer" style="float:right;"><router-link to="/chat" tag="span">Messagerie</router-link></li>
+                <li tabindex="0" class="pointer f-right"><router-link to="/chat" tag="span">Messagerie</router-link></li>
             </div>
             <div class="f-auto" style="flex-grow: 2;">
-                <el-dropdown trigger="click" style="float:right;">
+                <el-dropdown trigger="click" class="f-right">
                     <span class="el-dropdown-link pointer" style="vertical-align:middle;margin:auto;">
-                        <span style="vertical-align:middle;margin:auto;margin-right:5px;">{{ username }}</span>
-                        <el-avatar size="small" :src="avatar"></el-avatar>
+                        <avatar-component :size="30"></avatar-component>
                     </span>
                     <el-dropdown-menu slot="dropdown">
                         <el-dropdown-item icon="el-icon-setting"><router-link to="/profile" tag="span">Profil</router-link></el-dropdown-item>
@@ -41,9 +40,11 @@
 <script>
 
 import { mapGetters } from 'vuex'
+import AvatarComponent from './../Utils/AvatarComponent';
 
 export default {
   name: 'NavRenterComponent',
+  components: { AvatarComponent },
   data() {
       return {
           }
@@ -64,8 +65,7 @@ export default {
 
 <style scoped>
 
-
-.mright{
+.mleft{
     margin-left: 18px;
 }
 
@@ -84,6 +84,7 @@ ul.el-dropdown-menu{
  display: flex;
   flex-direction: column;
 }
+
 .el-dropdown{
  /* font-family: 'Gagalin'; */
  color: #2c3e50;
@@ -106,6 +107,12 @@ li {
 
 nav ul{
     justify-content: space-between;
+}
+
+.el-avatar{
+    vertical-align:middle;
+    margin:auto;
+    margin-right:3px;
 }
 
 </style>

@@ -1,8 +1,9 @@
 <template>
 <div>
     <nav-component></nav-component>
- <el-container style="height: 100vh;">
-    <el-main>
+    <BreadcrumpComponent v-bind:field1="{title: 'Mes annonces', path: '/myads'}" ></BreadcrumpComponent>
+    <el-container style="height: 100vh;">
+        <el-main>
     <!-- <el-row>
         <el-col :span="5" style="margin-bottom:50px;">
             <span class="add__furnit__title">VOS ANNONCES</span>
@@ -11,74 +12,79 @@
   
         </el-col>
     </el-row> -->
-    <el-row style="margin-top:5vh;">
-        <el-col :span="18" :offset="3">
-        <el-collapse v-model="activeNames">
-            <el-collapse-item name="1">
-                <template slot="title">
-                    Vos annonces à pourvoir <el-tag :type="{primary: quantity}" size="mini" style="margin-left: 15px;">{{quantity}}</el-tag>
-                </template>
-                <div v-for="(ft, index) in furnits" v-bind:key="index">
-            <el-row class="pointer opacity" style="height:90px;padding: 10px;margin-bottom:7px;">
-            <el-col  :span="24" style="height: 100%;">
-             <el-card class="box-card opacity" :body-style="{ padding: '2px', height: '90px'}">
-                <el-col class="full_height" :span="4" >
-                 <div class="full_height" style="background-color: #D6DCDD;max-height: 100px;">
-                    <el-image v-if="url[index] !== 'null'"
-                        class="pointer full_height"
-                        :src="url[index]"
-                        fit="contain">
-                    </el-image>
-                </div>
-                </el-col>
-                <el-col :span="5" :offset="1">
-                    <div style="margin-top: 20px;"><span class= "pointer opacity" style="font-weight:bold;">{{ ft.name }}</span></div>
-                </el-col>
-                <el-col :span="4" :offset="1">
-                    <div style="margin-top: 20px;">
-                         <time class="time"> {{ toFormat(ft.loanstart) }}</time>
-                        <time class="time"> <i class="el-icon-minus"></i> {{ toFormat(ft.loanend) }}</time>
-            
-                    </div>
-                </el-col>
-                <el-col class="flex column" :span="6" :offset="2" style="border-left: 1px solid rgb(223, 224, 230);margin-top: 20px;">
-                     <div class="m-auto">
-                        <time class="time"> Mensualité 0 €/mois</time>
-                    </div>
-                    <div class="m-auto">
-                        <el-button icon="el-icon-edit" size="mini" type="primary" class="button cursor" @click="details(ft._id)">Modifier</el-button>
-                    </div>
-                </el-col>
-            </el-card>
-            </el-col>
+            <el-row style="margin-top:5vh;font-size:14px;">
+                <el-col :span="18" :offset="3">
+                    <div>
+                        <h4>
+                            Vos annonces à pourvoir <el-tag :type="typeOfQuantity" size="mini" style="margin-left: 15px;">{{quantity}}</el-tag>
+                        </h4>
+                        <div class="block">
+                        <div v-for="(ft, index) in furnits" v-bind:key="index">
+                            <el-row class="pointer green" style="height:90px;padding: 10px;margin-bottom:7px;">
+                                <el-col  class="full_height" :span="24">
+                                    <el-card class="box-card" :body-style="{ padding: '2px', height: '90px'}">
+                                        <el-col class="full_height" :span="4">
+                                            <div class="full_height" style="background-color: #D6DCDD;max-height: 100px;">
+                                                <el-image v-if="url[index] !== 'null'"
+                                                    class="pointer full_height"
+                                                    :src="url[index]"
+                                                    fit="contain">
+                                                </el-image>
+                                            </div>
+                                        </el-col>
+                                        <el-col :span="5" :offset="1">
+                                            <div style="margin-top: 20px;"><span class= "pointer" style="font-weight:bold;">{{ ft.name }}</span></div>
+                                        </el-col>
+                                        <el-col :span="6" :offset="1">
+                                            <div style="margin-top: 20px;">
+                                                <time class="time"> {{ toFormat(ft.loanstart) }}</time> - 
+                                                <time class="time">
+                                                    <!-- <i class="el-icon-minus"></i>  -->
+                                                {{ toFormat(ft.loanend) }}</time>
+                                    
+                                            </div>
+                                        </el-col>
+                                        <el-col class="flex column" :span="6" :offset="1" style="border-left: 1px solid rgb(223, 224, 230);height: 100%;">
+                                            <!-- <div class="m-auto">
+                                                <time class="time"> Mensualité 0 €/mois</time>
+                                            </div> -->
+                                            <div class="m-auto flex">
+                                                <el-button icon="el-icon-view" size="mini" type="primary" class="button cursor" plain @click="details(ft._id)">Consulter</el-button>
+                                                <el-button icon="el-icon-edit" size="mini" type="success" class="button cursor" plain @click="edit(ft._id)">Editer</el-button>
+                                            </div>
+                                        </el-col>
+                                    </el-card>
+                                </el-col>
+                            </el-row>
+                             </div>
+                             </div>
+                        </div>         
+                    </el-col>
                 </el-row>
-                </div>
-            </el-collapse-item>
-        </el-collapse>
-    </el-col>
-</el-row>
-  </el-main>
-  </el-container>
-  <footer-component></footer-component>
+            </el-main>
+        </el-container>
+    <footer-component></footer-component>
   </div>
 </template>
 
 
 <script>
 import NavComponent from './../Navigation/NavComponent';
+import BreadcrumpComponent from './../Utils/BreadcrumpComponent';
 import FooterComponent from './../Footer/FooterComponent';
 import FurnitService from './../../Service/FurnitService';
 import moment from 'moment';
 
 export default {
   name: 'MyAdsComponent',
-  components: { NavComponent, FooterComponent },
+  components: { NavComponent, FooterComponent, BreadcrumpComponent },
   data() {
       return {
           furnits: {},
           url: [],
           activeNames: [],
-          quantity: 0
+          quantity: 0,
+          typeOfQuantity: null
       }
   },
   methods: {
@@ -87,7 +93,10 @@ export default {
           return mom.format('DD MMMM YYYY');
       },
     details(id) {
-        this.$router.push({ name: 'Ad',  params: { id: id } });
+        this.$router.push({ name: 'Furnit',  params: { id: id } });
+    },
+    edit(id) {
+        this.$router.push({ name: 'Editfurnit',  params: { furnit_id: id } });
     },
     //   async deleteFurnit (fn) {
     //       let id = fn._id;
@@ -111,7 +120,7 @@ export default {
       console.log(context.url);
       context.quantity = Object.keys(context.furnits).length;
       context.quantity > 0 ? context.activeNames.push('1'): '';
-      
+      context.quantity > 0 ? context.typeOfQuantity = 'primary'  : context.typeOfQuantity = 'danger';
 
     // let picture_ids = new Array();
     // context.rentals.forEach(function(ft){
@@ -140,6 +149,7 @@ export default {
 @import "./../../style/element-variables.scss";
 
 
+
 .box-card{
     margin-bottom: 5px;
 }
@@ -154,19 +164,19 @@ export default {
     border-radius: 4px;
 }
 
-.opacity:hover{
-    opacity: 0.8;
-}
-
 .el-image img {
     max-height: 100px;
 }
 
 .el-image:hover{
-    opacity: 0.8;
+    opacity: 0.95;
 }
 
 // .el-card.box-card{
 //     height: 90px;
 // }
+
+.el-card:hover{
+    color: #1E969D !important;
+}
 </style>

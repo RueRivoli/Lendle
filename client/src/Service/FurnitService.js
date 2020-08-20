@@ -118,6 +118,8 @@ class FurnitService {
             try {
                 axios.get(`${url_new}${pic_ids}`).then(function (response) {
                     // handle success
+                    console.log('get Images Url From Pic Ids');
+                    console.log(response);
                     const data = response.data;
                     console.log(data);
                     resolve(data);
@@ -138,10 +140,8 @@ class FurnitService {
         this.defaultsHeaders();
         return new Promise(function(resolve, reject) {
             try {
-                console.log('ENTR');
-                console.log(furnit_id);
-                axios.get(url + `identity/${furnit_id}`).then(function (response) {
-                    console.log('Response a get Pictures =====>');
+                axios.get(url + `search/${furnit_id}`).then(function (response) {
+                    console.log('Response a getIdentityCardFurnit =====>');
                     const data = response.data;
                     console.log(data);
                     resolve(data);

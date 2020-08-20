@@ -41,6 +41,10 @@ const FurnitSchema = mongoose.Schema({
         type: Date,
         default: Date.now
     },
+    indisponible: {
+        type: Array,
+        default: []
+    },
     picture_ids: {
         type: Array,
         default: []

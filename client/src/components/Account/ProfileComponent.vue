@@ -27,13 +27,13 @@
                         </el-row>
                         <el-row v-if="!fromSocialOauth">
                             <el-col :span="6" :offset="4">
-                                <el-form-item label="Email" prop="email">
-                                    <span>{{ profile.mail }}</span>
+                                <el-form-item label="Nom d'usage" prop="username">
+                                    <span>{{ profile.username }}</span>
                                 </el-form-item>
                             </el-col>
                             <el-col :span="6" :offset="3">
-                                <el-form-item label="Langue" prop="language">
-                                    <span>{{ profile.language }}</span>
+                                <el-form-item label="Email" prop="email">
+                                    <span>{{ profile.mail }}</span>
                                 </el-form-item>
                             </el-col>
                         </el-row>
@@ -65,17 +65,16 @@
                             </el-col>
                         </el-row>
                         <el-row>
-                        <el-col :span="12" :offset="4">
+                        <el-col :span="6" :offset="4">
                                 <el-form-item label="Note">
-                                    <el-rate
-                                        v-model="profile.mark"
-                                        :texts="['moyen', 'pas mal', 'bien', 'bon', 'excellent']"
-                                        disabled
-                                        show-text>
-                                        </el-rate>
+                                    {{ profile.mark }} / 5.0
                                 </el-form-item>
                             </el-col>
-                            
+                              <el-col :span="6" :offset="3">
+                                <el-form-item label="Langue" prop="language">
+                                    <span>{{ profile.language }}</span>
+                                </el-form-item>
+                            </el-col>
                         </el-row>
                         </el-form>
                     </el-tab-pane>
@@ -95,20 +94,16 @@
                                 </el-col>
                             </el-row>
                             <el-row v-if="!fromSocialOauth">
-                                <el-col :span="7" :offset="4">
+                                 <el-col :span="7" :offset="4">
+                                    <el-form-item label="Nom d'usage" prop="username">
+                                        <el-input placeholder="Nom d'usage" size="mini" v-model="profile.username"></el-input>
+                                    </el-form-item>
+                                    </el-col>
+                                <el-col :span="6" :offset="3">
                                     <el-form-item label="Email" prop="email">
                                         <span>{{ profile.mail }}</span>
                                     </el-form-item>
                                     </el-col>
-                                    <el-col :span="6" :offset="3">
-                                        <el-form-item label="Langue" prop="language">
-                                            <el-select v-model="profile.language" size="mini" placeholder="">
-                                                <el-option label="Français" value="fr"></el-option>
-                                                <el-option label="English" value="eng"></el-option>
-                                                <el-option label="Español" value="sp"></el-option>
-                                            </el-select>
-                                        </el-form-item>
-                                </el-col>
                             </el-row>
                             <el-row v-if="fromSocialOauth">
                                 <el-col :span="7" :offset="4">
@@ -164,6 +159,17 @@
                             </el-form-item>
                         </el-col>
                     </el-row>
+                    <el-row>
+                              <el-col :span="7" :offset="4">
+                                        <el-form-item label="Langue" prop="language">
+                                            <el-select v-model="profile.language" size="mini" placeholder="">
+                                                <el-option label="Français" value="fr"></el-option>
+                                                <el-option label="English" value="eng"></el-option>
+                                                <el-option label="Español" value="sp"></el-option>
+                                            </el-select>
+                                        </el-form-item>
+                                </el-col>
+                     </el-row>
                     <el-button type="primary" value="submit" @click="editProfile()" style="display:block;margin:auto;" size="mini">Valider</el-button>
                     </el-form>
                 </el-tab-pane>
