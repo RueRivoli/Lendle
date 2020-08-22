@@ -52,9 +52,8 @@ router.get('/isComplete/:isLoaner', function (req, res) {
       }
     })
   }
-  if (req.params.isLoaner === true) {
-    console.log("isLoaner");
-    req.user.mail && req.user.mail.length > 0 ? '' : (complete = false,fields.push('mail'));
+  if (req.params.isLoaner === 'true') {
+    req.user.mail && req.user.mail.length > 0 ? '' : ((req.user.googleId || req.user.facebookId) ? '' : (complete = false,fields.push('mail')));
     if (!complete) {
       return res.status(201).json({
         complete: false,

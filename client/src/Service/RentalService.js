@@ -54,6 +54,36 @@ class RentalService {
     //     })
     // }
 
+    static existOtherRentalForThatFurnit(furnit_id, loaner_id) {
+        this.defaultsHeaders();
+        console.log('Exist Other Rental for that Furnit ??');
+        console.log(furnit_id);
+        console.log(loaner_id);
+        let parameters = {
+            params: {
+              furnit_id: furnit_id,
+              loaner_id: loaner_id
+            }
+          }
+        // let url_isUnique = url + `isUnique/${furnit_id}`;
+        let url_isUnique = url + `isUnique/`;
+        console.log(parameters);
+        return new Promise(function(resolve, reject) {
+            try {
+                axios.get(url_isUnique, parameters).then(function (response) {
+                    const data = response.data;
+                    resolve(data);
+                  })
+                  .catch(function (error) {
+                    console.log('ERREUR');
+                    console.log(error);
+                  });
+            } catch(err) {
+                reject(err);
+            }
+        })
+    }
+
     static isRentable(furnit_id, loan_start, loan_end) {
         this.defaultsHeaders();
         console.log('Is Rental Possible');
@@ -83,16 +113,14 @@ class RentalService {
         })
     }
 
-    static getAllRentalsForFurnit(furnit_id, isLocation){
+    static getAllRentalsForFurnit(params){
         this.defaultsHeaders();
-        console.log('get Rental By Id');
-        console.log(furnit_id);
-        let url_rental = url + `details/loan/${furnit_id}/${isLocation}`;
-        // if (as_loaner) url_rental = url + `details/loan/${rental_id}`;
-        // else url_rental = url + `details/rent/${rental_id}`;
+        console.log('getAllRentalsForFurnit');
+        console.log(params);
+        let url_rental = url + `details/`;
         return new Promise(function(resolve, reject) {
             try {
-                axios.get(url_rental).then(function (response) {
+                axios.get(url_rental, params).then(function (response) {
                     const data = response.data;
                     console.log('success');
                     console.log(data);
@@ -109,7 +137,7 @@ class RentalService {
     }
 
     static getRentalById(rental_id){
-        console.log('Get Information of a Rental with a rental_id');
+        console.log('Get Information of a Rental with a rental_id For a loaner person');
         this.defaultsHeaders();
         return new Promise(function(resolve, reject) {
             try {

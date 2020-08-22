@@ -7,42 +7,19 @@
            <el-dialog
               :title="titleDialog"
               :visible.sync="dialogVisible"
-              width="55%"
-              >
+              width="55%">
               <span>{{ message }}</span>
               <span slot="footer" class="dialog-footer">
               <el-button @click="dialogVisible = false">Annuler</el-button>
-              <el-button v-if="confirmLoan && !refuseLoan" type="primary" @click="confirm(rental_id, index_modified)">Accepter la demande</el-button>
+              <el-button v-if="confirmLoan && !refuseLoan" type="primary" @click="confirm(rental_id, index_modified)">{{ validExpression }}</el-button>
               <el-button v-if="!confirmLoan && !refuseLoan" type="primary" @click="dialogVisible = false">ok</el-button>
               <el-button v-if="refuseLoan" type="primary" @click="confirmCancel()">Refuser la proposition</el-button>
               </span>
           </el-dialog>
           
           <el-form label-position="top" label-width="80px">
-            <!-- <el-row style="margin-bottom:4vh;">
-                <el-col :span="5">
-                  <span class="f-left pointer" style="font-weight:bold;font-size:18px;"><router-link v-if="rentals[0]" :to="{ name: 'Furnit', params: { id: rentals[0].furnit[0]._id }}" tag="span">{{rentals[0].furnit[0].name}}</router-link></span>
-                  </el-col>
-                  <el-col :span="5">
-                    <span class="f-right pointer" style="font-size:16px" ><router-link v-if="rentals[0]" :to="{ name: 'Furnit', params: { id: rentals[0].furnit[0]._id }}" tag="span">Réf: {{rentals[0].furnit[0]._id}}</router-link></span>
-                  </el-col>
-            </el-row> -->
-              <el-row>
-                                    <!-- <el-form-item label="Disponibilité">
-                                     
-                                        <el-date-picker
-                                            v-model="dateDisponibility"
-                                            type="daterange"
-                                            range-separator="au"
-                                            start-placeholder="Début"
-                                            end-placeholder="Fin"
-                                            format="dd/MM/yyyy"
-                                            size="mini"
-                                            :picker-options="readonly"
-                                            :disabled="false">
-                                            </el-date-picker>
-                                    </el-form-item> -->
-                <el-col :span="9">
+              <el-row style="height:50vh;">
+                <el-col :span="7">
                   <el-calendar v-model="today">
                     <template
                       slot="dateCell"
@@ -54,33 +31,7 @@
                   </el-calendar>
               </el-col>
 
-            <el-col  :span="14" :offset="1">
-
-              <!-- <el-row v-if="loaner && rentals[0] && rentals[0].status == 0">
-                <h4>Votre proposition de location</h4>
-                <div v-if="!editMode">
-                  <p>Du {{ format(dateStart) }} Au {{ format(dateEnd) }}</p>
-                  <p>Statut: En attente de réponse</p>  
-                  <el-button type="success" size="mini" plain @click="editMode = true">Editer</el-button>
-                  <el-button type="danger" size="mini" plain @click="cancelRental">Annuler la demande</el-button>
-                </div>
-                <div v-else>
-                  <el-form-item label="Période de location">
-                    <el-date-picker
-                      v-model="dateRental"
-                      type="daterange"
-                      range-separator="au"
-                      start-placeholder="Début"
-                      end-placeholder="Fin"
-                      format="dd/MM/yyyy"
-                      size="mini">
-                  </el-date-picker>
-                  </el-form-item>
-                  <el-button type="success" size="mini" plain @click="modifyRental">Modifier</el-button>
-                  <el-button type="warning" size="mini" plain @click="editMode = false">Revenir</el-button>
-                </div>
-              </el-row> -->
-
+            <el-col  :span="15" :offset="2">
               <div >
                 <el-row style="font-size:18px;margin-bottom: 5vh;font-weight:bold;">
                   <span class="f-left">Vos demandes</span>
@@ -88,54 +39,41 @@
                 <el-row style="margin-bottom: 2vh;">
                     <span class="f-left" style="font-size:14px"></span>
                 </el-row>
-                <table width="100%">
+                <table width="100%" v-if="loaner">
                   <col >
                   <col >
                   <col >
                   <col>
                   <col>
                   <col>
-                
                     <thead>
                       <tr>
-                        <th v-if="!loaner" class="width1">Nom du locataire</th>
-                        <th v-if="loaner && !editMode" class="width1">Nom du propriétaire</th>
-                        <th v-if="!editMode" class="width1">Note</th>
                         <th class="width1" colspan="2">Période</th>
                         <th v-if="editMode" class="width1">Prix</th>
                         <th class="width1">Total</th>
                         <th v-if="!editMode" class="width1">Statut</th>
-                        <th v-if="!loaner" class="width1" colspan="3">Actions</th>
-                        <th v-if="loaner && !editMode" class="width2" colspan="3">Actions</th>
-                        <th v-if="loaner && editMode" class="width2" colspan="2">Actions</th>
+                        <th v-if="!editMode" class="width2" colspan="3">Actions</th>
+                        <th v-if="editMode" class="width2" colspan="2">Actions</th>
                       </tr>
                       <tr style="font-weight:light;font-size: 10px">
-                        <th v-if="!editMode"></th>
-                        <th v-if="!editMode"></th>
                         <th>Début</th>
                         <th>Fin</th>
                         <th></th>
                         <th></th>
-                        <th v-if="!loaner">Accepter</th>
-                        <th v-if="!loaner">Refuser</th>
-                        <th v-if="!loaner">Contacter</th>
-                         <th v-if="loaner && !editMode && rentals[0].status === 1">Confirmer</th>
-                        <th v-if="loaner && !editMode && rentals[0].status === 0">Editer</th>
-                        <th v-if="loaner && !editMode">Annuler</th>
-                         <th v-if="loaner && !editMode">Contacter</th>
-                          <th v-if="editMode">Annuler</th>
-                         <th v-if="editMode">Valider</th>
+                         
+                        <th v-if="!editMode">Editer</th>
+                        <th>Annuler</th>
+                        <th>Valider/Confirmer</th>
+                         <!-- <th v-if="!editMode">Contacter</th> -->
+                          <!-- <th v-if="editMode">Annuler</th>
+                         <th v-if="editMode">Valider</th> -->
                       </tr>
                     </thead>
                     <tbody>
-                      <tr :class="{isProposed: entry.status === 0 , isAccepted: entry.status === 1 ,isRefused: entry.status === -2, isRefused: entry.status === -1, isConfirmed: entry.status === 2}" v-for="(entry, id) in rentals" :key="id">
-                        <td v-if="!loaner">{{ entry.loaner[0].username}} </td>
-                        <td v-if="loaner && !editMode">{{ entry.owner[0].username}} </td>
-                        <td v-if="!loaner">{{ entry.loaner[0].mark}} / 5</td>
-                         <td v-if="loaner && !editMode">{{ entry.owner[0].mark}} / 5</td>
-                        <td v-if="!editMode">{{ format(entry.loan_start) }} </td>
-                        <td v-if="!editMode">{{ format(entry.loan_end) }} </td>
-                        <td v-if="loaner && editMode" colspan="2">
+                      <tr v-for="(entry, id) in rentals" :key="id" :class="classEntry(entry.status)">
+                        <td v-if="!editMode || entry.status !== 0">{{ format(entry.loan_start) }} </td>
+                        <td v-if="!editMode || entry.status !== 0">{{ format(entry.loan_end) }} </td>
+                        <td v-if="editMode && entry.status === 0" colspan="2">
                                 <el-date-picker
                                   v-model="dateProposition"
                                   type="daterange"
@@ -147,36 +85,78 @@
                                   size="mini">
                               </el-date-picker>
                         </td>
-                        <td v-if="loaner && editMode">{{ entry.furnit[0].price }}€ / mois</td>
+                        <td v-if="editMode">{{ entry.furnit[0].price }}€ / mois</td>
                         <td>{{ price(entry) }}€</td>
                         <td v-if="!editMode">{{ displayStatus(entry.status) }}</td>
-                        <td v-if="!loaner" >
-                            <el-button v-if="entry.status === 0" type="success" icon="el-icon-check" size="mini" circle @click="acceptLoan(id, entry._id, entry.furnit[0]._id, entry.loan_start, entry.loan_end)"></el-button>
+                          <!-- Part Edit -->
+                         <td v-if="!editMode">
+                          <el-button v-if="entry.status === 0" type="danger" icon="el-icon-edit" size="mini" circle @click="editMode = true"></el-button>
+                          <!-- <el-button v-if="editMode" type="danger" icon="el-icon-check" size="mini" circle @click="editMode = false"></el-button> -->
                         </td>
-                        <td v-if="!loaner" >
-                          <el-button v-if="entry.status < 2" type="danger" icon="el-icon-close" size="mini" circle @click="cancelRental(id, entry._id)"></el-button>
+                           <!-- Part Cancel -->
+                        <td>
+                            <el-button v-if="!editMode && entry.status < 2" type="warning" icon="el-icon-close" size="mini" circle @click="cancelRental(id, entry._id)"></el-button>
+                            <el-button v-if="editMode && entry.status === 0" type="danger" icon="el-icon-close" size="mini" circle @click="editMode = false"></el-button>
                         </td>
-                        <td v-if="!loaner" >
+                         <!-- Part Validate/Confirm -->
+                        <td>
+                           <el-button v-if="editMode && entry.status === 0" type="success" icon="el-icon-check" size="mini" circle @click="editProposition(id, entry._id)"></el-button>
+                          <el-button v-if="entry.status === 1" type="success" icon="el-icon-check" size="mini" circle @click="validLoan(id, entry._id, entry.furnit_id)"></el-button>
+                        </td>
+                           <!-- <td v-if="!editMode">
+                          <el-button type="warning" icon="el-icon-chat-line-round" size="mini" circle @click="contact(entry.owner[0]._id)"></el-button>
+                        </td> -->
+                      </tr>
+                      </tbody>
+                    </table>
+
+
+              <table width="100%" v-else>
+                  <col>
+                  <col>
+                  <col>
+                  <col>
+                  <col>
+                  <col>
+                    <thead>
+                      <tr>
+                        <th class="width1">Nom du locataire</th>
+                        <th class="width1">Note</th>
+                        <th class="width1" colspan="2">Période</th>
+                        <th class="width1">Total</th>
+                        <th class="width1">Statut</th>
+                        <th class="width1" colspan="3">Actions</th>
+                      </tr>
+                      <tr style="font-weight:light;font-size: 10px">
+                        <th></th>
+                        <th></th>
+                        <th>Début</th>
+                        <th>Fin</th>
+                        <th></th>
+                        <th></th>
+                        <th>Contacter</th>
+                        <th>Refuser/Effacer</th>
+                        
+                        <th>Accepter</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr v-for="(entry, id) in rentals" :key="id" :class="classEntry(entry.status)" >
+                        <td>{{ entry.loaner[0].username}} </td>
+                        <td>{{ entry.loaner[0].mark}} / 5</td>
+                        <td>{{ format(entry.loan_start) }} </td>
+                        <td>{{ format(entry.loan_end) }} </td>
+                        <td>{{ price(entry) }}€</td>
+                        <td>{{ displayStatus(entry.status) }}</td>
+                          <td>
                           <el-button type="warning" icon="el-icon-chat-line-round" size="mini" circle @click="contact(entry.loaner[0]._id)"></el-button>
                         </td>
-                        <td v-if="loaner && !editMode && rentals[0].status === 1">
-                            <el-button v-if="entry.status === 1" type="success" icon="el-icon-check" size="mini" circle @click="confirmLoan(id, entry._id, entry.furnit[0]._id, entry.loan_start, entry.loan_end)"></el-button>
+                    
+                        <td>
+                          <el-button v-if="entry.status < 2" type="danger" icon="el-icon-close" size="mini" circle @click="cancelRental(id, entry._id)"></el-button>
                         </td>
-                        <td v-if="loaner && !editMode && rentals[0].status === 0">
-                          <el-button v-if="entry.status === 0 && !editMode" type="danger" icon="el-icon-edit" size="mini" circle @click="editMode = true"></el-button>
-                          <el-button v-if="entry.status === 0 && editMode" type="danger" icon="el-icon-check" size="mini" circle @click="editMode = false"></el-button>
-                        </td>
-                        <td v-if="loaner && !editMode" >
-                          <el-button v-if="entry.status < 2" type="warning" icon="el-icon-close" size="mini" circle @click="cancelRental(id, entry._id)"></el-button>
-                        </td>
-                           <td v-if="loaner && !editMode">
-                          <el-button type="warning" icon="el-icon-chat-line-round" size="mini" circle @click="contact(entry.owner[0]._id)"></el-button>
-                        </td>
-                         <td v-if="loaner && editMode">
-                          <el-button type="danger" icon="el-icon-close" size="mini" circle @click="editMode = false"></el-button>
-                        </td>
-                         <td v-if="loaner && editMode">
-                          <el-button type="success" icon="el-icon-check" size="mini" circle @click="editProposition()"></el-button>
+                          <td>
+                            <el-button v-if="entry.status === 0" type="success" icon="el-icon-check" size="mini" circle @click="acceptLoan(id, entry._id, entry.furnit[0]._id, entry.loan_start, entry.loan_end)"></el-button>
                         </td>
                       </tr>
                       </tbody>
@@ -208,18 +188,18 @@ export default {
   components: { NavComponent, FooterComponent, BreadcrumpComponent },
   data() {
     return {
-      // columns: ["Nom locataire", "Note", "Début", "Fin", "Total", "Statut", "Actions"],
-      rental_id: this.$route.params.rental_id,
-      furnit_id: this.$route.params.furnit_id,
+      rental_id: null,
+      furnit_id: null,
       isLocation: this.$route.params.isLocation,
       confirmLoan: false,
       refuseLoan: false,
       rentals: [],
+      nbColumns : 3,
       index_modified: null,
-      // rental: {},
       today: new Date(),
       indisponibility: [],
-      dialogVisible: false, 
+      dialogVisible: false,
+      validExpression: '',
       message: '',
       titleDialog: '',
       url: {},
@@ -228,7 +208,7 @@ export default {
     }
   },
   computed: {
-        ...mapGetters({
+    ...mapGetters({
       loaner: 'GET_LOAN',
     }),
     pathToMyRentals () {
@@ -246,34 +226,78 @@ export default {
    let context = this;
 
     if (this.loaner) {
-      console.log('THIS LOANER');
+      console.log('Loaner');
       console.log(this.rental_id);
-      RentalService.getRentalById(this.rental_id).then(function(rental) {
-      console.log('Rental');
-      console.log(rental);
-      context.rentals.push(rental.rental);
-      console.log('context Rentals');
+      this.furnit_id = this.$route.params.id;
+      let parameters = {
+        params: {
+          furnit_id: this.furnit_id,
+          isLocation: this.isLocation,
+          loaner: this.loaner
+        }
+      }
+      RentalService.getAllRentalsForFurnit(parameters).then(function(rentals) {
+        console.log('Rentals');
+        console.log(rentals);
+      let rtls = rentals.rentals;
+      context.rentals = rtls.filter(rt => rt.status !== -2);
+      context.rentals.forEach(function(rt) {
+        if (rt.status === 0) {
+            context.dateProposition =  [rt.loan_start, rt.loan_end];
+        }
+      })
       console.log(context.rentals);
-      context.dateProposition =  [context.rentals[0].loan_start, context.rentals[0].loan_end];
-      // context.dateEnd = rental.loan_end;
       context.indisponibility = context.rentals[0].furnit[0].indisponible;
-    //   console.log(context.dateDisponibility);
-     let picture_ids = rental.rental.furnit[0].picture_ids;
-           if (picture_ids && picture_ids.length > 0) {
-        FurnitService.getImagesUrlFromPicIds(picture_ids).then(function(urls) {
-            context.url = urls.imgUrl;
-            console.log(context.url);
-            }).catch(function(err) {
-            console.log(err);
-        });
-    }
-      }).catch(function(err) {
+      context.limitStartLoan = context.rentals[0].furnit[0].loanstart;
+      context.limitEndLoan = context.rentals[0].furnit[0].loan_end;
+      
+      // context.dateRental = [context.dateStart, context.dateEnd];
+    //     let picture_ids = context.rentals[0].furnit[0].picture_ids;
+    //        if (picture_ids && picture_ids.length > 0) {
+    //         FurnitService.getImagesUrlFromPicIds(picture_ids).then(function(urls) {
+    //         context.url = urls.imgUrl;
+    //         console.log(context.url);
+    //         }).catch(function(err) {
+    //         console.log(err);
+    //     });
+    // }
+    }).catch(function(err) {
         console.log(err);
       });
+    //   RentalService.getRentalById(this.rental_id).then(function(rental) {
+    //   console.log('Rental');
+    //   console.log(rental);
+    //   context.rentals.push(rental.rental);
+    //   console.log('context Rentals');
+    //   console.log(context.rentals);
+    //   context.dateProposition =  [context.rentals[0].loan_start, context.rentals[0].loan_end];
+    //   // context.dateEnd = rental.loan_end;
+    //   context.indisponibility = context.rentals[0].furnit[0].indisponible;
+    // //   console.log(context.dateDisponibility);
+    //  let picture_ids = rental.rental.furnit[0].picture_ids;
+    //        if (picture_ids && picture_ids.length > 0) {
+    //     FurnitService.getImagesUrlFromPicIds(picture_ids).then(function(urls) {
+    //         context.url = urls.imgUrl;
+    //         console.log(context.url);
+    //         }).catch(function(err) {
+    //         console.log(err);
+    //     });
+    // }
+    //   }).catch(function(err) {
+    //     console.log(err);
+    //   });
     } 
     else { // if user is a renter
-
-      RentalService.getAllRentalsForFurnit(this.furnit_id, this.isLocation).then(function(rentals) {
+      console.log('Renter');
+      this.furnit_id = this.$route.params.id;
+      let parameters = {
+        params: {
+          furnit_id: this.furnit_id,
+          isLocation: this.isLocation,
+          loaner: this.loaner
+        }
+      }
+      RentalService.getAllRentalsForFurnit(parameters).then(function(rentals) {
       console.log('Rentals');
       console.log(rentals);
       let rtls = rentals.rentals;
@@ -296,55 +320,31 @@ export default {
         console.log(err);
       });
     }
-    
-    
-
-
-
-    // RentalService.getRentalById(this.$route.params.id, this.isLoaner).then(function(rental) {
-    //   console.log('result');
-    //   console.log(rental);
-    //   context.rental = rental.rental;
-    //   console.log(context.rental);
-    //   context.dateStart = context.rental.loan_start;
-    //   context.dateEnd = context.rental.loan_end;
-    //   context.dateRental = [context.dateStart, context.dateEnd];
-    //   context.dateDisponibility = [context.rental.furnit[0].loanstart, context.rental.furnit[0].loanend];
-    //   console.log(context.dateDisponibility);
-    //  let picture_ids = context.rental.furnit[0].picture_ids;
-    //  console.log(picture_ids);
-    //  if (picture_ids && picture_ids.length > 0) {
-    //     FurnitService.getImagesUrlFromPicIds(picture_ids).then(function(urls) {
-    //         context.url = urls.imgUrl;
-    //         console.log(context.url);
-    //         }).catch(function(err) {
-    //         console.log(err);
-    //     });
-    // }
-    // }).catch(function(err) {
-    //     console.log(err);
-    // });
-
-
   },
   methods: {
       format (date) {
           return Formats.toFormatSpecific(date, 'DD/MM/YY');
       },
+      classEntry(status) {
+        if (status === -2 || status === -1) return 'isRefused'
+        else if (status === 0) return 'isProposed'
+        else if (status === 1) return 'isAccepted'
+        else if (status === 2) return 'isConfirmed'
+      },
       displayStatus(status) {
         if (this.loaner) {
           if (status === 0) return 'Attente de réponse'
-          else if (status === 1) return 'Confirmez et la location est planifiée'
+          else if (status === 1) return 'Confirmez pour valider définitivement la location'
           else if (status === 2) return 'Location confirmée'
           else if (status === -2) return 'Confirmation refusée'
           else if (status === -1) return 'Refusée'
           else return ''
         } else {
           if (status === 0) return 'Proposition'
-          else if (status === 1) return 'Attente de confirmation'
-          else if (status === 2) return 'Location confirmée'
+          else if (status === 1) return 'Attente de confirmation finale'
+          else if (status === 2) return 'Location validée'
           else if (status === -1) return 'Proposition refusée'
-          else if (status === -2) return 'Refusée'
+          else if (status === -2) return 'Annulée'
           else return ''
         }
       },
@@ -371,14 +371,19 @@ export default {
         }
         if (i === this.indisponibility.length) return false
       },
-      editProposition () {
+      editProposition (id, rental_id) {
         let context = this;
+        console.log('Test editProposition');
+        this.rental_id = rental_id;
+        console.log(this.rental_id);
+        console.log(this.dateProposition[0]);
+        console.log(this.dateProposition[1]);
         let params = {rental_id: this.rental_id, statusCheck: 0, loan_start: this.dateProposition[0], loan_end: this.dateProposition[1]};
         RentalService.updateRental(params).then(function(resp) {
           console.log('resp');
           if (resp.success) {
-            context.rentals[0].loan_start = context.dateProposition[0];
-            context.rentals[0].loan_end = context.dateProposition[1];
+            context.rentals[id].loan_start = context.dateProposition[0];
+            context.rentals[id].loan_end = context.dateProposition[1];
           }
           context.editMode = false;
           context.$message = "La modification de la proposition a été prise en compte";
@@ -387,20 +392,26 @@ export default {
       },
       confirm (rental_id) {
         let params = {
-            statusCheck: 1,
-            id: rental_id
+            rental_id: rental_id
         };
+        if (this.loaner) {
+          params.statusCheck = 1;
+          params.status = 2;
+        } else {
+          params.statusCheck = 0;
+          params.status = 1;
+        }
         let context = this;
         RentalService.updateRental(params).then(function(rt) {
             console.log('Update rental');
             console.log(rt.rental);
-            // rt.status = 1;
-            context.rentals[context.index_modified].status = 1;
+            context.rentals[context.index_modified].status = params.status;
             context.dialogVisible = false;
           }).catch(function(err) {
               console.log(err);
           })
       },
+      // Renter accepts rental when status = 0
       acceptLoan(index_modified, rental_id, furnit_id, start, end){
         let context = this;
         RentalService.isRentable(furnit_id, start, end).then(function(res) {
@@ -412,7 +423,8 @@ export default {
             context.rental_id = rental_id;
             context.confirmLoan = true;
             context.titleDialog = 'Confirmation';
-            context.message = "Confirmez-vous que vous acceptez cette proposition. Le demandeur devra confirmer cette offre pour valider la location";
+            context.validExpression = "Accepter";
+            context.message = "Confirmez-vous que vous acceptez cette proposition ? Le demandeur devra confirmer cette offre pour valider la location";
           }
           else {
               context.confirmLoan = false;
@@ -425,6 +437,18 @@ export default {
           console.log(err);
         });
       },
+      // Loaner confirms rental when status = 1. Location becomes valid
+      validLoan(index_modified, rental_id, furnit_id){
+        this.index_modified = index_modified;
+        this.rental_id = rental_id;
+        this.furnit_id = furnit_id;
+        this.titleDialog = "Confirmation de la location";
+        this.dialogVisible = true;
+        this.confirmLoan = true;
+        this.validExpression = "Confirmer";
+        this.message = "Confirmez-vous la location de ce meuble ? Le propriétaire ne pourra plus louer son meuble aux dates indiquées"
+          
+      },
       contact(id) {
         this.$router.push({ name: 'Chat',  params: { interlocutor_id: id } });
       },
@@ -434,7 +458,7 @@ export default {
         this.rental_id = rental_id;
         this.refuseLoan = true;
         this.titleDialog = 'Confirmation de refus';
-        this.message = "Le refus de la proposition est définitif. Confirmez-vous que vous refusez ?";
+        this.message = "Le refus ou l'annulation de la proposition sont définitifs. Confirmez-vous que vous annulez/refusez ?";
         this.dialogVisible = true;
     },
     confirmCancel() {
@@ -452,47 +476,41 @@ export default {
             console.log('Update rental');
             console.log(rt.rental);
             context.dialogVisible = false;
-            context.$router.push({ path: '/myrentals/' + this.pathToMyRentals[0]});
+            context.$router.push({ path: '/myrentals/' + context.pathToMyRentals[0]});
           }).catch(function(err) {
               console.log(err);
           })
       }
     } else {
-      RentalService.deleteRental(this.rental_id);
+      console.log('stat');
+      console.log(this.index_modified);
+      console.log(this.rentals[this.index_modified]);
+      if (this.rentals[this.index_modified].status < 0) {
+        console.log('INDICE');
+        console.log(this.index_modified);
+        RentalService.deleteRental(this.rental_id);
+        this.rentals.splice(this.index_modified, 1);
+        //  this.$router.push({ path: '/myrentals/' + this.pathToMyRentals[0]});
+      }
+      else {
+        let context = this;
+        let params = {rental_id: this.rental_id, status: -1 };
+        RentalService.updateRental(params).then(function(resp) {
+          console.log('resp');
+          context.rentals.splice(context.index_modified, 1);
+          context.editMode = false;
+          context.$message = "La modification de la proposition a été prise en compte";
+          // context.$router.push({ path: '/myrentals/' + this.pathToMyRentals[0]});
+          console.log(resp);
+        });
+        
+      }
       this.dialogVisible = false;
       this.refuseLoan = false;
-      this.rentals.splice(this.index_modified, 1);
+      
+     
       }
 
-    },
-    async modifyRental ()
-    {
-        // let context = this;
-        // this.rental.loan_start = this.dateRental[0];
-        // this.rental.loan_end = this.dateRental[1];
-        // this.dateStart = this.dateRental[0];
-        // this.dateEnd = this.dateRental[1];
-        // this.dateRental = [this.dateRental[0], this.dateRental[1]];
-        // this.editMode = false;
-        // console.log('Rentals to be modified');
-        //  console.log(this.rentals);
-        //   RentalService.updateRental(this.rentals).then(function(rt) {
-        //     console.log('Update rental');
-        //     console.log(rt.rental);
-        //     context.rental = rt.rental;
-        //     // context.dateStart = rt.rental.loan_start;
-        //     // context.dateEnd = rt.rental.loan_end;
-        //     // context.dateRental = [rt.rental.loan_start, rt.rental.loan_end];
-        //     //   context.editMode = false;
-        //     //   rt.rental.furnit = [];
-        //     //   rt.rental.furnit[0] = context.furnit_proposition.furnit;
-        //     //   let index = Object.keys(context.imgUrl).length;
-        //     //   context.imgUrl[index] = context.furnit_proposition.imgUrl[0];
-        //     //  context.rentals.push(rt.rental);
-        //     //  context.proposition_id = null;
-        //   }).catch(function(err) {
-        //       console.log(err);
-        //   }) 
     },
   }
 }
@@ -503,15 +521,8 @@ export default {
 
 <style lang="scss" scoped>
 
-// table {
-//   width:100%;
-//   margin-bottom:0 !important;
-// }
 
-// table, th {
-//   text-align: center;
-//   width: 25%;
-// }
+
 
 thead tr th {
   font-weight: lighter;
@@ -530,12 +541,14 @@ tr.isProposed td{
 tr.isConfirmed td{
   background-color: #92cae0;
 }
+
 tr.isAccepted td{
   background-color: #c6a9d6;
 }
 
 tr.isRefused td{
   background-color: #c48974;
+  // background-color: red !important;
 }
 
 .el-form-item{
@@ -568,9 +581,10 @@ table {
   border-collapse: collapse;
 }
 
-table.el-calendar-table tbody tr{
-  height: 10px;
-}
+// table.el-calendar-table tbody tr{
+//   height: 10px;
+// }
+
 
 th {
   background-color: #1E969D;
@@ -622,4 +636,8 @@ td p{
 
 
 <style>
+
+.el-calendar-table .el-calendar-day {
+  height: 8vh !important;
+}
 </style>

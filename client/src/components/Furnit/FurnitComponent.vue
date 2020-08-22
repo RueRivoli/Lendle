@@ -8,13 +8,23 @@
                     title="Profile incomplet"
                     :visible.sync="dialogProfileVisible"
                     width="50%">
-                    <span>Pour demander une location, veuillez d'abord renseigner dans votre profil : </span>
+                    <span>Votre profil est incomplet. Pour demander une location, remplissez les champs suivants:</span>
                     <div v-for="(fd, ind) in fieldsMissings" :key="ind">
                         <span>{{fd}}</span>
                     </div>
                     <span slot="footer" class="dialog-footer">
                         <el-button @click="dialogProfileVisible = false">Annuler</el-button>
                         <el-button type="primary" @click="fillProfile">Compléter le profil</el-button>
+                    </span>
+                </el-dialog>
+                <el-dialog
+                    title="Autre proposition existante"
+                    :visible.sync="dialogOtherPropositionVisible"
+                    width="50%">
+                    <span> Vous avez déjà fait une proposition pour ce meuble-ci.</span>
+                    <span slot="footer" class="dialog-footer">
+                        <el-button @click="dialogOtherPropositionVisible = false">Annuler</el-button>
+                        <el-button type="primary" @click="handlePropositions()">Gérer vos propositions de location</el-button>
                     </span>
                 </el-dialog>
                 <el-row>
@@ -115,6 +125,7 @@ import TagComponent from '../Utils/TagComponent';
 import FurnitService from '../../Service/FurnitService';
 import BreadcrumpComponent from './../Utils/BreadcrumpComponent';
 import UserService from '../../Service/UserService';
+import RentalService from '../../Service/RentalService';
 import './../../style/style.css';
 import FooterComponent from '../Footer/FooterComponent';
 import AvatarComponent from './../Utils/AvatarComponent';
@@ -127,6 +138,7 @@ export default {
     return {
       furnit: { state: 0 },
       dialogProfileVisible: false,
+      dialogOtherPropositionVisible: false, 
       fieldsMissings: [],
       file: null,
       date: [],
@@ -136,6 +148,7 @@ export default {
   computed: {
     ...mapGetters({
         loaner: 'GET_LOAN',
+        id: 'GET_ID',
         authentificated: 'GET_AUTH'
     }),
     stateOfFurnit: function () {
@@ -171,6 +184,9 @@ export default {
   methods: {
     fillProfile() {
        this.$router.push({ name: 'ProfileComponent', fields: this.fieldsMissings});
+    },
+    handlePropositions() {
+        this.$router.push({ path: '/myrentals/Demands'});
     },
       readonly () {
           return true;
@@ -216,7 +232,19 @@ export default {
           console.log(this.furnit._id);
           let context = this;
           UserService.getIfProfileComplete(this.loaner).then(function(result) {
-              if (result.complete) context.$router.push({ name: 'MyRentals', params: { furnit_id: context.furnit._id, display: 'Demands'}});
+              if (result.complete) {
+                  RentalService.existOtherRentalForThatFurnit(context.furnit._id, context.id).then(function(result) {
+                      console.log('RESULT');
+                      console.log(result);
+                      if (result.count !== 0 ) {
+                        console.log('IN');
+                        context.dialogOtherPropositionVisible = true;
+                        context.fieldsMissings = [];
+                      } else {
+                        context.$router.push({ name: 'MyRentals', params: { furnit_id: context.furnit._id, display: 'Demands'}});
+                      }
+                  }).catch();
+              }
               else {
                   context.dialogProfileVisible = true;
                   context.fieldsMissings = result.fields;

@@ -10,22 +10,29 @@ const router = express.Router();
 // called for RentalComponent
 // retrieve the rental that is rental_id and retrieve furnit and owner data
 // This part is for the loaner
-router.get('/details/loan/:furnit_id/:isLocation', function (req, res) {
+router.get('/details/', function (req, res) {
   let db = mongoose.connection.db;
-
-  let furnit_id = ObjectId(req.params.furnit_id);
-
-  let cond;
-  var today10daysago = new Date();
+  console.log("details");
+  console.log(req.query);
+  
+  let furnit_id = ObjectId(req.query.furnit_id);
+  let cond, match = {};
+  match["furnit_id"] = { $eq: furnit_id };
+  if (req.query.loaner === 'true') match["loaner_id"] = { $eq: ObjectId(req.user._id) };
+  let today10daysago = new Date();
   today10daysago.setDate(today10daysago.getDate() - 10);
-  if (req.params.isLocation === '1') cond = { $gte: [2]};
+  if (req.query.isLocation === '1') cond = { $gte: [2]};
   else cond = {$lt: 2}
-
+  console.log(match);
   db.collection("rentals").aggregate([
     { "$match": {
-      "$or": [
-      { "$and": [ { "furnit_id": { $eq: furnit_id } }, { "status": cond } ] },
-      { "$and": [ { "furnit_id": { $eq: furnit_id } }, { "status": {$eq: 2} }, { "confirmation": {$gt: today10daysago} } ] }
+      "$and": [ match,
+        {
+        "$or": [
+          { "status": cond },
+          { "$and": [ { "status": {$eq: 2} }, { "confirmation": {$gt: today10daysago} } ] }
+          ]
+        }
       ]
     }
   },
@@ -111,8 +118,8 @@ router.post('/', function (req, res) {
   rental.furnit_id =  ObjectId(req.body.furnit_id);
   rental.loaner_id =  ObjectId(req.body.loaner_id);
   rental.renter_id =  ObjectId(req.body.renter_id);
-  rental.loan_start = req.body.loan_start;
-  rental.loan_end = req.body.loan_end;
+  rental.loan_start = new Date(req.body.loan_start);
+  rental.loan_end = new Date(req.body.loan_end);
   rental.paid = req.body.paid;
   rental.status = 0;
   rental.save(function (err) {
@@ -141,6 +148,47 @@ router.post('/', function (req, res) {
 // }]
 // }
 
+router.get('/isUnique', function (req, res) {
+  let db = mongoose.connection.db;
+  console.log('isUnique');
+  console.log(req.query.furnit_id);
+  console.log(req.query.loaner_id);
+  db.collection("rentals").aggregate([
+    { "$match": { "$and": [
+       { "furnit_id": { $eq: ObjectId(req.query.furnit_id) } },
+       { "loaner_id": { $eq: ObjectId(req.query.loaner_id) } },
+        { "status": { $lt: 2 } },
+        { "status": { $gt: -1 } },
+      ] 
+    }
+  },
+    {
+      $group: {
+        _id: null,
+        count: { $sum: 1 }
+    }
+  }
+  ]).toArray(function(err, rentals)  {
+    console.log("Results");
+    console.log(rentals);
+    if(err){
+        return res.status(404).json({
+          err: 'Erreur de recherche de meubles'
+      });
+    } else if(!rentals || rentals.length === 0){
+        return res.status(201).json({
+          count: 0,
+          msg: 'Vous n avez pas d autres demandes avec ce meuble la'
+        });
+    } else {
+        return res.status(201).json({
+          count: rentals[0].count,
+          msg: 'Attention vous avez déjà proposé une location pour ce meuble la'
+        });
+        }
+    });
+});
+
 router.get('/isRentable/:furnit_id', function (req, res) {
   let db = mongoose.connection.db;
   console.log('isRentable');
@@ -148,8 +196,6 @@ router.get('/isRentable/:furnit_id', function (req, res) {
   console.log(req.query);
   let start = new Date(req.query.loanStart);
   let end = new Date(req.query.loanEnd);
-  // let start = new Date("2020-07-19 10:03:46.000Z");
-  // let end = new Date("2020-08-30 10:03:46.000Z");
   db.collection("rentals").aggregate([
     { "$match": { "$and": [
        { "furnit_id": { $eq: ObjectId(req.params.furnit_id) } },
@@ -193,14 +239,11 @@ router.post('/update', function (req, res) {
   let rental_id = ObjectId(req.body.rental_id);
   let status = req.body.status;
   let statusCheck = req.body.statusCheck;
-  let loan_start = req.body.loan_start;
-  let loan_end = req.body.loan_end;
-
   let match = {"_id": rental_id };
   if (statusCheck) match.status = statusCheck
   let set = {};
-  if (loan_start) set.loan_start = loan_start;
-  if (loan_end) set.loan_end = loan_end;
+  if (req.body.loan_start) set.loan_start = new Date(req.body.loan_start);
+  if (req.body.loan_end) set.loan_end = new Date(req.body.loan_end);
   if (status) set.status = status;
   console.log('MATCH');
   console.log(match);
@@ -394,13 +437,17 @@ router.get('/statistics/:isLoaner', function (req, res) {
         "loanFinished": { $cond: {
           if: { $eq: ["$status", 3] }, then: 1, else: 0 
         } },
-        "loanNonConfirmed": { $cond: {
+        "loanRefusedByLoaner": { $cond: {
           if: { $eq: ["$status", -2] }, then: 1, else: 0 
+        } },
+        "loanRefusedByRenter": { $cond: {
+          if: { $eq: ["$status", -1] }, then: 1, else: 0 
         } },
         "loanConfirmedRecently": { $cond: {
           if: { $and: [ { $eq: ["$status", 2] }, {$gt: ["$confirmation", today10daysago]} ]}, then: 1, else: 0 
         } },
         "furnit_id": 1,
+        "confirmation": 1,
         "_id": 1
       },
    },
@@ -412,9 +459,12 @@ router.get('/statistics/:isLoaner', function (req, res) {
         "totalDemandsAccepted": { $sum: "$demandAccepted"},
         "totalLoansConfirmed": { $sum: "$loanConfirmed"},
         "totalLoansFinished": { $sum: "$loanFinished"},
-        "totalLoansNonConfirmed": { $sum: "$loanNonConfirmed"},
+        "totalLoansRefusedByLoaner": { $sum: "$loanRefusedByLoaner"},
+        "totalLoansRefusedByRenter": { $sum: "$loanRefusedByRenter"},
         "totalLoansConfirmedRecently": { $sum: "$loanConfirmedRecently"},
+        "lastConfirmation": {$max: "$confirmation"}
     } },
+    { "$sort" : { "lastConfirmation": 1 } },
     { 
       "$lookup": { 
           "from": 'furnits', 
@@ -432,7 +482,7 @@ router.get('/statistics/:isLoaner', function (req, res) {
       });
     } else if(!rentals || rentals.length === 0){
       return res.status(201).json({
-        rentals: {}
+        rentals: []
       });
     } else {
         return res.status(201).json({
@@ -490,6 +540,5 @@ router.delete('/:rental_id', function (req, res) {
 
   });
 });
-
 
 module.exports = router;

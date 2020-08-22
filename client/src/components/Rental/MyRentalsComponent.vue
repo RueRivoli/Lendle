@@ -16,7 +16,7 @@
                                 <span v-if="!loaner">En demande de location </span><span v-else>Vos demandes de location </span> <el-tag type="primary" size="mini" style="margin-left: 15px;">{{quantity[0]}}</el-tag>
                             </h4>
                             <div class="block">
-                            <el-row v-if="proposition_id" style="height:90px;padding: 10px;margin-bottom:7px;">EEE
+                            <el-row v-if="proposition_id" style="height:90px;padding: 10px;margin-bottom:7px;">
                                 <el-card  class="m-b-5" style="height:90px;padding: 2px;border:1px solid grey;color:white;background-color:#1E969D;border-radius: 5px;">
                                     <el-form label-position="top" label-width="80px">
                                         <el-col class="full_height" :span="4">
@@ -48,9 +48,9 @@
                                         </el-col>
 
                                         <el-col class="flex column" :span="6" :offset="3" style="margin-top: 20px;border-left: 1px solid rgb(223, 224, 230);">
-                                            <div class="m-auto">
+                                            <!-- <div class="m-auto">
                                                 <time class="time"> Mensualité {{ furnit_proposition.price }} €/mois</time>
-                                            </div>
+                                            </div> -->
                                             <div class="m-auto">
                                                 <el-button icon="el-icon-success" size="mini" type="essai" class="button cursor" @click=makeAnOffer()>Proposer</el-button>
                                             </div>
@@ -60,7 +60,7 @@
                             </el-row>
 
                             <div v-for="(rt, index) in rentals" :key="index">
-                                <el-row class="pointer" v-if="rt.totalDemands || rt.totalDemandsAccepted || rt.totalLoansNonConfirmed || rt.totalLoansConfirmedRecently" style="height:90px;padding: 10px;margin-bottom:7px;">
+                                <el-row class="pointer" v-if="displayInList(rt)" style="height:90px;padding: 10px;margin-bottom:7px;">
                                         <el-card class="opacity m-b-5" :body-style="{ padding: '2px', height: '90px'}">
                                             <el-col class="full_height" :span="4" >
                                                 <div class="full_height" style="background-color: #D6DCDD;max-height: 100px;">
@@ -77,24 +77,30 @@
                                             <el-col :span="6" :offset="1">
                                                 <div v-if="loaner" style="margin-top:20px;">
                                                     <div v-if="rt.totalDemands">
-                                                        <span> Vous avez fait une demande</span>
+                                                        <span>Votre demande a été envoyé au propriétaire</span>
                                                     </div>
                                                     <div v-if="rt.totalDemandsAccepted">
                                                         <span>Votre demande a été acceptée. Confirmez-la pour valider la location</span>
                                                     </div>
+                                                      <div v-if="rt.totalLoansConfirmedRecently">
+                                                        <span>Vous avez conclu une location récemment.</span>
+                                                    </div>
+                                                      <div v-if="rt.totalLoansRefusedByRenter">
+                                                        <span>Votre demande a été refusée</span>
+                                                    </div>
                                                 </div>
                                                 <div v-else style="margin-top:20px;">
                                                     <div >
-                                                        <span> {{rt.totalDemands}} proposition(s)</span>
+                                                        <span>{{rt.totalDemands}} proposition(s)</span>
                                                     </div>
                                                     <div>
                                                         <span> {{rt.totalDemandsAccepted}} proposition(s) en attente de confirnation</span>
                                                     </div>
-                                                    <div v-if="rt.totalLoansNonConfirmed">
-                                                        <span> {{rt.totalLoansNonConfirmed}} demande(s) non confirmée(s)</span>
+                                                    <div v-if="rt.totalLoansRefusedByLoaner">
+                                                        <span> {{rt.totalLoansRefusedByLoaner}} demande(s) annulée(s)</span>
                                                     </div>
                                                       <div v-if="rt.totalLoansConfirmedRecently">
-                                                        <span> {{rt.totalLoansConfirmedRecently}} proposition(s) confirmée(s) récemment</span>
+                                                        <span> {{rt.totalLoansConfirmedRecently}} location(s) conclue(s) récemment</span>
                                                     </div>
                                                 </div>
                                             </el-col>
@@ -121,6 +127,7 @@
                                         <el-col class="full_height" :span="4" >
                                             <div class="full_height" style="background-color: #D6DCDD;max-height: 100px;">
                                                 <el-image
+                                                    v-if="imgUrl"
                                                     class="pointer full_height"
                                                     :src="imgUrl[index]"
                                                     fit="contain">
@@ -173,7 +180,7 @@ export default {
   components: { NavComponent, FooterComponent, BreadcrumpComponent },
   data() {
       return {
-          display: this.$route.params.display,
+          display: this.$route.params.display || 'Demands',
           proposition_id: this.$route.params.furnit_id,
           rentals: [],
           imgUrl: {},
@@ -200,31 +207,74 @@ export default {
           RentalService.postRental(new_rental).then(function(rt) {
               console.log('Retour de postRental');
               console.log(rt.rental);
-              rt.rental.totalDemands = 1;
-              rt.rental._id = rt.rental.furnit_id;
-              rt.rental.furnit = [];
-              rt.rental.furnit[0] = context.furnit_proposition.furnit;
-              let index = Object.keys(context.imgUrl).length;
-              context.imgUrl[index] = context.furnit_proposition.imgUrl[0];
-             context.rentals.push(rt.rental);
+            //   rt.rental.totalDemands = 1;
+            //   rt.rental._id = rt.rental.furnit_id;
+            //   rt.rental.furnit = [];
+            //   rt.rental.furnit[0] = context.furnit_proposition.furnit;
+            //   let index = Object.keys(context.imgUrl).length;
+            //   context.imgUrl[index] = context.furnit_proposition.imgUrl[0];
+            //   console.log('before push');
+            //   console.log(context.rentals);
+            //   console.log(rt.rental);
+            //  context.rentals.push(rt.rental);
              context.proposition_id = null;
+             context.getStatistics();
           }).catch(function(err) {
               console.log(err);
           }) 
       },
-      displayThisRental() {
-
-      },
+      displayInList(rt) {
+        if (this.loaner) {
+            if (rt.totalDemands || rt.totalDemandsAccepted || rt.totalLoansConfirmedRecently || rt.totalLoansRefusedByRenter) return true
+            else return false
+        } else {
+             if (rt.totalDemands || rt.totalDemandsAccepted || rt.totalLoansConfirmedRecently || rt.totalLoansRefusedByLoaner) return true
+             else return false
+        }
+    },
     details(rt, isLocation) {
         if (this.loaner) {
             console.log('rt.rental_id');
-            console.log(rt.rental_id);
-            this.$router.push({ name: 'Rental',  params: { rental_id: rt.rental_id, isLocation: isLocation} })
+            console.log(rt);
+            this.$router.push({ path: `/rental/${rt._id}/${isLocation}`})
         } else {
-            this.$router.push({ name: 'Rental',  params: { furnit_id: rt._id, isLocation: isLocation} })
+            //this.$router.push({ name: 'Rental',  params: { furnit_id: rt._id, isLocation: isLocation} })
+            this.$router.push({ path: `/rental/${rt._id}/${isLocation}`})
         }
-        
     },
+    getStatistics () {
+        let context = this;
+        RentalService.getStatisticsForRentals(this.loaner).then(function(rentals) {
+        console.log('getStatisticsForRentals =>');
+        console.log(rentals);
+        context.rentals = rentals.rentals;
+        console.log(context.rentals);
+        let index = context.rentals.length;
+        let i = 0;
+        context.picture_ids = [];
+        context.rentals.forEach(function(rt) {
+            console.log('RT');
+            console.log(rt);
+            context.quantity[0] = context.quantity[0] + rt.totalDemands + rt.totalDemandsAccepted;
+            context.quantity[1] = context.quantity[1] + rt.totalLoansConfirmed;
+            if (rt.furnit[0].picture_ids.length > 0) {
+                context.picture_ids.push(rt.furnit[0].picture_ids[0]);
+            }
+        if (i === index - 1) {
+            FurnitService.getImagesUrlFromPicIds(context.picture_ids).then(function(urls) {
+                console.log('URL');
+                console.log(urls);
+                context.imgUrl = urls.imgUrl;
+            }).catch(function(err) {
+                console.log(err);
+            });
+        }
+        i++;
+    });
+    }).catch(function(err) {
+            console.log(err);
+    });
+    }
   },
   computed: {
     ...mapGetters({
@@ -248,39 +298,8 @@ export default {
             console.log(err);
         });
     }
-    
-    RentalService.getStatisticsForRentals(this.loaner).then(function(rentals) {
-        console.log('getStatisticsForRentals =>');
-        // console.log(rentals);
-        context.rentals = rentals.rentals;
-        // if (context.loaner) context.rentals = rtls.filter(rt => rt.status !== -2);
-        // if (!context.loaner) context.rentals = rtls.filter(rt => rt.status !== -1);
-        console.log(context.rentals);
-        let index = context.rentals.length;
-        let i = 0;
-        context.rentals.forEach(function(rt){
-            console.log('RT');
-            console.log(rt);
-            context.quantity[0] = context.quantity[0] + rt.totalDemands + rt.totalDemandsAccepted + rt.totalLoansConfirmedRecently;
-            context.quantity[1] = context.quantity[1] + rt.totalLoansConfirmed + rt.totalLoansNonConfirmed;
-            if (rt.furnit[0].picture_ids.length > 0) {
-                context.picture_ids.push(rt.furnit[0].picture_ids[0]);
-            }
-        if (i === index - 1) {
-            FurnitService.getImagesUrlFromPicIds(context.picture_ids).then(function(urls) {
-                console.log('URL');
-                console.log(urls);
-                context.imgUrl = urls.imgUrl;
-            }).catch(function(err) {
-                console.log(err);
-            });
-        }
-        i++;
-    });
-        }).catch(function(err) {
-            console.log(err);
-        });
-    }
+    this.getStatistics();
+ }
 }
 </script>
 
