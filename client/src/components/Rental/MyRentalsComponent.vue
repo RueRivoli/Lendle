@@ -173,6 +173,7 @@ import BreadcrumpComponent from './../Utils/BreadcrumpComponent';
 import FurnitService from './../../Service/FurnitService';
 import FooterComponent from './../Footer/FooterComponent';
 import { mapGetters } from 'vuex';
+const moment = require('moment');
 import * as Formats from './../../utils/format.js'
 
 export default {
@@ -194,6 +195,11 @@ export default {
       format (date) {
           return Formats.toFormat(date);
       },
+    price (start, end, price) {
+          let a = moment(start);
+          let b = moment(end);
+          return b.diff(a, 'month') * price;
+      },
       async makeAnOffer () {
           let context = this;
           let new_rental = {};
@@ -202,8 +208,7 @@ export default {
           new_rental.renter_id = this.furnit_proposition.furnit.owner_id;
           new_rental.loan_start = this.dateProposition[0];
           new_rental.loan_end = this.dateProposition[1];
-          new_rental.status = 1;
-          new_rental.paid = false;
+          new_rental.price = this.price(this.dateProposition[0], this.dateProposition[1], this.furnit_proposition.price);
           RentalService.postRental(new_rental).then(function(rt) {
               console.log('Retour de postRental');
               console.log(rt.rental);

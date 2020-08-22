@@ -38,6 +38,22 @@ const RentalSchema = mongoose.Schema({
         type: Boolean,
         default: false
     },
+    price: {
+        type: Number,
+        default: 0
+    },
+    returned: {
+        type: Boolean,
+        default: false
+    },
+    review_loaner: {
+        type: mongoose.Schema.Types.ObjectId,
+        default: null
+    },
+    review_renter: {
+        type: mongoose.Schema.Types.ObjectId,
+        default: null
+    }
 });
 
 module.exports = mongoose.model('Rentals', RentalSchema);

@@ -120,8 +120,8 @@ router.post('/', function (req, res) {
   rental.renter_id =  ObjectId(req.body.renter_id);
   rental.loan_start = new Date(req.body.loan_start);
   rental.loan_end = new Date(req.body.loan_end);
-  rental.paid = req.body.paid;
   rental.status = 0;
+  rental.price = req.body.price;
   rental.save(function (err) {
     if (err) {
       console.log('Error');
