@@ -16,21 +16,26 @@ router.get('/details/', function (req, res) {
   console.log(req.query);
   
   let furnit_id = ObjectId(req.query.furnit_id);
-  let cond, match = {};
+  let cond, and = [{}], match = {};
   match["furnit_id"] = { $eq: furnit_id };
   if (req.query.loaner === 'true') match["loaner_id"] = { $eq: ObjectId(req.user._id) };
   let today10daysago = new Date();
   today10daysago.setDate(today10daysago.getDate() - 10);
   if (req.query.isLocation === '1') cond = { $gte: [2]};
-  else cond = {$lt: 2}
+  else {
+    cond = {$lt: 2},
+    and = [ { "status": {$eq: 2} }, { "confirmation": {$gt: today10daysago} } ] 
+  }
   console.log(match);
+  console.log(cond);
+  console.log(and);
   db.collection("rentals").aggregate([
     { "$match": {
       "$and": [ match,
         {
         "$or": [
           { "status": cond },
-          { "$and": [ { "status": {$eq: 2} }, { "confirmation": {$gt: today10daysago} } ] }
+          { "$and": and }
           ]
         }
       ]

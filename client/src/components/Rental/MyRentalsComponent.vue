@@ -212,16 +212,6 @@ export default {
           RentalService.postRental(new_rental).then(function(rt) {
               console.log('Retour de postRental');
               console.log(rt.rental);
-            //   rt.rental.totalDemands = 1;
-            //   rt.rental._id = rt.rental.furnit_id;
-            //   rt.rental.furnit = [];
-            //   rt.rental.furnit[0] = context.furnit_proposition.furnit;
-            //   let index = Object.keys(context.imgUrl).length;
-            //   context.imgUrl[index] = context.furnit_proposition.imgUrl[0];
-            //   console.log('before push');
-            //   console.log(context.rentals);
-            //   console.log(rt.rental);
-            //  context.rentals.push(rt.rental);
              context.proposition_id = null;
              context.getStatistics();
           }).catch(function(err) {

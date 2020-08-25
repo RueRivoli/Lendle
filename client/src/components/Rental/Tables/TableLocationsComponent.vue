@@ -28,18 +28,21 @@
         </tr>
       </thead>
       <tbody>
-        <tr v-for="(entry, id) in rentals" :key="id" :class="classEntry(entry.status)">
+        <tr v-for="(entry, id) in rentals" :key="id" :class="classEntry(entry)">
           <td>{{ format(entry.loan_start) }} </td>
           <td>{{ format(entry.loan_end) }} </td>
           <td>{{ price(entry) }}€</td>
           <td>{{ displayStatus(entry.status) }}</td>
-          <td>{{ entry.paid }}</td>
-          <td>{{ entry.returned }}</td>
+          <td>{{ entry.paid ? 'Oui': 'Non'  }}</td>
+          <td>{{ entry.returned ? 'Oui': 'Non' }}</td>
           <td>
-                <el-button type="warning" icon="el-icon-chat-line-round" size="mini" circle @click="claimDispute(entry.loaner[0]._id)"></el-button>
+                <el-button type="success" icon="el-icon-postcard" size="mini" circle @click="giveReview(entry._id)"></el-button>
+          </td>
+          <td>
+                <el-button type="danger" icon="el-icon-chat-line-square" size="mini" circle @click="claimDispute(entry._id)"></el-button>
           </td>
            <td>
-                <el-button v-if="isCancelable(entry)" type="warning" icon="el-icon-close" size="mini" circle @click="cancelRental(id, entry._id)"></el-button>
+                <el-button v-if="isCancelable(entry)" type="danger" icon="el-icon-close" size="mini" circle @click="cancelRental(id, entry._id)"></el-button>
            </td>
             <td>
                 <el-button type="warning" icon="el-icon-chat-line-round" size="mini" circle @click="contact(entry.loaner[0]._id)"></el-button>
@@ -80,14 +83,13 @@ export default {
     format (date) {
           return Formats.toFormatSpecific(date, 'DD/MM/YY');
     },
-    classEntry(status) {
-        if (status === -2 || status === -1) return 'isRefused'
-        else if (status === 0) return 'isProposed'
+    classEntry(rt) {
+        if (rt.status === 2 && !this.isFinished(rt)) return 'isProposed'
         else if (status === 1) return 'isAccepted'
         else if (status === 2) return 'isConfirmed'
     },
     displayStatus(rt, status) {
-        let finished = isFinished(rt);
+        let finished = this.isFinished(rt);
         if (this.loaner) {
           if (!finished) return 'En cours'
           else {
@@ -115,7 +117,7 @@ export default {
         this.$router.push({ name: 'Chat',  params: { interlocutor_id: id } });
       },
       isCancelable (rt) {
-          let finished = isFinished(rt)
+          let finished = this.isFinished(rt);
           let reviewed;
           this.loaner ? reviewed = rt.review_loaner : rt.review_renter
           return rt.paid && rt.returned && reviewed && finished
