@@ -1,5 +1,7 @@
 <template>
-<el-footer class="flex" style="background-color:#cfccc4;height: 20vh;width: 100%;">
+<el-footer class="flex" style="background-color:#cfccc4;height: 20vh;width: 100%;position: fixed;
+    left: 0;
+    bottom: 0;">
     <div class="margin-auto" style="width:40vh;margin:auto;">
         <el-row class="line-H">
             <span class="lendle" style="line-height:40px;font-size:40px;color:black;">Lendle</span>

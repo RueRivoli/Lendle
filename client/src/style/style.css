@@ -14,6 +14,10 @@
     cursor: pointer;
   }
 
+.font-17{
+  font-size: 17px !important;
+}
+
 /* flex */
 
 .flex{
@@ -58,7 +62,7 @@
 /* margin */
 
 .m-l-5{
-
+  margin-left: 5px;
 }
 
 .m-b-5{
@@ -95,13 +99,13 @@
     font-family: 'Gagalin';
     color: #1E969D;
     text-align: center;
-    font-style:oblique;
-    font-weight:bold;
-    font-size:25px !important;
+    font-style: oblique;
+    font-weight: bold;
+    font-size: 25px;
 }
 
 .block{
-  height: 60vh;
+  height: 50vh;
   overflow-y: auto;
 }
 

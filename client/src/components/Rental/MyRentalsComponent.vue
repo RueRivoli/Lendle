@@ -1,29 +1,27 @@
 <template>
 <div>
     <nav-component></nav-component>
-    <BreadcrumpComponent v-if="loaner" v-bind:field1="{title: 'Mes meubles', path: '/myrentals'}" :field2="{title: display, path: '/myrentals/' + display }"></BreadcrumpComponent>
-    <BreadcrumpComponent v-else :field1="{title: 'Mes locations', path: '/myrentals'}" :field2="{title: display, path: '/myrentals/' + display }"></BreadcrumpComponent>
-    <el-container style="height: 100vh;">
-        <el-main>
-            <div class="m-auto" style="width: 25vw;">
-                <el-button type="primary" size="mini" plain @click="display = 'Demands'">Demandes de location</el-button>
-                <el-button type="success" size="mini" plain @click="display = 'Locations'">Les locations</el-button>
-                <el-switch v-model="typeofRental" active-color="#1E969D" inactive-color="#484538" active-text="Locations" inactive-text="Demandes de locations">
+    <BreadcrumpComponent v-if="loaner" v-bind:field1="{title: 'Mes meubles', path: '/myrentals'}" :field2="{title: typeofRental ? 'Locations' : 'Propositions', path: '/myrentals/' + typeofRental }"></BreadcrumpComponent>
+    <BreadcrumpComponent v-else :field1="{title: 'Mes locations', path: '/myrentals'}" :field2="{title: typeofRental ? 'Locations' : 'Propositions', path: '/myrentals/' + typeofRental }"></BreadcrumpComponent>
+    <el-container>
+        <el-main style="margin-top: 4vh;">
+            <div class="m-auto" style="width: 353px;">
+                <el-switch v-model="typeofRental" width="60" active-color="#1E969D" inactive-color="#484538" active-text="LOCATIONS" inactive-text="PROPOSITIONS DE LOCATION">
                 </el-switch>
             </div>
             <el-row style="margin-top:5vh;font-size:14px;">
                 <el-col :span="18" :offset="3">
-                    <div v-if="display === 'Demands'">
-                        <h4>
-                            <span v-if="!loaner">En demande de location </span><span v-else>Vos demandes de location </span>
+                    <div v-if="typeofRental === false">
+                        <h4 style="background-color: aliceblue">
+                            <span class="lendle font-17" v-if="!loaner">PROPOSITIONS DE LOCATION</span><span class="lendle font-17" v-else>VOS PROPOSITIONS DE LOCATION</span>
                             <el-tag type="primary" size="mini" style="margin-left: 15px;">{{quantity[0]}}</el-tag>
                         </h4>
                         <div class="block">
-                            <el-row v-if="proposition_id" style="height:90px;padding: 10px;margin-bottom:7px;">
-                                <el-card class="m-b-5" style="height:90px;padding: 2px;border:1px solid grey;color:white;background-color:#1E969D;border-radius: 5px;">
+                            <el-row v-if="proposition_id" style="margin-bottom:7px;">
+                                <el-card class="m-b-5" style="padding: 2px;border:1px solid grey;color:white;background-color:#1E969D;border-radius: 5px;">
                                     <el-form label-position="top" label-width="80px">
                                         <el-col class="full_height" :span="4">
-                                            <div class="full_height" style="background-color: #D6DCDD;max-height: 100px;">
+                                            <div class="full_height" style="background-color: #D6DCDD;">
                                                 <el-image v-if="furnit_proposition" class="pointer full_height" :src="furnit_proposition.imgUrl[0]" fit="contain">
                                                 </el-image>
                                             </div>
@@ -50,89 +48,88 @@
                                     </el-form>
                                 </el-card>
                             </el-row>
-
                             <div v-for="(rt, index) in rentals" :key="index">
-                                <el-row class="pointer" v-if="displayInList(rt)" style="height:90px;padding: 10px;margin-bottom:7px;">
-                                    <el-card class="opacity m-b-5" :body-style="{ padding: '2px', height: '90px'}">
+                                <el-row class="pointer" v-if="displayInList(rt)" style="padding: 10px;margin-bottom:2vh;height: 11vh;">
+                                    <el-card class="opacity m-b-5 card_height" :body-style="{ padding: '2px', height: '11vh'}">
                                         <el-col class="full_height" :span="4">
-                                            <div class="full_height" style="background-color: #D6DCDD;max-height: 100px;">
+                                            <div class="full_height" style="background-color: #D6DCDD;">
                                                 <el-image class="pointer full_height" :src="imgUrl[index]" fit="contain">{{imgUrl[index]}}
                                                 </el-image>
                                             </div>
                                         </el-col>
                                         <el-col :span="5" :offset="1">
-                                            <div style="margin-top: 20px;"><span class="pointer" style="font-weight:bold;">{{ rt.furnit[0].name }}</span></div>
+                                            <div style="height:11vh;line-height:11vh;"><span class="pointer" style="font-weight:bold;font-size;17px;">{{ rt.furnit[0].name }}</span></div>
                                         </el-col>
-                                        <el-col :span="6" :offset="1">
-                                            <div v-if="loaner" style="margin-top:20px;">
+                                        <el-col class="flex column full_height" :span="6" :offset="1" style="justify-content:center;">
+                                            <div v-if="loaner">
                                                 <div v-if="rt.totalDemands">
-                                                    <span>Votre demande a été envoyé au propriétaire</span>
+                                                    <span style="color: #1E969D;">Une demande a été envoyée au propriétaire</span>
                                                 </div>
                                                 <div v-if="rt.totalDemandsAccepted">
-                                                    <span>Votre demande a été acceptée. Confirmez-la pour valider la location</span>
+                                                    <span style="color: #666633;">Une demande a été acceptée. Confirmez-la pour valider la location</span>
                                                 </div>
                                                 <div v-if="rt.totalLoansConfirmedRecently">
-                                                    <span>Vous avez conclu une location récemment.</span>
+                                                    <span style="color: #4287f5">Vous avez conclu une location récemment.</span>
                                                 </div>
                                                 <div v-if="rt.totalLoansRefusedByRenter">
-                                                    <span>Votre demande a été refusée</span>
+                                                    <span style="color: purple;">Une demande a été refusée</span>
                                                 </div>
                                             </div>
-                                            <div v-else style="margin-top:20px;">
+                                            <div v-else>
                                                 <div>
-                                                    <span>{{rt.totalDemands}} proposition(s)</span>
+                                                    <span style="color: #1E969D;">{{rt.totalDemands}} proposition(s)</span>
                                                 </div>
                                                 <div>
-                                                    <span> {{rt.totalDemandsAccepted}} proposition(s) en attente de confirnation</span>
+                                                    <span style="color: #666633;"> {{rt.totalDemandsAccepted}} proposition(s) en attente de confirnation</span>
                                                 </div>
                                                 <div v-if="rt.totalLoansRefusedByLoaner">
-                                                    <span> {{rt.totalLoansRefusedByLoaner}} demande(s) annulée(s)</span>
+                                                    <span style="color: purple;"> {{rt.totalLoansRefusedByLoaner}} demande(s) annulée(s)</span>
                                                 </div>
                                                 <div v-if="rt.totalLoansConfirmedRecently">
-                                                    <span> {{rt.totalLoansConfirmedRecently}} location(s) conclue(s) récemment</span>
+                                                    <span style="color: #86b300"> {{rt.totalLoansConfirmedRecently}} location(s) conclue(s) récemment</span>
                                                 </div>
                                             </div>
                                         </el-col>
-                                        <el-col class="flex column" :span="4" :offset="2" style="border-left: 1px solid rgb(223, 224, 230);margin-top: 30px;">
+                                        <el-col class="flex column" :span="5" :offset="2" style="border-left: 1px solid rgb(223, 224, 230);height:100%;">
                                             <div class="m-auto">
                                                 <el-button icon="el-icon-view" size="mini" type="primary" class="button cursor opacity" @click="details(rt, 0)">Consulter</el-button>
                                             </div>
                                         </el-col>
                                     </el-card>
-
                                 </el-row>
                             </div>
                         </div>
                     </div>
 
-                    <div v-if="display === 'Locations'">
-                        <h4>
-                            En location<el-tag type="primary" size="mini" style="margin-left: 15px;">{{quantity[1]}}</el-tag>
+                    <div v-if="typeofRental === true">
+                        <h4 style="background-color: lightcoral;">
+                            <span class="lendle font-17 m-l-5" style="color: white;">EN LOCATION</span>
+                            <el-tag type="primary" size="mini" style="margin-left: 15px;">{{quantity[1]}}</el-tag>
                         </h4>
                         <div class="block">
                             <div v-for="(rt, index) in rentals" v-bind:key="index">
-                                <el-row v-if="rt.totalLoansConfirmed || rt.totalLoansFinished" style="height:90px;padding: 10px;margin-bottom:7px;">
-                                    <el-card class="opacity m-b-5" :body-style="{ padding: '2px', height: '90px'}">
+                                <el-row class="pointer" v-if="rt.totalLoansConfirmed || rt.totalLoansFinished" style="padding: 10px;margin-bottom:2vh;height: 11vh;">
+                                    <el-card class="opacity m-b-5 card_height" :body-style="{ padding: '2px', height: '11vh'}">
                                         <el-col class="full_height" :span="4">
-                                            <div class="full_height" style="background-color: #D6DCDD;max-height: 100px;">
+                                            <div class="full_height" style="background-color: #D6DCDD;">
                                                 <el-image v-if="imgUrl" class="pointer full_height" :src="imgUrl[index]" fit="contain">
                                                 </el-image>
                                             </div>
                                         </el-col>
                                         <el-col :span="5" :offset="1">
-                                            <div style="margin-top: 20px;"><span class="pointer" style="font-weight:bold;">{{ rt.furnit[0].name }}</span></div>
+                                            <div style="height:11vh;line-height:11vh;"><span class="pointer" style="font-weight:bold;font-size;17px;">{{ rt.furnit[0].name }}</span></div>
                                         </el-col>
-                                        <el-col :span="4" :offset="1">
-                                            <div style="margin-top:20px;">
+                                        <el-col class="flex column full_height" :span="5" :offset="1" style="justify-content:center;">
+                                            <div>
                                                 <div>
-                                                    <span> {{rt.totalLoansConfirmed}} location(s) prévue(s)</span>
+                                                    <span style="color: #1E969D;"> {{rt.totalLoansConfirmed}} location(s) prévue(s)</span>
                                                 </div>
                                                 <div>
-                                                    <span> {{rt.totalLoansFinished}} location(s) terminée(s)</span>
+                                                    <span style="color: #666633;"> {{rt.totalLoansFinished}} location(s) terminée(s)</span>
                                                 </div>
                                             </div>
                                         </el-col>
-                                        <el-col class="flex column" :span="6" :offset="2" style="border-left: 1px solid rgb(223, 224, 230);margin-top: 20px;">
+                                        <el-col class="flex column" :span="5" :offset="3" style="border-left: 1px solid rgb(223, 224, 230);height:100%;">
                                             <div class="m-auto">
                                                 <el-button icon="el-icon-view" size="mini" type="primary" class="button cursor opacity" @click="details(rt, 1)">Consulter</el-button>
                                             </div>
@@ -171,15 +168,15 @@ export default {
     },
     data() {
         return {
-            display: this.$route.params.display || 'Demands',
+            typeofRental: this.$route.params.display || false,
             proposition_id: this.$route.params.furnit_id,
             rentals: [],
             imgUrl: {},
             quantity: [0, 0],
             dateProposition: ['', ''],
             furnit_proposition: null,
-            picture_ids: [],
-            typeofRental: 0
+            picture_ids: []
+            /*             typeofRental: 0 */
         }
     },
     methods: {
@@ -297,6 +294,10 @@ export default {
 @import "./../../style/element-variables.scss";
 
 .el-image img {
-    max-height: 100px;
+    max-height: 100%;
+}
+
+.card_height {
+    height: 11vh;
 }
 </style>
