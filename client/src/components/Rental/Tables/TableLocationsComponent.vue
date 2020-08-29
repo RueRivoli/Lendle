@@ -14,9 +14,9 @@
                 <th>Prix total</th>
                 <th>Statut</th>
                 <!-- <th>Payé</th>
-                <th>Retourné</th>
-                <th>Avis</th>
-                <th>Réclamation</th> -->
+                    <th>Retourné</th>
+                    <th>Avis</th>
+                    <th>Réclamation</th> -->
                 <th>Contacter</th>
                 <th>Archiver</th>
 
@@ -28,9 +28,9 @@
                 <th></th>
                 <th></th>
                 <!-- <th></th>
-                <th></th>
-                <th>Laisser un avis</th>
-                <th>Pour tout souci</th> -->
+                    <th></th>
+                    <th>Laisser un avis</th>
+                    <th>Pour tout souci</th> -->
                 <th></th>
                 <th>Ne plus faire apparaitre</th>
             </tr>
@@ -47,13 +47,13 @@
                     <td>{{ price(entry) }} €</td>
                     <td>{{ displayStatus(entry, entry.status) }}</td>
                     <!-- <td>{{ entry.paid ? 'Oui': 'Non'  }}</td>
-                    <td>{{ entry.returned ? 'Oui': 'Non' }}</td>
-                    <td>
-                        <el-button v-if="isFinished(entry)" type="success" icon="el-icon-postcard" size="mini" circle @click="giveReview(entry._id)"></el-button>
-                    </td>
-                    <td>
-                        <el-button type="danger" icon="el-icon-chat-line-square" size="mini" circle @click="claimDispute(entry._id)"></el-button>
-                    </td> -->
+                        <td>{{ entry.returned ? 'Oui': 'Non' }}</td>
+                        <td>
+                            <el-button v-if="isFinished(entry)" type="success" icon="el-icon-postcard" size="mini" circle @click="giveReview(entry._id)"></el-button>
+                        </td>
+                        <td>
+                            <el-button type="danger" icon="el-icon-chat-line-square" size="mini" circle @click="claimDispute(entry._id)"></el-button>
+                        </td> -->
                     <td>
                         <el-button type="text" icon="el-icon-chat-line-round" size="medium" circle style="color:black;" @click="contact(entry.loaner[0]._id)"></el-button>
                     </td>
@@ -65,7 +65,7 @@
                     <td class="finishing" :colspan="7" v-if="!isFinished(entry)">
                         <h4>Laisser un avis sur le propriétaire pour finaliser la location</h4>
                         <span style="font-style: italic;">Vos avis nous sont utiles pour connaitre nos utilisateurs</span>
-                        <el-form label-position="left" label-width="180px" :model="review" :rules="rulesSimpleReview" style="margin-top: 30px;">
+                        <el-form ref="review" name="review" :model="review" :rules="rulesSimpleReview" label-position="left" label-width="190px" style="margin-top: 30px;">
                             <el-form-item label="Notez le propriétaire" prop="mark" size="mini">
                                 <el-rate v-model="review.mark">
                                 </el-rate>
@@ -81,10 +81,16 @@
                     <td class="canceling" :colspan="7" v-else>
                         <h4>Abandonner la location</h4>
                         <span style="font-style: italic;">En cas d'insatisfaction du propriétaire ou en cas de réelle nécessité, à ne pas abuser</span>
-                        <el-form label-position="left" label-width="180px" :model="review" :rules="rulesSimpleReview" style="margin-top: 30px;">
+                        <el-form ref="review" name="review" :model="review" :rules="rulesSimpleReview" label-position="left" label-width="190px" style="margin-top: 30px;">
                             <el-form-item label="Notez le propriétaire" prop="mark" size="mini">
                                 <el-rate v-model="review.mark">
                                 </el-rate>
+                            </el-form-item>
+                            <el-form-item label="Quel est le motif de l'abandon ?" prop="reason" size="mini">
+                                <el-select v-model="review.reason" placeholder="Select">
+                                    <el-option v-for="item in posibleReasons" :key="item.value" :label="item.label" :value="item.value">
+                                    </el-option>
+                                </el-select>
                             </el-form-item>
                             <el-form-item label="Votre avis" prop="text" size="mini">
                                 <el-input type="textarea" maxlength="500" show-word-limit rows="4" v-model="review.text"></el-input>
@@ -135,7 +141,7 @@
         </thead>
         <tbody>
             <template v-for="(entry, id) in rentals">
-                <tr :class="classEntry(entry)" :key="id" style="background-color: #b6b9db;">
+                <tr :class="classEntry(entry)" :key="id">
                     <td>
                         <el-button v-if="activename !== id" type="text" icon="el-icon-arrow-right" style="color:black;" @click="expandLine(id)"></el-button>
                         <el-button v-if="activename === id" type="text" icon="el-icon-arrow-down" style="color:black;" @click="expandLine(id)"></el-button>
@@ -161,7 +167,7 @@
                     <td class="finishing" :colspan="7" v-if="isFinished(entry)">
                         <h4>Laisser un avis sur le locataire pour finaliser la location</h4>
                         <span style="font-style: italic;">Vos avis nous sont utiles pour connaitre nos utilisateurs</span>
-                        <el-form label-position="left" label-width="180px" :model="review" :rules="rulesReview" style="margin-top: 30px;">
+                        <el-form ref="review" name="review" :model="review" :rules="rulesReview" label-position="left" label-width="190px" style="margin-top: 30px;">
                             <el-form-item label="A t'il rapporté le meuble ?" prop="returned" size="mini">
                                 <el-radio-group size="mini" v-model="review.returned">
                                     <el-radio label="Oui"></el-radio>
@@ -189,10 +195,16 @@
                     <td class="canceling" :colspan="7" v-else>
                         <h4>Abandonner la location</h4>
                         <span style="font-style: italic;">En cas d'insatisfaction du locataire ou en cas de vrai nécessité, à ne pas abuser</span>
-                        <el-form label-position="left" label-width="180px" :model="review" :rules="rulesReview" style="margin-top: 30px;">
+                        <el-form ref="simpleReview" name="simpleReview" :model="review" :rules="rulesReview" label-position="left" label-width="190px" style="margin-top: 30px;">
                             <el-form-item label="Notez le locataire" prop="mark" size="mini">
                                 <el-rate v-model="review.mark">
                                 </el-rate>
+                            </el-form-item>
+                            <el-form-item label="Quel est le motif de l'abandon?" prop="reason" size="mini">
+                                <el-select v-model="review.reason" placeholder="Select">
+                                    <el-option v-for="item in posibleReasons" :key="item.value" :label="item.label" :value="item.value">
+                                    </el-option>
+                                </el-select>
                             </el-form-item>
                             <el-form-item label="Votre avis" prop="text" size="mini">
                                 <el-input type="textarea" maxlength="500" show-word-limit rows="4" v-model="review.text"></el-input>
@@ -215,7 +227,7 @@ import {
 } from 'vuex';
 import * as Formats from './../../../utils/format.js';
 const moment = require('moment');
-import RentalService from './../../../Service/RentalService';
+import ReviewService from './../../../Service/ReviewService';
 
 export default {
     name: 'TableLocationsComponent',
@@ -229,11 +241,33 @@ export default {
             editMode: false,
             today: new Date(),
             activename: null,
+            posibleReasons: [{
+                    value: 'unreachable',
+                    label: 'Injoignable'
+                },
+                {
+                    value: 'absent',
+                    label: 'Pas Present'
+                },
+                {
+                    value: 'unpaid',
+                    label: 'N a pas payé'
+                },
+                {
+                    value: 'unappropriatebehavior',
+                    label: 'Comportement inapproprié'
+                },
+                {
+                    value: 'other',
+                    label: 'Autre'
+                }
+            ],
             review: {
                 paid: false,
                 returned: false,
                 mark: 0,
-                text: ''
+                text: '',
+                reason: ''
             },
             rulesReview: {
                 returned: [{
@@ -258,6 +292,11 @@ export default {
                     message: 'Donnez un avis sur le propriétaire',
                     trigger: 'blur'
                 }, ],
+                reason: [{
+                    required: true,
+                    message: 'Donnez le motif de labandon',
+                    trigger: 'blur'
+                }, ],
                 mark: [{
                     required: true,
                     message: 'Notez le propriétaire',
@@ -273,16 +312,24 @@ export default {
         }),
 
     },
-    watch: {
-        // rentals: function(val) {
-        //      for(var i=0; i < val.length; i++) {
-        //         this.expand[i] = false;
-        //    }
-        // }
-    },
     methods: {
         save() {
-            console.log('SAVE');
+            console.log("SAVE REVIEW");
+            let context = this;
+            this.$refs['review'].validate((valid) => {
+                console.log('VALID REVIEW');
+                if (valid) {
+                    let fd = new FormData(document.forms.namedItem("review"));
+                    ReviewService.insertReview(fd).then(function (rv) {
+                        console.log('Review');
+                        console.log(rv);
+                    }).catch(function (err) {
+                        this.$message.warning(err);
+                    });
+                } else {
+                    context.$message.warning(`Veuillez remplir correctement le sondage d opinion`);
+                }
+            });
         },
         format(date) {
             return Formats.toFormatSpecific(date, 'DD/MM/YY');
@@ -359,125 +406,7 @@ export default {
                 index_modified: index_modified,
                 rental_id: rental_id,
             });
-        },
-        editProposition(id, rental_id) {
-            let context = this;
-            this.$emit('change-rental', {
-                index_modified: id,
-                rental_id: rental_id,
-            });
-
-            let params = {
-                rental_id: rental_id,
-                statusCheck: 0,
-                loan_start: this.dateProposition[0],
-                loan_end: this.dateProposition[1]
-            };
-            RentalService.updateRental(params).then(function (resp) {
-                if (resp.success) {
-                    context.rentals[id].loan_start = context.dateProposition[0];
-                    context.rentals[id].loan_end = context.dateProposition[1];
-                }
-                context.editMode = false;
-                context.$message = "La modification de la proposition a été prise en compte";
-                console.log(resp);
-            });
-        },
-        validLoan(index_modified, rental_id, furnit_id) {
-            this.$emit('change-rental', {
-                index_modified: index_modified,
-                rental_id: rental_id,
-                furnit_id: furnit_id
-            });
-            this.$emit('display-dialog', {
-                refuseLoan: false,
-                confirmLoan: true,
-                validExpression: 'Confirmer',
-                titleDialog: 'Confirmation de la location',
-                message: 'Confirmez-vous la location de ce meuble ? Le propriétaire ne pourra plus louer son meuble aux dates indiquées',
-                dialogVisible: true
-            });
-        },
-        confirmCancel() {
-            if (this.loaner) {
-                if (this.rentals[this.index_modified].status < 0) {
-                    RentalService.deleteRental(this.rental_id);
-                    this.$router.push({
-                        path: '/myrentals/Demands'
-                    });
-                } else {
-                    let params = {
-                        rental_id: this.rental_id,
-                        status: -2
-                    };
-                    let context = this;
-                    RentalService.updateRental(params).then(function (rt) {
-                        console.log('Update rental');
-                        console.log(rt.rental);
-                        context.dialogVisible = false;
-                        context.$router.push({
-                            path: '/myrentals/Demands'
-                        });
-                    }).catch(function (err) {
-                        console.log(err);
-                    })
-                }
-            } else {
-                if (this.rentals[this.index_modified].status < 0) {
-                    RentalService.deleteRental(this.rental_id);
-                    this.rentals.splice(this.index_modified, 1);
-                    //  this.$router.push({ path: '/myrentals/' + this.pathToMyRentals[0]});
-                } else {
-                    let context = this;
-                    let params = {
-                        rental_id: this.rental_id,
-                        status: -1
-                    };
-                    RentalService.updateRental(params).then(function (resp) {
-                        console.log('resp');
-                        context.rentals.splice(context.index_modified, 1);
-                        context.editMode = false;
-                        context.$message = "La modification de la proposition a été prise en compte";
-                        // context.$router.push({ path: '/myrentals/' + this.pathToMyRentals[0]});
-                        console.log(resp);
-                    });
-                }
-                this.dialogVisible = false;
-                this.refuseLoan = false;
-            }
-        },
-        acceptLoan(index_modified, rental_id, furnit_id, start, end) {
-            let context = this;
-            RentalService.isRentable(furnit_id, start, end).then(function (res) {
-                console.log("isRentable");
-                console.log(res);
-                context.index_modified = index_modified;
-                if (res.maxStatus === 0) {
-                    context.rental_id = rental_id;
-                    context.$emit('display-dialog', {
-                        refuseLoan: false,
-                        confirmLoan: true,
-                        validExpression: 'Accepter',
-                        titleDialog: 'Confirmation',
-                        message: 'Confirmez-vous que vous acceptez cette proposition ? Le demandeur devra confirmer cette offre pour valider la location',
-                        dialogVisible: true
-                    });
-                } else {
-                    let msg;
-                    if (res.maxStatus === 1) msg = "Vous avez déjà accepté une location (non confirmée) qui chevauche celle-ci. Annulez l'autre proposition pour accepter celle-ci";
-                    if (res.maxStatus === 2) msg = "Vous avez déjà une location prévue qui chevauche celle-ci";
-                    context.$emit('display-dialog', {
-                        confirmLoan: false,
-                        validExpression: 'Accepter',
-                        titleDialog: 'Erreur',
-                        message: msg,
-                        dialogVisible: true
-                    });
-                }
-            }).catch(function (err) {
-                console.log(err);
-            });
-        },
+        }
     }
 }
 </script>

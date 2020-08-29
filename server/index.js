@@ -34,6 +34,7 @@ const searchfurnits = require('./routes/api/searchfurnits');
 const users = require('./routes/api/users');
 const auth = require('./routes/api/auth');
 const rentals = require('./routes/api/rentals');
+const reviews = require('./routes/api/reviews');
 
 
 app.use('/api/auth', auth);
@@ -41,6 +42,7 @@ app.use('/api/users', passport.authenticate('jwt', {session: false}), users);
 app.use('/api/rentals', passport.authenticate('jwt', {session: false}), rentals);
 app.use('/api/furnits/search', searchfurnits); //access to people disconnected
 app.use('/api/furnits', passport.authenticate('jwt', {session: false}), furnits);
+app.use('/api/reviews', passport.authenticate('jwt', {session: false}), reviews);
 // app.use('/api/users', users)
 
 

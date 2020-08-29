@@ -30,10 +30,10 @@ const RentalSchema = mongoose.Schema({
         required: false,
         default: 0
     },
-    inprocess: {
-        type: Boolean,
-        required: false
-    },
+    // inprocess: {
+    //     type: Boolean,
+    //     required: false
+    // },
     paid: {
         type: Boolean,
         default: false

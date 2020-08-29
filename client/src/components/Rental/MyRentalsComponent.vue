@@ -6,7 +6,7 @@
     <el-container>
         <el-main style="margin-top: 4vh;">
             <div class="m-auto" style="width: 353px;">
-                <el-switch v-model="typeofRental" width="60" active-color="#1E969D" inactive-color="#484538" active-text="LOCATIONS" inactive-text="PROPOSITIONS DE LOCATION">
+                <el-switch v-model="typeofRental" :width="60" active-color="#1E969D" inactive-color="#484538" active-text="LOCATIONS" inactive-text="PROPOSITIONS DE LOCATION">
                 </el-switch>
             </div>
             <el-row style="margin-top:5vh;font-size:14px;">

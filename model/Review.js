@@ -13,7 +13,7 @@ const ReviewSchema = mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         required: true
     },
-    review: {
+    text: {
         type: String,
         required: false,
         default: ''
@@ -21,7 +21,13 @@ const ReviewSchema = mongoose.Schema({
     mark: {
         type: Double,
         required: true
-    }
+    },
+    /* If rental is finished before loan_end */
+    reason: {
+        type: String,
+        required: false,
+        default: ''
+    }, 
 });
 
 module.exports = mongoose.model('Reviews', ReviewSchema);
