@@ -26,7 +26,7 @@
                         </el-calendar>
                     </el-col>
 
-                    <el-col :span="15" :offset="2">
+                    <el-col :span="14" :offset="2">
 
                         <el-row style="font-size:18px;margin-bottom: 5vh;font-weight:bold;">
                             <span class="f-left">Vos demandes</span>

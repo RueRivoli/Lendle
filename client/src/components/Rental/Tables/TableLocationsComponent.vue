@@ -1,5 +1,5 @@
 <template>
-<div>
+  <div>
     <table width="100%" v-if="loaner">
         <col>
         <col>
@@ -9,43 +9,49 @@
         <col>
         <thead>
             <tr>
+                <th>Modifier</th>
                 <th colspan="2">Période</th>
                 <th>Prix total</th>
                 <th>Statut</th>
-                <th>Payé</th>
+                <!-- <th>Payé</th>
                 <th>Retourné</th>
                 <th>Avis</th>
-                <th>Réclamation</th>
+                <th>Réclamation</th> -->
                 <th>Archiver</th>
                 <th>Contacter</th>
             </tr>
             <tr style="font-weight:light;font-size: 10px">
+                <th></th>
                 <th>Début</th>
                 <th>Fin</th>
                 <th></th>
                 <th></th>
-                <th></th>
+                <!-- <th></th>
                 <th></th>
                 <th>Laisser un avis</th>
-                <th>Pour tout souci</th>
+                <th>Pour tout souci</th> -->
                 <th>Ne plus faire apparaitre</th>
                 <th></th>
             </tr>
         </thead>
         <tbody>
             <tr v-for="(entry, id) in rentals" :key="id" :class="classEntry(entry)">
+                <td>
+                        <el-button v-if="activename !== id" type="success" icon="el-icon-arrow-right" size="mini" circle @click="expandLine(id)"></el-button>
+                         <el-button v-if="activename === id" type="success" icon="el-icon-arrow-down" size="mini" circle @click="expandLine(id)"></el-button>
+                </td>
                 <td>{{ format(entry.loan_start) }} </td>
                 <td>{{ format(entry.loan_end) }} </td>
                 <td>{{ price(entry) }}€</td>
                 <td>{{ displayStatus(entry, entry.status) }}</td>
-                <td>{{ entry.paid ? 'Oui': 'Non'  }}</td>
+                <!-- <td>{{ entry.paid ? 'Oui': 'Non'  }}</td>
                 <td>{{ entry.returned ? 'Oui': 'Non' }}</td>
                 <td>
                     <el-button v-if="isFinished(entry)" type="success" icon="el-icon-postcard" size="mini" circle @click="giveReview(entry._id)"></el-button>
                 </td>
                 <td>
                     <el-button type="danger" icon="el-icon-chat-line-square" size="mini" circle @click="claimDispute(entry._id)"></el-button>
-                </td>
+                </td> -->
                 <td>
                     <el-button v-if="isCancelable(entry)" type="danger" icon="el-icon-close" size="mini" circle @click="cancelRental(id, entry._id)"></el-button>
                 </td>
@@ -62,61 +68,106 @@
         <col>
         <col>
         <col>
+      
         <thead>
             <tr>
+                <th>Modifier</th>
                 <th colspan="2">Période</th>
                 <th>Prix total</th>
                 <th>Statut</th>
-                <th>Payé</th>
+                <!-- <th>Payé</th>
                 <th>Retourné</th>
                 <th>Avis</th>
-                <th>Réclamation</th>
+                <th>Réclamation</th> -->
                 <th>Archiver</th>
                 <th>Contacter</th>
             </tr>
             <tr style="font-weight:light;font-size: 10px">
+                <th></th>
                 <th>Début</th>
                 <th>Fin</th>
                 <th></th>
                 <th></th>
+                <!-- <th></th>
                 <th></th>
                 <th></th>
-                <th></th>
-                <th></th>
+                <th></th> -->
                 <th></th>
                 <th></th>
             </tr>
         </thead>
         <tbody>
-            <tr v-for="(entry, id) in rentals" :key="id" :class="classEntry(entry)">
-                <td>{{ format(entry.loan_start) }} </td>
-                <td>{{ format(entry.loan_end) }} </td>
-                <td>{{ price(entry) }}€</td>
-                <td>{{ displayStatus(entry.status) }}</td>
-                <td>{{ entry.paid ? 'Oui': 'Non'  }}</td>
-                <td>{{ entry.returned ? 'Oui': 'Non' }}</td>
-                <td>
-                    <el-button type="success" icon="el-icon-postcard" size="mini" circle @click="giveReview(entry._id)"></el-button>
-                </td>
-                <td>
-                    <el-button type="danger" icon="el-icon-chat-line-square" size="mini" circle @click="claimDispute(entry._id)"></el-button>
-                </td>
-                <td>
-                    <el-button v-if="isCancelable(entry)" type="danger" icon="el-icon-close" size="mini" circle @click="cancelRental(id, entry._id)"></el-button>
-                </td>
-                <td>
-                    <el-button type="warning" icon="el-icon-chat-line-round" size="mini" circle @click="contact(entry.loaner[0]._id)"></el-button>
-                </td>
-            </tr>
+            <template v-for="entry in rentals" >
+                <tr :class="classEntry(entry)" :key="entry.id">
+                    <td>
+                        <el-button v-if="activename !== id" type="success" icon="el-icon-arrow-right" size="mini" circle @click="expandLine(id)"></el-button>
+                         <el-button v-if="activename === id" type="success" icon="el-icon-arrow-down" size="mini" circle @click="expandLine(id)"></el-button>
+                    </td>
+                    <td>{{ format(entry.loan_start) }} </td>
+                    <td>{{ format(entry.loan_end) }} </td>
+                    <td>{{ price(entry) }}€</td>
+                    <td>{{ displayStatus(entry, entry.status) }}</td>
+                    <!-- <td>
+                        <el-button type="success" icon="el-icon-postcard" size="mini" circle @click="giveReview(entry._id)"></el-button>
+                    </td>
+                    <td>
+                        <el-button type="danger" icon="el-icon-chat-line-square" size="mini" circle @click="claimDispute(entry._id)"></el-button>
+                    </td> -->
+                    <td>
+                        <el-button v-if="isCancelable(entry)" type="danger" icon="el-icon-close" size="mini" circle @click="cancelRental(id, entry._id)"></el-button>
+                    </td>
+                    <td>
+                        <el-button type="warning" icon="el-icon-chat-line-round" size="mini" circle @click="contact(entry.loaner[0]._id)"></el-button>
+                    </td>
+                </tr>
+                <tr v-if="activename === id" :key="entry.id">
+                    <td v-if="!hasStarted(entry)">
+                        <el-button type="warning" icon="el-icon-edit" size="mini" plain @click="contact(entry.loaner[0]._id)"></el-button>
+                        <h5>Finir la location</h5>
+                        <el-form-item>
+                            <el-button type="success" size="mini" plain @click="onSubmit">Abandonner la location</el-button>
+                        </el-form-item>
+                    </td>
+                    <td :colspan="7" v-else-if="isFinished(entry)">
+                        <h5>Laisser un avis</h5>
+                        <el-form label-position="left" label-width="180px" :model="review" :rules="rulesReview">
+                             <el-form-item label="A t'il rapporté le meuble ?" prop="returned" size="mini">
+                                <el-radio-group size="mini" v-model="review.returned">
+                                    <el-radio label="Oui"></el-radio>
+                                    <el-radio label="Non"></el-radio>
+                                </el-radio-group>
+                            </el-form-item>
+                            <el-form-item label="A t'il payé ?" prop="paid" size="mini">
+                                <el-radio-group size="mini" v-model="review.paid">
+                                    <el-radio label="Oui"></el-radio>
+                                    <el-radio label="Non"></el-radio>
+                                </el-radio-group>
+                            </el-form-item>
+                            <el-form-item label="Satisfaction du locataire" prop="mark" size="mini">
+                                <el-rate
+                                    v-model="review.mark">
+                                </el-rate>
+                             </el-form-item>
+                              <el-form-item label="Votre avis" prop="text" size="mini">
+                                    <el-input type="textarea" v-model="review.text"></el-input>
+                              </el-form-item>
+                                <el-form-item>
+                                    <el-button type="primary" size="mini" plain @click="onSubmit">Enregistrer</el-button>
+                                </el-form-item>
+                        </el-form>
+                    </td>
+                     <td :colspan="7"  v-else>
+                        <span>Laisser un avis</span>
+                    </td>
+                </tr>
+            </template>
         </tbody>
     </table>
 </div>
 </template>
 
 <script>
-import {
-    mapGetters
-} from 'vuex';
+import { mapGetters} from 'vuex';
 import * as Formats from './../../../utils/format.js';
 const moment = require('moment');
 import RentalService from './../../../Service/RentalService';
@@ -131,14 +182,41 @@ export default {
     data() {
         return {
             editMode: false,
-            today: new Date()
+            today: new Date(),
+            activename: null,
+            review: {
+                paid: false,
+                returned: false,
+                mark: 0,
+                text: ''
+            },
+        rulesReview: {
+            returned: [
+                { required: true, message: 'Indiquez si le meuble a été rapporté', trigger: 'blur' },
+            ],
+            paid: [
+                { required: true, message: 'Indiquez si le locataire vous a rétributé', trigger: 'blur' },
+            ],
+            mark: [
+                { required: true, message: 'Indiquez la satisfaction du locataire', trigger: 'blur' },
+            ],
+        }
         }
     },
-    async created() {},
+    created() {
+    },
     computed: {
         ...mapGetters({
             loaner: 'GET_LOAN',
-        })
+        }),
+
+    },
+    watch: {
+        // rentals: function(val) {
+        //      for(var i=0; i < val.length; i++) {
+        //         this.expand[i] = false;
+        //    }
+        // }
     },
     methods: {
         format(date) {
@@ -149,17 +227,12 @@ export default {
             else if (status === 1) return 'isAccepted'
             else if (status === 2) return 'isConfirmed'
         },
-        displayStatus(rt, status) {
+        displayStatus(rt) {
             let finished = this.isFinished(rt);
-            if (this.loaner) {
-                if (!finished) return 'En cours'
-                else {
-                    if (rt.paid && rt.returned) return 'Finalisé'
-                    else return 'Terminé'
-                }
-            } else {
-                if (status === 0) return 'Proposition'
-                else if (status === 1) return 'Attente de confirmation finale'
+            if (!finished) return 'En cours'
+            else {
+                  if (rt.paid && rt.returned) return 'Finalisé'
+                  else return 'Terminé'
             }
         },
         price(rt) {
@@ -174,6 +247,10 @@ export default {
                 let b = moment(this.dateProposition[1]);
                 return b.diff(a, 'month') * price;
             }
+        },
+        expandLine (ind) {
+            if (this.activename === ind) this.activename = null
+            else this.activename = ind;
         },
         contact(id) {
             this.$router.push({
@@ -193,6 +270,11 @@ export default {
             let today = moment(new Date());
             let finished = moment(rt.loan_end).isBefore(today);
             return finished;
+        },
+        hasStarted(rt) {
+            let today = moment(new Date());
+            let started = moment(rt.loan_start).isBefore(today);
+            return started;
         },
         cancelRental(index_modified, rental_id) {
             console.log('cancel Rental');
@@ -330,6 +412,9 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+
+
+
 thead tr th {
     font-weight: lighter;
 }
@@ -351,11 +436,11 @@ tr.isRefused td {
     // background-color: red !important;
 }
 
-.actions {
-    display: flex;
-    justify-content: center;
-    width: 150px;
-}
+// .actions {
+//     display: flex;
+//     justify-content: center;
+//     width: 150px;
+// }
 
 th,
 td {
@@ -390,4 +475,14 @@ table {
     background-color: #fff;
     border-collapse: collapse;
 }
+
 </style>
+<style>
+
+.el-form-item__label{
+    float: left !important;
+}
+
+</style>
+
+
