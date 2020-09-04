@@ -1,10 +1,6 @@
 const mongoose = require('mongoose');
 
 const ReviewSchema = mongoose.Schema({
-    _id: {
-        type: mongoose.Schema.Types.ObjectId,
-        required: true
-    },
     rental_id: {
         type: mongoose.Schema.Types.ObjectId,
         required: true
@@ -19,7 +15,7 @@ const ReviewSchema = mongoose.Schema({
         default: ''
     },
     mark: {
-        type: Double,
+        type: Number,
         required: true
     },
     /* If rental is finished before loan_end */

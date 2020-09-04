@@ -1,6 +1,6 @@
 const express = require('express');
 const mongoose = require('mongoose');
-const Furnit = require('../../../model/Furnit');
+const Review = require('../../../model/Review');
 const Grid = require('gridfs-stream');
 const crypto = require('crypto');
 const path = require('path');
@@ -10,6 +10,7 @@ const fs = require('fs');
 const ObjectId = mongoose.Types.ObjectId;
 const URI = require('./../../config/keys').URI;
 const router = express.Router();
+
 
 mongoose.connect( URI, { dbName: 'furniture-loan', useNewUrlParser: true, useUnifiedTopology: true }, ()=> console.log('connected to DB'));
 
@@ -30,6 +31,8 @@ router.post('/', function (req, res) {
     review.author_id =  ObjectId(req.body.author_id);
     review.text =  req.body.text;
     review.mark = req.body.mark;
+    review.paid =  req.body.paid;
+    review.returned = req.body.returned;
     review.reason = req.body.reason;
     review.save(function (err) {
       if (err) {

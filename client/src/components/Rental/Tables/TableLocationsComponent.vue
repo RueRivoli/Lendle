@@ -1,223 +1,243 @@
 <template>
-<div>
-    <table width="100%" v-if="loaner">
-        <col>
-        <col>
-        <col>
-        <col>
-        <col>
-        <col>
-        <thead>
-            <tr>
-                <th>Modifier</th>
-                <th colspan="2">Période</th>
-                <th>Prix total</th>
-                <th>Statut</th>
-                <!-- <th>Payé</th>
+    <div>
+        <el-dialog
+            title="Confirmation"
+            :visible.sync="dialogConfirmation"
+            width="50%">
+            <span></span>
+            <div v-for="(msg, ind) in msgConfirmation" :key="ind">
+                <span>{{ msg }}</span>
+                </div>
+            <span slot="footer" class="dialog-footer">
+            <el-button @click="dialogConfirmation = false; rental = null">Annuler</el-button>
+            <el-button type="primary" @click="sendReview">Confirmer la notation</el-button>
+            </span>
+        </el-dialog>
+        <el-form ref="review" name="review"  :model="review" label-position="left" label-width="190px" style="margin-top: 30px;" enctype="multipart/form-data">
+            <table width="100%" v-if="loaner">
+                <col>
+                <col>
+                <col>
+                <col>
+                <col>
+                <!-- <col> -->
+                <thead>
+                    <tr>
+                        <th>Modifier</th>
+                        <th colspan="2">Période</th>
+                        <th>Prix total</th>
+                        <th>Statut</th>
+                        <!-- <th>Payé</th>
+                            <th>Retourné</th>
+                            <th>Avis</th>
+                            <th>Réclamation</th> -->
+                        <th>Contacter</th>
+                        <!-- <th>Archiver</th> -->
+
+                    </tr>
+                    <tr style="font-weight:light;font-size: 10px">
+                        <th></th>
+                        <th>Début</th>
+                        <th>Fin</th>
+                        <th></th>
+                        <th></th>
+                        <!-- <th></th>
+                            <th></th>
+                            <th>Laisser un avis</th>
+                            <th>Pour tout souci</th> -->
+                        <th></th>
+                        <!-- <th>Ne plus faire apparaitre</th> -->
+                    </tr>
+                </thead>
+                <tbody>
+                    <template v-for="(entry, id) in rentals">
+                        <tr v-if="!entry.review_loaner" :key="id" :class="classEntry(entry)" style="font-size: 12px">
+                            <td>
+                                <el-button v-if="activename !== id" type="text" icon="el-icon-arrow-right" size="mini" style="color:black;" @click="expandLine(id)"></el-button>
+                                <el-button v-if="activename === id" type="text" icon="el-icon-arrow-down" size="mini" style="color:black;" @click="expandLine(id)"></el-button>
+                            </td>
+                            <td>{{ format(entry.loan_start) }} </td>
+                            <td>{{ format(entry.loan_end) }} </td>
+                            <td>{{ entry.price }} €</td>
+                            <td>{{ displayStatus(entry, entry.status) }}</td>
+                            <!-- <td>{{ entry.paid ? 'Oui': 'Non'  }}</td>
+                                <td>{{ entry.returned ? 'Oui': 'Non' }}</td>
+                                <td>
+                                    <el-button v-if="isFinished(entry)" type="success" icon="el-icon-postcard" size="mini" circle @click="giveReview(entry._id)"></el-button>
+                                </td>
+                                <td>
+                                    <el-button type="danger" icon="el-icon-chat-line-square" size="mini" circle @click="claimDispute(entry._id)"></el-button>
+                                </td> -->
+                            <td>
+                                <el-button type="text" icon="el-icon-chat-line-round" size="medium" circle style="color:black;" @click="contact(entry.loaner[0]._id)"></el-button>
+                            </td>
+                            <!-- <td>
+                                <el-button v-if="!entry.review_loaner" type="text" icon="el-icon-close" style="color:black;" size="mini" @click="cancelRental(id, entry._id)"></el-button>
+                            </td> -->
+                        </tr>
+                        <tr v-if="activename === id && !entry.review_loaner" :key="'modify_' + id">
+                            <!-- <td class="finished" v-if="entry.review_loaner" :colspan="7">
+                                 <span style="font-style: italic;">Vous avez finalisé la location</span>
+                            </td> -->
+                            <td class="finishing" :colspan="6" v-if="isFinished(entry)">
+                                <span style="font-weight: bold;font-size: 14px;">Laisser un avis sur {{ entry.renter[0].username }} pour finaliser la location</span><br>
+                                 <span style="font-style: italic;font-size: 12px;">Vos avis nous sont utiles pour connaitre nos utilisateurs</span>
+                                 <div style="margin-top: 15px;font-size:12px;">
+                                    <el-form-item label="Notez le propriétaire" prop="mark" size="mini">
+                                        <el-rate v-model="review.mark"></el-rate>
+                                    </el-form-item>
+                                    <el-form-item label="Votre avis" prop="text" size="mini">
+                                        <el-input type="textarea" maxlength="500" show-word-limit rows="4" v-model="review.text"></el-input>
+                                    </el-form-item>
+                                    <el-form-item>
+                                        <el-button type="primary" icon="el-icon-circle-check" style="float:left;" size="mini" plain @click="save(entry, false, 5)">Enregistrer</el-button>
+                                    </el-form-item>
+                                </div>
+                            </td>
+                            <td class="canceling" :colspan="6" v-else>
+                                 <span style="font-weight: bold;font-size: 14px;">Abandonner la location</span><br>
+                                <span style="font-style: italic;font-size: 12px;">En cas d'insatisfaction de {{ entry.renter[0].username }} ou en cas de réelle nécessité, à ne pas abuser</span>
+                                     <div style="margin-top: 15px;font-size:12px;">
+                                        <el-form-item label="Notez le propriétaire" prop="mark" size="mini" style="margin-top: 10px;">
+                                            <el-rate v-model="review.mark">
+                                            </el-rate>
+                                        </el-form-item>
+                                        <el-form-item label="Quel est le motif de l'abandon ?" prop="reason" size="mini">
+                                            <el-select v-model="review.reason" placeholder="Select">
+                                                <el-option v-for="item in posibleReasons" :key="item.value" :label="item.label" :value="item.value">
+                                                </el-option>
+                                            </el-select>
+                                        </el-form-item>
+                                        <el-form-item label="Votre avis" prop="text" size="mini">
+                                            <el-input v-model="review.text" type="textarea" maxlength="500" show-word-limit rows="4"></el-input>
+                                        </el-form-item>
+                                        <el-form-item>
+                                            <el-button type="danger" icon="el-icon-circle-check" style="float:left;" size="mini" plain @click="save(entry, false, 4)">Abandonner définitivement</el-button>
+                                        </el-form-item>
+                                    </div>
+                            </td>
+                        </tr>
+                    </template>
+                </tbody>
+            </table>
+        <table width="100%" v-else>
+            <col>
+            <col>
+            <col>
+            <col>
+            <col>
+            <!-- <col> -->
+
+            <thead>
+                <tr>
+                    <th>Modifier</th>
+                    <th colspan="2">Période</th>
+                    <th>Prix total</th>
+                    <th>Statut</th>
+                    <!-- <th>Payé</th>
                     <th>Retourné</th>
                     <th>Avis</th>
                     <th>Réclamation</th> -->
-                <th>Contacter</th>
-                <th>Archiver</th>
-
-            </tr>
-            <tr style="font-weight:light;font-size: 10px">
-                <th></th>
-                <th>Début</th>
-                <th>Fin</th>
-                <th></th>
-                <th></th>
-                <!-- <th></th>
+                    <th>Contacter</th>
+                    <!-- <th>Archiver</th> -->
+                </tr>
+                <tr style="font-weight:light;font-size: 10px">
                     <th></th>
-                    <th>Laisser un avis</th>
-                    <th>Pour tout souci</th> -->
-                <th></th>
-                <th>Ne plus faire apparaitre</th>
-            </tr>
-        </thead>
-        <tbody>
-            <template v-for="(entry, id) in rentals">
-                <tr :key="id" :class="classEntry(entry)">
-                    <td>
-                        <el-button v-if="activename !== id" type="text" icon="el-icon-arrow-right" size="medium" style="color:black;" @click="expandLine(id)"></el-button>
-                        <el-button v-if="activename === id" type="text" icon="el-icon-arrow-down" size="medium" style="color:black;" @click="expandLine(id)"></el-button>
-                    </td>
-                    <td>{{ format(entry.loan_start) }} </td>
-                    <td>{{ format(entry.loan_end) }} </td>
-                    <td>{{ price(entry) }} €</td>
-                    <td>{{ displayStatus(entry, entry.status) }}</td>
-                    <!-- <td>{{ entry.paid ? 'Oui': 'Non'  }}</td>
-                        <td>{{ entry.returned ? 'Oui': 'Non' }}</td>
+                    <th>Début</th>
+                    <th>Fin</th>
+                    <th></th>
+                    <th></th>
+                    <!-- <th></th>
+                    <th></th>
+                    <th></th>
+                    <th></th> -->
+                    <th></th>
+                    <!-- <th>Ne plus faire apparaitre</th> -->
+                </tr>
+            </thead>
+            <tbody>
+                <template v-for="(entry, id) in rentals">
+                    <tr v-if="!entry.review_renter" :class="classEntry(entry)" :key="id" style="font-size: 12px">
                         <td>
-                            <el-button v-if="isFinished(entry)" type="success" icon="el-icon-postcard" size="mini" circle @click="giveReview(entry._id)"></el-button>
+                            <el-button v-if="activename !== id" type="text" icon="el-icon-arrow-right" size="mini" style="color:black;" @click="expandLine(id)"></el-button>
+                            <el-button v-if="activename === id" type="text" icon="el-icon-arrow-down" size="mini" style="color:black;" @click="expandLine(id)"></el-button>
+                        </td>
+                        <td>{{ format(entry.loan_start) }} </td>
+                        <td>{{ format(entry.loan_end) }} </td>
+                        <td>{{ entry.price }} €</td>
+                        <td>{{ displayStatus(entry, entry.status) }}</td>
+                        <!-- <td>
+                            <el-button type="success" icon="el-icon-postcard" size="mini" circle @click="giveReview(entry._id)"></el-button>
                         </td>
                         <td>
                             <el-button type="danger" icon="el-icon-chat-line-square" size="mini" circle @click="claimDispute(entry._id)"></el-button>
                         </td> -->
-                    <td>
-                        <el-button type="text" icon="el-icon-chat-line-round" size="medium" circle style="color:black;" @click="contact(entry.loaner[0]._id)"></el-button>
-                    </td>
-                    <td>
-                        <el-button v-if="entry.review_loaner" type="danger" icon="el-icon-close" size="medium" circle @click="cancelRental(id, entry._id)"></el-button>
-                    </td>
-                </tr>
-                <tr v-if="activename === id" :key="'modify_' + id">
-                    <td class="finishing" :colspan="7" v-if="!isFinished(entry)">
-                        <h4>Laisser un avis sur le propriétaire pour finaliser la location</h4>
-                        <span style="font-style: italic;">Vos avis nous sont utiles pour connaitre nos utilisateurs</span>
-                        <el-form ref="review" name="review" :model="review" :rules="rulesSimpleReview" label-position="left" label-width="190px" style="margin-top: 30px;">
-                            <el-form-item label="Notez le propriétaire" prop="mark" size="mini">
-                                <el-rate v-model="review.mark">
-                                </el-rate>
-                            </el-form-item>
-                            <el-form-item label="Votre avis" prop="text" size="mini">
-                                <el-input type="textarea" maxlength="500" show-word-limit rows="4" v-model="review.text"></el-input>
-                            </el-form-item>
-                            <el-form-item>
-                                <el-button type="primary" icon="el-icon-circle-check" style="float:left;" size="mini" plain @click="save">Enregistrer</el-button>
-                            </el-form-item>
-                        </el-form>
-                    </td>
-                    <td class="canceling" :colspan="7" v-else>
-                        <h4>Abandonner la location</h4>
-                        <span style="font-style: italic;">En cas d'insatisfaction du propriétaire ou en cas de réelle nécessité, à ne pas abuser</span>
-                        <el-form ref="review" name="review" :model="review" :rules="rulesSimpleReview" label-position="left" label-width="190px" style="margin-top: 30px;">
-                            <el-form-item label="Notez le propriétaire" prop="mark" size="mini">
-                                <el-rate v-model="review.mark">
-                                </el-rate>
-                            </el-form-item>
-                            <el-form-item label="Quel est le motif de l'abandon ?" prop="reason" size="mini">
-                                <el-select v-model="review.reason" placeholder="Select">
-                                    <el-option v-for="item in posibleReasons" :key="item.value" :label="item.label" :value="item.value">
-                                    </el-option>
-                                </el-select>
-                            </el-form-item>
-                            <el-form-item label="Votre avis" prop="text" size="mini">
-                                <el-input type="textarea" maxlength="500" show-word-limit rows="4" v-model="review.text"></el-input>
-                            </el-form-item>
-                            <el-form-item>
-                                <el-button type="danger" icon="el-icon-circle-check" style="float:left;" size="mini" plain @click="save">Abandonner définitivement</el-button>
-                            </el-form-item>
-                        </el-form>
-                    </td>
-                </tr>
-            </template>
-        </tbody>
-    </table>
-    <table width="100%" v-else>
-        <col>
-        <col>
-        <col>
-        <col>
-        <col>
-        <col>
-
-        <thead>
-            <tr>
-                <th>Modifier</th>
-                <th colspan="2">Période</th>
-                <th>Prix total</th>
-                <th>Statut</th>
-                <!-- <th>Payé</th>
-                <th>Retourné</th>
-                <th>Avis</th>
-                <th>Réclamation</th> -->
-                <th>Contacter</th>
-                <th>Archiver</th>
-            </tr>
-            <tr style="font-weight:light;font-size: 10px">
-                <th></th>
-                <th>Début</th>
-                <th>Fin</th>
-                <th></th>
-                <th></th>
-                <!-- <th></th>
-                <th></th>
-                <th></th>
-                <th></th> -->
-                <th></th>
-                <th>Ne plus faire apparaitre</th>
-            </tr>
-        </thead>
-        <tbody>
-            <template v-for="(entry, id) in rentals">
-                <tr :class="classEntry(entry)" :key="id">
-                    <td>
-                        <el-button v-if="activename !== id" type="text" icon="el-icon-arrow-right" style="color:black;" @click="expandLine(id)"></el-button>
-                        <el-button v-if="activename === id" type="text" icon="el-icon-arrow-down" style="color:black;" @click="expandLine(id)"></el-button>
-                    </td>
-                    <td>{{ format(entry.loan_start) }} </td>
-                    <td>{{ format(entry.loan_end) }} </td>
-                    <td>{{ price(entry) }} €</td>
-                    <td>{{ displayStatus(entry, entry.status) }}</td>
-                    <!-- <td>
-                        <el-button type="success" icon="el-icon-postcard" size="mini" circle @click="giveReview(entry._id)"></el-button>
-                    </td>
-                    <td>
-                        <el-button type="danger" icon="el-icon-chat-line-square" size="mini" circle @click="claimDispute(entry._id)"></el-button>
-                    </td> -->
-                    <td>
-                        <el-button type="text" icon="el-icon-chat-line-round" size="medium" style="color:black;" @click="contact(entry.loaner[0]._id)"></el-button>
-                    </td>
-                    <td>
-                        <el-button v-if="entry.review_renter" type="text" icon="el-icon-close" size="mini" @click="cancelRental(id, entry._id)"></el-button>
-                    </td>
-                </tr>
-                <tr v-if="activename === id" :key="'modify_' + id">
-                    <td class="finishing" :colspan="7" v-if="isFinished(entry)">
-                        <h4>Laisser un avis sur le locataire pour finaliser la location</h4>
-                        <span style="font-style: italic;">Vos avis nous sont utiles pour connaitre nos utilisateurs</span>
-                        <el-form ref="review" name="review" :model="review" :rules="rulesReview" label-position="left" label-width="190px" style="margin-top: 30px;">
-                            <el-form-item label="A t'il rapporté le meuble ?" prop="returned" size="mini">
-                                <el-radio-group size="mini" v-model="review.returned">
-                                    <el-radio label="Oui"></el-radio>
-                                    <el-radio label="Non"></el-radio>
-                                </el-radio-group>
-                            </el-form-item>
-                            <el-form-item label="A t'il payé ?" prop="paid" size="mini">
-                                <el-radio-group size="mini" v-model="review.paid">
-                                    <el-radio label="Oui"></el-radio>
-                                    <el-radio label="Non"></el-radio>
-                                </el-radio-group>
-                            </el-form-item>
-                            <el-form-item label="Notez le locataire" prop="mark" size="mini">
-                                <el-rate v-model="review.mark">
-                                </el-rate>
-                            </el-form-item>
-                            <el-form-item label="Votre avis" prop="text" size="mini">
-                                <el-input type="textarea" maxlength="500" show-word-limit rows="4" v-model="review.text"></el-input>
-                            </el-form-item>
-                            <el-form-item>
-                                <el-button type="primary" icon="el-icon-circle-check" style="float:left;" size="mini" plain @click="save">Enregistrer</el-button>
-                            </el-form-item>
-                        </el-form>
-                    </td>
-                    <td class="canceling" :colspan="7" v-else>
-                        <h4>Abandonner la location</h4>
-                        <span style="font-style: italic;">En cas d'insatisfaction du locataire ou en cas de vrai nécessité, à ne pas abuser</span>
-                        <el-form ref="simpleReview" name="simpleReview" :model="review" :rules="rulesReview" label-position="left" label-width="190px" style="margin-top: 30px;">
-                            <el-form-item label="Notez le locataire" prop="mark" size="mini">
-                                <el-rate v-model="review.mark">
-                                </el-rate>
-                            </el-form-item>
-                            <el-form-item label="Quel est le motif de l'abandon?" prop="reason" size="mini">
-                                <el-select v-model="review.reason" placeholder="Select">
-                                    <el-option v-for="item in posibleReasons" :key="item.value" :label="item.label" :value="item.value">
-                                    </el-option>
-                                </el-select>
-                            </el-form-item>
-                            <el-form-item label="Votre avis" prop="text" size="mini">
-                                <el-input type="textarea" maxlength="500" show-word-limit rows="4" v-model="review.text"></el-input>
-                            </el-form-item>
-                            <el-form-item>
-                                <el-button type="danger" icon="el-icon-circle-check" style="float:left;" size="mini" plain @click="save">Abandonner définitivement</el-button>
-                            </el-form-item>
-                        </el-form>
-                    </td>
-                </tr>
-            </template>
-        </tbody>
-    </table>
+                        <td>
+                            <el-button type="text" icon="el-icon-chat-line-round" size="medium" style="color:black;" @click="contact(entry.loaner[0]._id)"></el-button>
+                        </td>
+                        <!-- <td>
+                            <el-button v-if="!entry.review_renter" type="text" icon="el-icon-close" style="color:black;" size="mini"  @click="cancelRental(id, entry._id)"></el-button>
+                        </td> -->
+                    </tr>
+                    <tr v-if="activename === id && !entry.review_renter" :key="'modify_' + id">
+                         <!-- <td class="finished" v-if="entry.review_renter" :colspan="7">
+                            <span style="font-style: italic;">Vous avez déjà finalisé la location</span>
+                        </td> -->
+                        <td class="finishing" :colspan="6" v-if="isFinished(entry)">
+                            <span style="font-weight: bold;font-size: 14px;">Laisser un avis sur {{ entry.loaner[0].username }} pour finaliser la location</span><br>
+                            <span style="font-style: italic;font-size: 12px;">Vos avis nous sont utiles pour connaitre nos utilisateurs</span>
+                            <div style="margin-top: 15px;font-size: 12px;">
+                                <el-form-item label="A t'il rapporté le meuble ?" prop="returned" size="mini" >
+                                    <el-radio-group name="returned" size="mini" v-model="review.returned" required>
+                                        <el-radio label="Oui" value="true"></el-radio>
+                                        <el-radio label="Non" value="false"></el-radio>
+                                    </el-radio-group>
+                                </el-form-item>
+                                <el-form-item  label="A t'il payé ?" prop="paid" size="mini">
+                                    <el-radio-group name="paid"  size="mini" v-model="review.paid">
+                                        <el-radio label="Oui" value="true"></el-radio>
+                                        <el-radio label="Non" value="false"></el-radio>
+                                    </el-radio-group>
+                                </el-form-item>
+                                <el-form-item label="Notez le locataire" prop="mark" size="mini">
+                                    <el-rate name="mark"  v-model="review.mark">
+                                    </el-rate>
+                                </el-form-item>
+                                <el-form-item  label="Votre avis" prop="text" size="mini">
+                                    <el-input name="text"  type="textarea" maxlength="500" show-word-limit rows="4" v-model="review.text"></el-input>
+                                </el-form-item>
+                                 <el-form-item>
+                            <el-button type="primary" icon="el-icon-circle-check" style="float:left;" size="mini" plain @click="save(entry, true, 5)">Enregistrer</el-button>   
+                                 </el-form-item>
+                            </div>
+                        </td>
+                        <td class="canceling" :colspan="6" v-else>
+                            <span style="font-weight: bold;font-size: 14px;">Abandonner la location</span><br>
+                            <span style="font-style: italic;font-size: 12px;">En cas d'insatisfaction de {{ entry.loaner[0].username }} ou en cas de vrai nécessité, à ne pas abuser</span>
+                                 <div style="margin-top: 15px;font-size: 12px;">
+                                    <el-form-item label="Notez le locataire" prop="mark" size="mini" style="margin-top: 10px;">
+                                        <el-rate v-model="review.mark">
+                                        </el-rate>
+                                    </el-form-item>
+                                    <el-form-item label="Quel est le motif de l'abandon?" prop="reason" size="mini">
+                                        <el-select v-model="review.reason" placeholder="Select">
+                                            <el-option v-for="item in posibleReasons" :key="item.value" :label="item.label" :value="item.value">
+                                            </el-option>
+                                        </el-select>
+                                    </el-form-item>
+                                    <el-form-item label="Votre avis" prop="text" size="mini">
+                                        <el-input type="textarea" maxlength="500" show-word-limit rows="4" v-model="review.text"></el-input>
+                                    </el-form-item>
+                                    <el-form-item>
+                                        <el-button type="danger" icon="el-icon-circle-check" style="float:left;" size="mini" plain @click="save(entry, false, 3)">Abandonner définitivement</el-button>
+                                    </el-form-item>
+                                </div>
+                        </td>
+                    </tr>
+                </template>
+            </tbody>
+        </table>
+    </el-form>
 </div>
 </template>
 
@@ -227,20 +247,23 @@ import {
 } from 'vuex';
 import * as Formats from './../../../utils/format.js';
 const moment = require('moment');
+import FormData from 'form-data';
 import ReviewService from './../../../Service/ReviewService';
+import RentalService from './../../../Service/RentalService';
 
 export default {
     name: 'TableLocationsComponent',
     components: {},
     props: {
         rentals: Array,
-        dateProposition: Array
     },
     data() {
         return {
-            editMode: false,
-            today: new Date(),
             activename: null,
+            msgConfirmation: [],
+            dialogConfirmation: false,
+            rental: null,
+            statusUpdate: null,
             posibleReasons: [{
                     value: 'unreachable',
                     label: 'Injoignable'
@@ -263,68 +286,74 @@ export default {
                 }
             ],
             review: {
-                paid: false,
-                returned: false,
-                mark: 0,
+                paid: 'Non',
+                returned: 'Non',
+                mark: null,
                 text: '',
                 reason: ''
             },
-            rulesReview: {
-                returned: [{
-                    required: true,
-                    message: 'Indiquez si le meuble a été rapporté',
-                    trigger: 'blur'
-                }, ],
-                paid: [{
-                    required: true,
-                    message: 'Indiquez si le locataire vous a rétributé',
-                    trigger: 'blur'
-                }, ],
-                mark: [{
-                    required: true,
-                    message: 'Indiquez la satisfaction du locataire',
-                    trigger: 'blur'
-                }, ],
-            },
-            rulesSimpleReview: {
-                text: [{
-                    required: true,
-                    message: 'Donnez un avis sur le propriétaire',
-                    trigger: 'blur'
-                }, ],
-                reason: [{
-                    required: true,
-                    message: 'Donnez le motif de labandon',
-                    trigger: 'blur'
-                }, ],
-                mark: [{
-                    required: true,
-                    message: 'Notez le propriétaire',
-                    trigger: 'blur'
-                }, ],
-            }
         }
     },
     created() {},
-    computed: {
-        ...mapGetters({
-            loaner: 'GET_LOAN',
-        }),
-
+        computed: {
+            ...mapGetters({
+                loaner: 'GET_LOAN',
+            }),
     },
     methods: {
-        save() {
-            console.log("SAVE REVIEW");
+        save(rental, checkPaidAndReturned, statusUpdate) {
+            console.log("Save Review");
+            this.msgConfirmation = [];
+            this.statusUpdate = statusUpdate;
+            if (checkPaidAndReturned) {
+                if (this.review.paid === 'Non') this.msgConfirmation.push('Confirmez-vous que le locataire ne vous a pas payé ? ');
+                if (this.review.returned === 'Non') this.msgConfirmation.push('Confirmez-vous que le locataire ne vous a pas retourné le meuble ? ');
+            }
+            if (this.review.mark === 0) this.msgConfirmation.push('Etes-vous sûr d attribuer une note de 0 ? ');
+            if (this.msgConfirmation.length === 0) this.msgConfirmation.push('Confirmez-vous votre notation ? ');
+            this.dialogConfirmation = true;
+            this.rental = rental;
+        },
+        sendReview() {
+            console.log("Send Review");
+            console.log(this.$refs.review);
             let context = this;
-            this.$refs['review'].validate((valid) => {
+            this.dialogConfirmation = false;
+            this.$refs.review.validate((valid) => {
                 console.log('VALID REVIEW');
                 if (valid) {
-                    let fd = new FormData(document.forms.namedItem("review"));
-                    ReviewService.insertReview(fd).then(function (rv) {
+                    let paid, returned;
+                    this.review.paid === 'Oui' ? paid = true : paid = false;
+                    this.review.returned === 'Oui' ? returned = true : returned = false;
+                    let formData = {
+                        paid: paid,
+                        returned: returned,
+                        mark: this.review.mark,
+                        text: this.review.text,
+                        reason: this.review.reason,
+                        rental_id: this.rental._id,
+                    };
+                    if (this.loaner) formData.author_id = this.rental.loaner_id;
+                    else formData.author_id = this.rental.renter_id;
+                    console.log('FormData');
+                    console.log(formData);
+                    ReviewService.insertReview(formData).then(function (rv) {
                         console.log('Review');
                         console.log(rv);
+                        let review_id = rv.review._id;
+                        if (context.loaner) context.rental.review_loaner = review_id;
+                        else context.rental.review_renter = review_id;
+                        context.rental.status = context.statusUpdate;
+                        console.log('RENTAL');
+                        console.log(context.rental);
+                        RentalService.updateRental(context.rental).then(function(rt) {
+                            console.log('UPDATE');
+                            console.log(rt);
+                        }).catch(function (err) {
+                        context.$message.warning(err);
+                    });
                     }).catch(function (err) {
-                        this.$message.warning(err);
+                        context.$message.warning(err);
                     });
                 } else {
                     context.$message.warning(`Veuillez remplir correctement le sondage d opinion`);
@@ -351,24 +380,22 @@ export default {
                 else return 'Terminé'
             }
         },
-        price(rt) {
-            if (!this.loaner || !this.editMode) {
-                let price = rt.furnit[0].price;
-                let a = moment(rt.loan_start);
-                let b = moment(rt.loan_end);
-                return b.diff(a, 'month') * price;
-            } else {
-                let price = rt.furnit[0].price;
-                let a = moment(this.dateProposition[0]);
-                let b = moment(this.dateProposition[1]);
-                return b.diff(a, 'month') * price;
-            }
-        },
         expandLine(ind) {
             console.log('ACTIVE NAME');
-            console.log(ind)
+            console.log(ind);
+            console.log(this.activename);
+
+            this.review = {
+                paid: 'Non',
+                returned: 'Non',
+                mark: null,
+                text: '',
+                reason: ''
+            }
+            console.log(this.review);
             if (this.activename === ind) this.activename = null
             else this.activename = ind;
+            console.log(this.activename);
         },
         contact(id) {
             this.$router.push({
@@ -378,12 +405,6 @@ export default {
                 }
             });
         },
-        // isCancelable(rt) {
-        //     let finished = this.isFinished(rt);
-        //     let reviewed;
-        //     this.loaner ? reviewed = rt.review_loaner : rt.review_renter
-        //     return rt.paid && rt.returned && reviewed && finished
-        // },
         isFinished(rt) {
             let today = moment(new Date());
             let finished = moment(rt.loan_end).isBefore(today);

@@ -197,7 +197,7 @@ export default {
             rental_id: rental_id,
           });
 
-        let params = {rental_id: rental_id, statusCheck: 0, loan_start: this.dateProposition[0], loan_end: this.dateProposition[1]};
+        let params = {_id: rental_id, statusCheck: 0, loan_start: this.dateProposition[0], loan_end: this.dateProposition[1]};
         RentalService.updateRental(params).then(function(resp) {
           if (resp.success) {
             context.rentals[id].loan_start = context.dateProposition[0];
@@ -224,7 +224,7 @@ export default {
           this.$router.push({ path: '/myrentals/Demands'});
         } else {
           let params = {
-            rental_id: this.rental_id,
+            _id: this.rental_id,
             status: -2
           };
           let context = this;
@@ -245,7 +245,7 @@ export default {
       }
       else {
         let context = this;
-        let params = {rental_id: this.rental_id, status: -1 };
+        let params = {_id: this.rental_id, status: -1 };
         RentalService.updateRental(params).then(function(resp) {
           console.log('resp');
           context.rentals.splice(context.index_modified, 1);

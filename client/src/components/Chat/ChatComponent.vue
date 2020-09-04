@@ -2,9 +2,13 @@
   <div>
       <nav-component></nav-component>
              <!-- <BreadcrumpComponent :field1="{title: 'Messagerie', path: '/chat'}" :field2="{title: name(this.interlocutor_id), path: '/chat/' + interlocutor_id}"></BreadcrumpComponent> -->
-       <BreadcrumpComponent :field1="{title: 'Messagerie', path: '/chat'}" :field2="{title: username, path: '/chat/' + interlocutor_id}"></BreadcrumpComponent>
-      <el-container style="height: 92vh;">
-        <el-aside width="180px;" style="overflow-y: scroll;width:18vw;">
+       <BreadcrumpComponent :field1="{title: 'Messagerie', path: '/chat'}" :field2="{title: usernameInt, path: '/chat/' + interlocutor_id}"></BreadcrumpComponent>
+      
+        <el-container height="70vh;">
+        
+        <el-main>
+        
+        <el-col class="aside" :span="4" style="height:70vh;overflow-y: scroll;">
 
           <!-- a search input -->
           <!-- <div style="padding:8px;border-bottom: 1px solid #03A59D">
@@ -17,8 +21,8 @@
                 </el-input>
             </div>
           </div> -->
-          <div v-if="interlocutors.length > 0">
-            <div :class="isSelected(itl)" v-for="(itl, index) in interlocutors" :key="index" @click="changeChat(itl)" style="padding:8px;border-bottom: 1px solid #03A59D">
+          <div v-if="interlocutors && interlocutors.length > 0" style="padding:4px;">
+            <div :class="isSelected(itl)" v-for="(itl, index) in interlocutors" :key="index" @click="changeChat(itl)" style="padding:4px;">
               <div :key="30" style="align-self: flex-start;margin-right:10px;">
                 <avatar-component :name="nameInterlocutor(itl)" :size="30"></avatar-component>
               </div>
@@ -36,49 +40,97 @@
             </div>
           
          
-        </el-aside>
-        <el-container style="height: 92vh;">
-            <el-header class="center" style="height:8vh;line-height:8vh;font-size: 18px;background-color:#C0C0C0;color:white;">
-                <span v-if="interlocutors && interlocutors.length > 0">{{username}}</span>
+        </el-col>
+
+        <el-col  :span="14" style="height: 70vh;border: 1px solid #1E969D; border-radius: 2px;">
+            <el-header class="flex" style="justify-content:center;height:8vh;line-height:8vh;background-color:#1E969D;color:white;">
+                <div :key="30">
+                  <avatar-component :name="usernameInt" :size="30"></avatar-component>
+                </div>
+                <!-- <span v-if="interlocutors && interlocutors.length > 0">{{usernameInt}}</span> -->
+                <div v-if="interlocutors && interlocutors.length > 0" style="padding:3px;">
+                  <div style="font-size:15px;">{{usernameInt}}</div>
+                <!-- <div style="font-size:12px">{{itl.furnit[0].name}} / {{itl.furnit[0].type}}</div> -->
+              </div>
                 <span v-else>Chat</span>
                 <!-- <span class="pointer opacity" style="float:right;"><router-link :to="{ name: 'Furnit', params: { id: furnit_id }}" tag="span">{{furnitname}}</router-link></span> -->
             </el-header>
-            <el-header class="center" style="height:5vh;line-height:5vh;font-size: 18px;background-color:#F0F8FF;color:white;">
+            <!-- <el-header class="center" style="height:5vh;line-height:5vh;font-size: 18px;background-color:#F0F8FF;color:white;">
                 <span class="cursor" v-for="(ft, index) in furnits" :key="index">
                   <router-link :to="{ name: 'Furnit', params: { id: ft._id }}" tag="span">
                   <el-tag :type="colorType(ft.type)" size="mini">{{ft.name}}</el-tag>
                   </router-link>
                 </span>
-                <!-- <span class="pointer opacity" style="float:right;"><router-link :to="{ name: 'Furnit', params: { id: furnit_id }}" tag="span">{{furnitname}}</router-link></span> -->
-            </el-header>
-        <div>
-          <el-row style="height: 79vh;">
-            <el-col :span="24" :offset="0" style="display:flex;flex-direction:column;justify-content:space-between;height:100%;">
-              <div ref="container" style="overflow-y: scroll; scrollbar-width: thin;padding:3px;">
-                <div v-for="(mg, index) in allmsgs" :key="index">
-                   <div style="font-size:12px;color:black;text-align:center;">
-                     <div style="background-color:#FFFAF0;border-radius:2px;margin: auto;width: 10%; padding: 3px;">
-                        <span style="font-style: italic;">{{formatTime(allmsgs[index].time)}}</span>
+
+            </el-header> -->
+                            <!-- <span class="pointer opacity" style="float:right;"><router-link :to="{ name: 'Furnit', params: { id: furnit_id }}" tag="span">{{furnitname}}</router-link></span> -->
+            <div>
+              <el-row style="height: 57vh;">
+                <el-col :span="24" :offset="0" style="display:flex;flex-direction:column;justify-content:space-between;height:100%;">
+                  <div ref="container" style="overflow-y: scroll; scrollbar-width: thin;padding:3px;">
+
+                    <div v-for="(mg, index) in allmsgs" :key="index" style="margin-bottom: 5px;">
+                      <!-- <div style="font-size:12px;color:black;text-align:center;">
+                        <div style="background-color:#FFFAF0;border-radius:2px;margin: auto;width: 15%; padding: 3px;">
+                            <span style="font-weight:light">{{formatTime(allmsgs[index].time)}}</span>
+                          </div>
+                      </div> -->
+
+                    
+                          <div :class="[{ 'expandable-height': activeMsgs.includes(index)}, 'min-height', 'flex', 'pointer']" style="overflow:hidden;justify-content:space-between;padding:5px;color:black;background:#e8eaed;font-size:14px;border-radius:2px;">
+                             <div class="flex" :key="30">
+                                <avatar-component :name="name(mg.author_id)" :size="30"></avatar-component>
+                                <!-- <div style="font-size:15px;">
+                                  <div style="font-weight:bold;">
+                                    {{name(msg.author_id)}}
+                                  </div>
+                                  <div style="font-weight:light;width:300px;">
+                                    {{allmsgs[index].text}}
+                                  </div>
+                                </div> -->
+                                  <table  v-on:click="expandMessage(index)"  style="font-weight:bold;table-layout: fixed;word-wrap:break-word;width:100vw">
+                                    <col>
+                                    <col>
+                                    <thead>
+                                        <th>
+                                          <span style="float:left;">{{name(mg.author_id)}}</span>
+                                          <span style="font-weight:normal;float:right;">{{formatTime(allmsgs[index].time)}}</span>
+                                        </th>
+                                    </thead>
+                                    <tbody >
+                                      <tr>
+                                        <td style="font-weight:lighter;"> {{allmsgs[index].text}}</td>
+                                        <td></td>
+                                      </tr>
+                                    
+                                  
+                                  <!-- <tr :rowspan="5" style="font-weight:light;">
+                                    {{allmsgs[index].text}}
+                                  </tr> -->
+                                  </tbody>
+                                </table>
+                              </div>
+                             
+                              <!-- <div style="font-size:15px;font-weight:light;">{{formatTime(allmsgs[index].time)}}</div> -->
+                           
+                        
                       </div>
+                    </div>
                   </div>
-                  <div :class="isAuthor(allmsgs[index].author_id)">
-                      <div style="color:white;font-size:14px;">
-                        {{allmsgs[index].text}}
-                      </div>
+                  <div v-if="interlocutors && interlocutors.length > 0" style="height:75px;align-self:flex-end;width:100%;">
+                    <!-- <el-button slot="append" icon="el-icon-paperclip" size="small"></el-button> -->
+                      <el-input prefix-icon="el-icon-search" placeholder="Message + Entrer"  :rows="3" type="textarea" v-model="msg" @change="sendMessage" class="input-with-select">
+                      </el-input>
                   </div>
-                </div>
-              </div>
-               <div v-if="interlocutors && interlocutors.length > 0" style="height:75px;align-self:flex-end;width:100%;">
-                <!-- <el-button slot="append" icon="el-icon-paperclip" size="small"></el-button> -->
-                  <el-input placeholder="Message + Entrer"  :rows="3" type="textarea" v-model="msg" @change="sendMessage" class="input-with-select">
-                  </el-input>
-              </div>
-                 
-            </el-col>
-        </el-row>
-      </div>
-       </el-container>
-    </el-container>
+                    
+                </el-col>
+            </el-row>
+          </div>
+       </el-col>
+       <el-col :span="6"></el-col>
+      <el-row style="height:5vh;"></el-row>
+</el-main>
+  </el-container>
     <footer-component></footer-component>
   </div>
 </template>
@@ -100,6 +152,7 @@ export default {
       return {
         socket: '',
         msg: '',
+        activeMsgs: [],
         allmsgs: [],
         // searchName: '',
         // dialog_id: this.$route.params.dialog_id || null,
@@ -108,6 +161,7 @@ export default {
         furnit_id: this.$route.params.furnit_id || null,
         firstname: '',
         lastname: '',
+        usernameInt: '',
         furnitname: '',
         interlocutors: null,
         // interlocutor_id: null,
@@ -117,7 +171,8 @@ export default {
     ...mapGetters({
       loaner: 'GET_LOAN',
       id: 'GET_ID',
-      token: 'GET_TOKEN'
+      token: 'GET_TOKEN',
+      username: 'GET_USERNAME'
     })
     // name () {
     //     console.log('NAMME');
@@ -128,6 +183,14 @@ export default {
     //   }
   },
   methods: {
+    expandMessage (index) {
+      console.log('expandMessage');
+      let ind = this.activeMsgs.indexOf(index);
+      if (ind !== -1) {
+          this.activeMsgs.splice(ind, 1);
+      }
+      else this.activeMsgs.push(index);
+    },
     colorType (type) {
       if (type === "machinealaver") return 'primary'
       if (type === "armoire") return 'success'
@@ -142,13 +205,17 @@ export default {
         return itl.interlocutor_firstname + ' ' + itl.interlocutor_lastname
       }
     },
-     isAuthor (id) {
-      return {
-        message: true,
-        right: (id === this.id),
-        left: (id !== this.id)
-      }
+    name(id) { 
+      if (id === this.id) return this.username
+      else return this.usernameInt;
     },
+    //  isAuthor (id) {
+    //   return {
+    //     message: true
+    //     // right: (id === this.id),
+    //     // left: (id !== this.id)
+    //   }
+    // },
     isSelected (itl) {
       console.log('ITL');
       console.log(this.interlocutor_id);
@@ -167,13 +234,13 @@ export default {
       this.dialog_id = itl.dialog_id;
       this.firstname = itl.interlocutor_firstname;
       this.lastname = itl.interlocutor_lastname;
-      this.username = itl.interlocutor_username;
+      this.usernameInt = itl.interlocutor_username;
       this.furnits = itl.furnit;
       this.socket.emit('getChat', itl.dialog_id);
       this.msg = '';
     },
     formatTime (time) {
-      return moment(time).format('DD/MM/YY h:mm a');
+      return moment(time).format('DD/MM/YY HH:mm');
     },
     sendMessage() {
       //Emit message to server
@@ -191,6 +258,7 @@ export default {
     }
   },
   updated () {
+    console.log('UPDATED');
     this.$refs.container.scrollTop = this.$refs.container.scrollHeight;
   },
   created() {
@@ -266,19 +334,32 @@ export default {
 
 <style scoped>
 
+.min-height{
+  height: 7vh;
+}
+
+.expandable-height{
+  height: auto;
+}
+
 .chat_it:hover{
-  opacity:0.7
+  background-color:#e8eaed;
+  border-radius: 0 16px 16px 0;
+  color:#1E969D;
 }
 
 .message{
   padding: 6px;
   border-radius: 3px;
-  margin:8px 8px;
+  /* margin:8px 8px; */
   cursor: pointer;
 }
 
 .selected{
-  background-color:#1EB4B4;
+  background-color:#e8eaed;
+  border-radius: 0 16px 16px 0;
+  color:#1E969D;
+  font-weight:bold;
 }
 
 .left{
@@ -293,12 +374,12 @@ export default {
   background-color: #1E969D;
 }
 
- .el-aside {
+ .aside {
     background-color:#1E969D;
     color: white;
     /* background: linear-gradient(to right,#B0C4DE, #1E969D); */
   }
-  .el-aside ul li{
+  .aside ul li{
 
     background-color:#1E969D;
     color: white;

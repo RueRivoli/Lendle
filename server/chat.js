@@ -208,7 +208,7 @@ mongoose.connect( URI, { dbName: 'furniture-loan', useNewUrlParser: true, useUni
                         "let": { "id": "$loaner_id" },
                         "pipeline": [
                           { "$match": { "$expr": { "$eq": ["$_id", "$$id"] }}},
-                          { "$project": { "firstname": 1, "lastname": 1, "_id": 0  }}
+                          { "$project": { "firstname": 1, "lastname": 1, "username": 1,  "_id": 0  }}
                         ],
                         "as": "to"
                       }
@@ -230,6 +230,7 @@ mongoose.connect( URI, { dbName: 'furniture-loan', useNewUrlParser: true, useUni
                     },
                     { $unset: ["to","loaner_id", "_id" ] },
                 ]).toArray(function(err, interlocutors) {
+                    console.log('INTERLOCUTORS==>');
                     console.log(interlocutors);
                         if (err) {
                             throw err;

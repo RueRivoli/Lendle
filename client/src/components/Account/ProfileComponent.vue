@@ -386,6 +386,7 @@ export default {
             let context = this;
              console.log('Edit Profile');
             console.log(this.profile);
+            console.log(this.$refs['profile']);
             this.$refs['profile'].validate((valid) => {
                 if (valid) {
                     console.log('le formulaire');

@@ -282,6 +282,7 @@ export default {
     async submitFormUpdate () {
       let context = this;
       console.log('submitFU');
+      // console.log(this.$refs['furniture']);
        this.$refs['furniture'].validate((valid) => {
          console.log('refs');
         if (valid) {

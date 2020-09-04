@@ -16,9 +16,23 @@ router.get('/details/', function (req, res) {
   console.log(req.query);
   
   let furnit_id = ObjectId(req.query.furnit_id);
-  let cond, and = [{}], match = {};
+  let cond, and = [{}], lookup2, match = {};
   match["furnit_id"] = { $eq: furnit_id };
-  if (req.query.loaner === 'true') match["loaner_id"] = { $eq: ObjectId(req.user._id) };
+  lookup2 = {
+        "from": "users", 
+        "localField": "loaner_id", 
+        "foreignField": "_id",
+        "as": "loaner"
+  };
+  if (req.query.loaner === 'true') {
+    match["loaner_id"] = { $eq: ObjectId(req.user._id) };
+    lookup2 = {
+          "from": "users", 
+          "localField": "renter_id", 
+          "foreignField": "_id",
+          "as": "renter"
+  }
+  }
   let today10daysago = new Date();
   today10daysago.setDate(today10daysago.getDate() - 10);
   if (req.query.isLocation === '1') cond = { $gte: [2]};
@@ -50,12 +64,7 @@ router.get('/details/', function (req, res) {
         } 
     },
     {
-      "$lookup":{
-          "from": "users", 
-          "localField": "loaner_id", 
-          "foreignField": "_id",
-          "as": "loaner"
-      }
+      "$lookup": lookup2
   }
   ]).toArray(function(err, rentals) {
     console.log('res');
@@ -241,7 +250,7 @@ router.get('/isRentable/:furnit_id', function (req, res) {
 router.post('/update', function (req, res) {
   console.log('Update a rental');
   let db = mongoose.connection.db;
-  let rental_id = ObjectId(req.body.rental_id);
+  let rental_id = ObjectId(req.body._id);
   let status = req.body.status;
   let statusCheck = req.body.statusCheck;
   let match = {"_id": rental_id };
@@ -249,6 +258,8 @@ router.post('/update', function (req, res) {
   let set = {};
   if (req.body.loan_start) set.loan_start = new Date(req.body.loan_start);
   if (req.body.loan_end) set.loan_end = new Date(req.body.loan_end);
+  if (req.body.review_loaner) set.review_loaner = ObjectId(req.body.review_loaner);
+  if (req.body.review_renter) set.review_renter = ObjectId(req.body.review_renter);
   if (status) set.status = status;
   console.log('MATCH');
   console.log(match);

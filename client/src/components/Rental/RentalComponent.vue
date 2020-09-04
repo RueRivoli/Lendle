@@ -151,7 +151,7 @@ export default {
         },
         confirm(rental_id) {
             let params = {
-                rental_id: rental_id
+                _id: rental_id
             };
             if (this.loaner) {
                 params.statusCheck = 1;
@@ -179,7 +179,7 @@ export default {
                     });
                 } else {
                     let params = {
-                        rental_id: this.rental_id,
+                        _id: this.rental_id,
                         status: -2
                     };
                     let context = this;
@@ -203,7 +203,7 @@ export default {
                 } else {
                     let context = this;
                     let params = {
-                        rental_id: this.rental_id,
+                        _id: this.rental_id,
                         status: -1
                     };
                     RentalService.updateRental(params).then(function (resp) {
