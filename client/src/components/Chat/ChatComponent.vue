@@ -65,7 +65,7 @@
             </el-header> -->
                             <!-- <span class="pointer opacity" style="float:right;"><router-link :to="{ name: 'Furnit', params: { id: furnit_id }}" tag="span">{{furnitname}}</router-link></span> -->
             <div>
-              <el-row style="height: 57vh;">
+              <el-row style="height: 62vh;">
                 <el-col :span="24" :offset="0" style="display:flex;flex-direction:column;justify-content:space-between;height:100%;">
                   <div ref="container" style="overflow-y: scroll; scrollbar-width: thin;padding:3px;">
 
