@@ -227,7 +227,7 @@ export default {
       }
     },
     changeChat (itl) {
-      console.log('Change Chat to speak to');
+      console.log('Change Chat to speak to - ');
       console.log(itl);
       // Change parameters of current interlocutor
       this.interlocutor_id = itl.interlocutor_id;
