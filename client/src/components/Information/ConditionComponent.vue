@@ -2,7 +2,7 @@
    <div>
     <nav-component style="width:100%;" :displayTitles="true"></nav-component>
       <div style="height:90vh;">
-      Conditions d'utilisation
+        Conditions d'utilisation
       </div>
     <footer-component></footer-component>
   </div>

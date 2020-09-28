@@ -247,7 +247,7 @@ import {
 } from 'vuex';
 import * as Formats from './../../../utils/format.js';
 const moment = require('moment');
-import FormData from 'form-data';
+// import FormData from 'form-data';
 import ReviewService from './../../../Service/ReviewService';
 import RentalService from './../../../Service/RentalService';
 

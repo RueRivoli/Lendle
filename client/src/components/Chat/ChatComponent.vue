@@ -8,7 +8,7 @@
         
         <el-main>
         
-        <el-col class="aside" :span="4" style="height:70vh;overflow-y: scroll;">
+        <el-col class="aside" :span="5" :offset="0" style="height:70vh;overflow-y: scroll;">
 
           <!-- a search input -->
           <!-- <div style="padding:8px;border-bottom: 1px solid #03A59D">
@@ -42,7 +42,7 @@
          
         </el-col>
 
-        <el-col  :span="14" style="height: 70vh;border: 1px solid #1E969D; border-radius: 2px;">
+        <el-col  :span="19" style="height: 70vh;border: 1px solid #1E969D; border-radius: 2px;">
             <el-header class="flex" style="justify-content:center;height:8vh;line-height:8vh;background-color:#1E969D;color:white;">
                 <div :key="30">
                   <avatar-component :name="usernameInt" :size="30"></avatar-component>
@@ -65,18 +65,15 @@
             </el-header> -->
                             <!-- <span class="pointer opacity" style="float:right;"><router-link :to="{ name: 'Furnit', params: { id: furnit_id }}" tag="span">{{furnitname}}</router-link></span> -->
             <div>
-              <el-row style="height: 62vh;">
-                <el-col :span="24" :offset="0" style="display:flex;flex-direction:column;justify-content:space-between;height:100%;">
-                  <div ref="container" style="overflow-y: scroll; scrollbar-width: thin;padding:3px;">
-
+              <el-col :span="24" :offset="0" style="display:flex;flex-direction:column;justify-content:space-between;height:100%;">
+                <el-row ref="container" style="height: 45vh;overflow-y: scroll;">
+                  <div style="scrollbar-width: thin;padding:3px;">
                     <div v-for="(mg, index) in allmsgs" :key="index" style="margin-bottom: 5px;">
                       <!-- <div style="font-size:12px;color:black;text-align:center;">
                         <div style="background-color:#FFFAF0;border-radius:2px;margin: auto;width: 15%; padding: 3px;">
                             <span style="font-weight:light">{{formatTime(allmsgs[index].time)}}</span>
                           </div>
                       </div> -->
-
-                    
                           <div :class="[{ 'expandable-height': activeMsgs.includes(index)}, 'min-height', 'flex', 'pointer']" style="overflow:hidden;justify-content:space-between;padding:5px;color:black;background:#e8eaed;font-size:14px;border-radius:2px;">
                              <div class="flex" :key="30">
                                 <avatar-component :name="name(mg.author_id)" :size="30"></avatar-component>
@@ -88,8 +85,7 @@
                                     {{allmsgs[index].text}}
                                   </div>
                                 </div> -->
-                                  <table  v-on:click="expandMessage(index)"  style="font-weight:bold;table-layout: fixed;word-wrap:break-word;width:100vw">
-                                    <col>
+                                  <table v-on:click="expandMessage(index)"  style="font-weight:bold;table-layout: fixed;word-wrap:break-word;width:100%">
                                     <col>
                                     <thead>
                                         <th>
@@ -100,7 +96,6 @@
                                     <tbody >
                                       <tr>
                                         <td style="font-weight:lighter;"> {{allmsgs[index].text}}</td>
-                                        <td></td>
                                       </tr>
                                     
                                   
@@ -116,16 +111,24 @@
                         
                       </div>
                     </div>
-                  </div>
-                  <div v-if="interlocutors && interlocutors.length > 0" style="height:75px;align-self:flex-end;width:100%;">
-                    <!-- <el-button slot="append" icon="el-icon-paperclip" size="small"></el-button> -->
-                      <el-input prefix-icon="el-icon-search" placeholder="Message + Entrer"  :rows="3" type="textarea" v-model="msg" @change="sendMessage" class="input-with-select">
-                      </el-input>
-                  </div>
+                     </div>
+
+                  </el-row>
+                  <el-row style="height:17vh;">
+                    <div class="textareacont" style="" v-if="interlocutors && interlocutors.length > 0">
+                      <!-- <el-button slot="append" icon="el-icon-paperclip" size="small"></el-button> -->
+                        <!-- <el-input prefix-icon="el-icon-search" placeholder="Message + Entrer"  :rows="3" type="textarea" v-model="msg" @change="sendMessage" class="input-with-select">
+                        </el-input> -->
                     
+                        <!-- <div theme="deepwater" class="feedback__btn">Envoyer</div> -->
+                        <el-button class="feedback__btn"  icon="el-icon-s-promotion" type="success" plain size="mini" @click="sendMessage">Envoyer</el-button>
+                        <textarea class="txtarea" v-model="msg" ></textarea>
+                    </div>
+                     
+                  </el-row>
                 </el-col>
-            </el-row>
           </div>
+        
        </el-col>
        <el-col :span="6"></el-col>
       <el-row style="height:5vh;"></el-row>
@@ -244,6 +247,8 @@ export default {
     },
     sendMessage() {
       //Emit message to server
+      console.log('SEND MESSAGE');
+      console.log(this.msg);
       let message = {
         author_id: this.id,
         dest_id: this.interlocutor_id,
@@ -259,9 +264,14 @@ export default {
   },
   updated () {
     console.log('UPDATED');
-    this.$refs.container.scrollTop = this.$refs.container.scrollHeight;
+     console.log(this.$refs.container.$el);
+    // this.$refs.container.scrollTop = this.$refs.container.scrollHeight;
+    console.log(this.$refs.container.$el.scrollHeight);
+    console.log(this.$refs.container.$el.scrollTop);
+    this.$refs.container.$el.scrollTop = this.$refs.container.$el.scrollHeight;
   },
   created() {
+    // this.$refs.container.scrollTop = this.$refs.container.scrollHeight;
     console.log('Chat Component created');
     this.socket = io('http://localhost:3000/');
     // const payload = UserService.getUser();
@@ -334,6 +344,44 @@ export default {
 
 <style scoped>
 
+.textareacont{
+  width:99%;
+	position: relative;
+  border:1px solid #484538;
+  border-radius: 3px;
+	height:16vh;
+  display: inline-block;
+  margin-left:3px;
+	/* padding:10px; */
+}
+
+.txtarea{
+	width:97%;
+	height:10vh;
+	margin:0;
+	border-color: rgba(255,255,255,0);
+	padding:1%;
+}
+
+.feedback__btn{
+	position:absolute;
+	bottom: 3%;
+  /* background-color:#DEB887; */
+	/* right:15px; */
+  left: 1%;
+  /* background-color: #2f3745; */
+	/* padding:4px;
+	color:wheat;
+	cursor:pointer; */
+}
+
+/* .feedback__btn:hover{
+  background-color:black;
+} */
+
+
+textarea:focus { outline:0 !important; }
+
 .min-height{
   height: 7vh;
 }
@@ -374,16 +422,20 @@ export default {
   background-color: #1E969D;
 }
 
- .aside {
-    background-color:#1E969D;
-    color: white;
-    /* background: linear-gradient(to right,#B0C4DE, #1E969D); */
-  }
-  .aside ul li{
+.aside {
+  background-color:#1E969D;
+  color: white;
+  /* background: linear-gradient(to right,#B0C4DE, #1E969D); */
+}
+  
+.aside ul li{
+  background-color:#1E969D;
+  color: white;
+  /* background: linear-gradient(to right,#B0C4DE, #1E969D); */
+}
 
-    background-color:#1E969D;
-    color: white;
-    /* background: linear-gradient(to right,#B0C4DE, #1E969D); */
-  }
+</style>
+<style>
+
 
 </style>
