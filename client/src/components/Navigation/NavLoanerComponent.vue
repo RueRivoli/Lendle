@@ -49,9 +49,7 @@
 </template>
 
 <script>
-import {
-    mapGetters
-} from 'vuex'
+import { mapGetters } from 'vuex'
 import AvatarComponent from './../Utils/AvatarComponent';
 
 export default {

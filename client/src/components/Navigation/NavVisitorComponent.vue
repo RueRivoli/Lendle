@@ -2,17 +2,16 @@
     <nav style="border-bottom: 1px solid #dfe0e6; width: 100%;">
         <ul role="menubar" class="" style="height: 50px;">
             <li tabindex="0" class="mright selected pointer lendle"><router-link to="/" tag="span">LENDLE</router-link></li>
-            <div v-if="displayTitles" style="width:50%;"></div>
+            <div class="white_space" v-if="displayTitles"></div>
             <div class="f-auto" v-if="displayTitles">
                 <el-button type="primary" size="mini" plain><router-link to="/intro/beARenter" tag="span">J'ai des meubles</router-link></el-button>
             </div>
             <div class="f-auto" v-if="displayTitles">
                 <li tabindex="0" class="pointer" style="float:right;margin-right: 10px;" v-if="displayTitles" ><router-link to="/login" tag="span">Connexion</router-link></li>
-                <span style="float:right;margin-right: 5px;" v-if="displayTitles" >|</span>
+                <span class="bar" style="float:right;margin-right: 5px;font-size:14px;" v-if="displayTitles" >|</span>
                  <li tabindex="0" class="pointer" style="float:right;margin-right: 5px;" v-if="displayTitles" ><router-link to="/signup/loaner" tag="span">Inscription</router-link></li>
             </div>
-            
-            <div class="f-auto" v-if="displayTitles" style="width:5%;">
+            <div class="f-auto help" v-if="displayTitles" style="width:5%;">
                 <li tabindex="0" class="pointer" style="float:right;margin-right: 10px;"><router-link to="/help" tag="span">Aide</router-link></li>
             </div>
             <div class="f-auto" v-else style="width:5%;">
@@ -72,4 +71,18 @@ li {
 nav ul{
     justify-content: space-around;
 }
+
+.white_space{
+    width:50%;
+}
+
+@media screen and (max-width: 800px) {
+    .white_space{
+        width:10%;
+    }
+    .help, .bar{
+        display: none;
+    }
+}
+
 </style>
