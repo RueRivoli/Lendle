@@ -1,6 +1,6 @@
 <template>
 <el-footer class="flex" style="background-color:#cfccc4;height: 20vh;width: 100%;">
-    <div class="margin-auto" style="width:40vh;margin:auto;">
+    <div class="margin-auto" style="width:20vh;margin:auto;">
         <el-row class="line-H">
             <span class="lendle" style="line-height:40px;font-size:40px;color:black;">Lendle</span>
         </el-row>
@@ -13,7 +13,7 @@
     </div>
     <el-main style="font-size:12px;margin:auto;">
         <el-row>
-            <el-col :span="5" :offset="2">
+            <el-col :span="6" :offset="1">
                 <el-row class="line-h">
                     <span class="pointer">
                         <router-link to="/" tag="span">Accueil</router-link>
@@ -30,7 +30,7 @@
                     </span>
                 </el-row>
             </el-col>
-            <el-col :span="5">
+            <el-col :span="6">
                 <el-row class="line-h">
                     <span class="pointer">
                         <router-link to="/search" tag="span">Chercher des meubles</router-link>
@@ -57,7 +57,7 @@
                     </span>
                 </el-row>
             </el-col>
-            <el-col :span="5">
+            <el-col :span="6">
                 <el-row class="line-h">
                     <span class="pointer">
                         <router-link to="/help" tag="span">Aide</router-link>
@@ -74,13 +74,19 @@
                     </span>
                 </el-row>
             </el-col>
-            <el-col :span="5">
+            <el-col class="horizontal" :span="5">
                 <el-row style="text-align:center;margin-top:15px;">
                     <img class="cursor" src="../../assets/instagram_black.svg" alt="" style="width:35px;margin-right:10px;">
                     <img class="cursor" src="../../assets/twitter.svg" alt="" style="width:35px;margin-right:10px;">
                     <img class="cursor" src="../../assets/facebook_black.svg" alt="" style="width:35px;">
                 </el-row>
-
+            </el-col>
+             <el-col class="vertical" :span="5">
+                <div class="flex" style="flex-direction:column;align-items:center;">
+                    <img class="cursor" src="../../assets/instagram_black.svg" alt="" style="width:35px;margin-bottom:5px;">
+                    <img class="cursor" src="../../assets/twitter.svg" alt="" style="width:35px;margin-bottom:5px;">
+                    <img class="cursor" src="../../assets/facebook_black.svg" alt="" style="width:35px;margin-bottom:5px;">
+                </div>
             </el-col>
         </el-row>
     </el-main>
@@ -136,4 +142,18 @@ li {
     position: relative;
     font-size: 14px;
 }
+
+
+@media screen and (max-width: 900px) {
+    .horizontal{
+        display:none;
+    }
+}
+
+@media screen and (min-width: 900px) {
+    .vertical{
+        display:none;
+    }
+}
+
 </style>
