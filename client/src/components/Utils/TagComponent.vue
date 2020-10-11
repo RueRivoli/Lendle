@@ -1,6 +1,7 @@
 <template>
     <div>
-        <el-tag :type="type">{{title}}</el-tag>
+        <el-tag :type="type" size="mini">{{title}}</el-tag>
+        <!-- <span>{{labelOfState(title)}}</span> -->
     </div>
 </template>
 

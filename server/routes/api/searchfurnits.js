@@ -70,7 +70,7 @@ function retrievePictures(furnits, req, res) {
       console.log(id);
       gfs.files.findOne({ _id: id }, (err, fl) => {
         console.log('Fichier trouvé => ')
-        console.log(fl);
+        // console.log(fl);
         if (!fl || fl.length === 0) {
           finalFile[index] = null;
         } else {
@@ -110,34 +110,42 @@ function retrievePictures(furnits, req, res) {
 
 router.get('/', function (req, res) {
   let db = mongoose.connection.db;
-  console.log(req.query);
-  let word = '';
-  let city = '';
-  let type = '';
-  if (req.query.word) word = req.query.word;
-  if (req.query.type) type = req.query.type;
-  if (req.query.city) city = req.query.city;
+
+  let { word, type, city, order } = req.query;
+
   const regex_word = new RegExp(word);
   const regex_type = new RegExp(type);
   const regex_city = new RegExp(city);
-  console.log('Les queries de la requete :');
-  console.log(word);
-  console.log(type);
-  console.log(city);
+  console.log('Les queries de la requête :');
+  console.log(word + ' / ' + type + ' / ' + city + ' / ' + order);
   console.log('Les regex :');
-  console.log(regex_word);
-  console.log(regex_type);
-  console.log(regex_city);
-
-  db.collection("furnits").aggregate([
-    { "$match": { 
-      $and: [
-      { type: {$regex: regex_type}},
-      { city: {$regex: regex_city}},
-      { $or: [ {name: { $regex: regex_word }}, { type: { $regex: regex_word } }, { description: { $regex: regex_word } }]}
-      ]}}
-  ]).toArray(function(err, furnits) {
-      console.log(furnits);
+  console.log(regex_word +  ' / ' + regex_type + ' / ' + regex_city );
+  let sort = {};
+  if (order && order !== 0) {
+    sort = { price: parseInt(order) };
+  }
+  console.log(sort);
+  // db.collection("furnits").aggregate([
+  //   { "$match": {
+  //       $and: [
+  //       { type: {$regex: regex_type}},
+  //       { city: {$regex: regex_city}},
+  //       { $or: [ {name: { $regex: regex_word }}, { type: { $regex: regex_word } }, { description: { $regex: regex_word } }]}
+  //       ]
+  //     },
+  //   },
+  //   {
+  //     "$sort": { price: "null"}
+  //   }
+  // ]).
+    db.collection("furnits").find({
+        $and: [
+        { type: {$regex: regex_type}},
+        { city: {$regex: regex_city}},
+        { $or: [ {name: { $regex: regex_word }}, { type: { $regex: regex_word } }, { description: { $regex: regex_word } }]}
+        ]
+      }).sort(sort).toArray(function(err, furnits) {
+      // console.log(furnits);
     if(err){
       return res.status(404).json({
           err: 'Erreur de recherche de meubles'

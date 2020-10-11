@@ -1,6 +1,6 @@
 <template>
-<el-footer class="flex" style="background-color:#cfccc4;height: 20vh;width: 100%;">
-    <div class="margin-auto" style="width:20vh;margin:auto;">
+<footer :class="position" style="background-color: #cfccc4;width:100%;padding: 7px;position:absolute;bottom:0;display:flex;">
+    <div class="margin-auto" style="width:30vh;margin:auto;">
         <el-row class="line-H">
             <span class="lendle" style="line-height:40px;font-size:40px;color:black;">Lendle</span>
         </el-row>
@@ -76,27 +76,30 @@
             </el-col>
             <el-col class="horizontal" :span="5">
                 <el-row style="text-align:center;margin-top:15px;">
-                    <img class="cursor" src="../../assets/instagram_black.svg" alt="" style="width:35px;margin-right:10px;">
-                    <img class="cursor" src="../../assets/twitter.svg" alt="" style="width:35px;margin-right:10px;">
-                    <img class="cursor" src="../../assets/facebook_black.svg" alt="" style="width:35px;">
+                    <img class="pointer" src="../../assets/instagram_black.svg" alt="" style="width:35px;margin-right:10px;">
+                    <img class="pointer" src="../../assets/twitter.svg" alt="" style="width:35px;margin-right:10px;">
+                    <img class="pointer" src="../../assets/facebook_black.svg" alt="" style="width:35px;">
                 </el-row>
             </el-col>
              <el-col class="vertical" :span="5">
                 <div class="flex" style="flex-direction:column;align-items:center;">
-                    <img class="cursor" src="../../assets/instagram_black.svg" alt="" style="width:35px;margin-bottom:5px;">
-                    <img class="cursor" src="../../assets/twitter.svg" alt="" style="width:35px;margin-bottom:5px;">
-                    <img class="cursor" src="../../assets/facebook_black.svg" alt="" style="width:35px;margin-bottom:5px;">
+                    <img class="pointer" src="../../assets/instagram_black.svg" alt="" style="width:35px;margin-bottom:5px;">
+                    <img class="pointer" src="../../assets/twitter.svg" alt="" style="width:35px;margin-bottom:5px;">
+                    <img class="pointer" src="../../assets/facebook_black.svg" alt="" style="width:35px;margin-bottom:5px;">
                 </div>
             </el-col>
         </el-row>
     </el-main>
-</el-footer>
+</footer>
 </template>
 
 <script>
 
 export default {
     name: 'FooterComponent',
+    props: {
+        position: String
+    },
     data() {
         return {}
     },
@@ -116,6 +119,14 @@ export default {
 
 .line-h {
     line-height: 18px;
+}
+
+.relative{
+    position: relative !important;
+}
+
+.absolute{
+    position: absolute !important;
 }
 
 .el-main {

@@ -1,10 +1,10 @@
 <template>
-<div>
-    <nav-component :displayTitles="true"></nav-component>
-    <BreadcrumpComponent v-bind:field1="{title: 'Chercher', path: '/search'}"></BreadcrumpComponent>
+    <div>
+        <nav-component :displayTitles="true"></nav-component>
+        <BreadcrumpComponent :field1="{title: 'Chercher', path: '/search'}" :field2="{title: furniture.city, path: `/search`}" :field3="{title: furniture.type, path: `/search`}" :field4="{title: furniture.word, path: `/search`}"></BreadcrumpComponent>
     <el-container>
         <el-header>
-            <el-row style="margin-top:2vh;margin-left: 15vw;margin-right:15vw;">
+            <el-row style="margin-top:2vh;">
                 <el-form class="search" ref="furniture" name="furniture" :inline="true" :model="furniture" :rules="rulesFurniture" enctype="multipart/form-data">
                     <el-row>
                         <el-col :span="3" :offset="0">
@@ -15,8 +15,8 @@
                                 <el-option label="Lille" value="Lille"></el-option>
                             </el-select>
                         </el-col>
-                        <el-col :span="10" :offset="5">
-                            <el-input placeholder="Nom" size="mini" v-model="furniture.word" class="input-with-select">
+                        <el-col :span="8" :offset="6">
+                            <el-input placeholder="Nom" size="mini" v-model="furniture.word">
                                 <i class="el-icon-search el-input__icon" slot="suffix"></i>
                                 <el-select placeholder="Type" size="mini" v-model="furniture.type" slot="prepend">
                                     <el-option label="Tous" value=""></el-option>
@@ -41,32 +41,70 @@
                     </el-row>
                 </el-form>
             </el-row>
-            <el-row style="margin-top:2vh;margin-left: 15vw;margin-right:15vw;">
+            <!-- <el-row style="margin-top:2vh;margin-left: 15vw;margin-right:15vw;">
                 <h4>
                     Top Catégories
                 </h4>
-            </el-row>
+            </el-row> -->
         </el-header>
-        <el-main style="max-height:220vh;min-height: 55vh;margin-left: 15vw;margin-top:6vh;">
-            <el-row text-align="left">
-                <span style="font-size:13px;">Meubles: {{page_indication}} {{ total }}</span>
-            </el-row>
-            <el-row :gutter="6" style="width: 100%;">
-                <el-col v-for="(fnt, index) in furnits_current" v-bind:key="index" :span="5" style="margin-top:5px;">
-                    <el-card class="card opacity" style="height:34vh;">
-                        <div style="background-color: #D6DCDD;height: 23vh;">
-                            <!-- <img class="img pointer opacity" :src="imgUrl[index]"> -->
-                            <el-image :src="imgUrl[fnt.order]" fit="contain" style="height: 23vh;" @click="display(fnt)">
-                            </el-image>
-                        </div>
-                        <div class="center" style="padding: 12px;">
-                            <span class="title cursor" style="font-size:12px;padding:3px;font-weight: bold;">{{ fnt.name }}</span>
-                            <div class="bottom clearfix">
-                                <time style="font-size:12px;float:left;margin-top: 4px;font-style: italic;" class="time">{{ toFormat(fnt.loanstart)}} - {{ toFormat(fnt.loanend) }}</time>
-                                <el-tag type="primary" size="mini" style="float: right">{{ fnt.city }}</el-tag>
-                            </div>
-                        </div>
-                    </el-card>
+        <el-main style="margin-top:6vh;">
+             <el-row text-align="left">
+                 <el-col :span="4" style="">
+                    <!-- <span style="font-size:13px;">Nbre de meubles/page: {{page_indication}}</span> -->
+                    <TitleComponent text="Meubles/page" />
+                    <el-radio-group v-model="page_size" size="mini">
+                       <el-radio-button label="4"></el-radio-button>
+                      <el-radio-button label="8"></el-radio-button>
+                      <!-- <el-radio-button label="12"></el-radio-button> -->
+                      <el-radio-button label="16"></el-radio-button>
+                      <el-radio-button label="20"></el-radio-button>
+                      <el-radio-button label="24"></el-radio-button>
+                    </el-radio-group>
+                        <TitleComponent text="Trier par" style="margin-top:5px"/>
+                        <el-form class="search" ref="order" name="order" :inline="true" :model="furniture" :rules="rulesFurniture" enctype="multipart/form-data">
+                        <el-select v-model="furniture.order" placeholder="Critère" size="mini">
+                            <el-option
+                              v-for="item in criteriaSort"
+                              :key="item.value"
+                              :label="item.label"
+                              :value="item.value">
+                            </el-option>
+                        </el-select>
+                        </el-form>
+                </el-col>
+                <el-col :span="19" :offset="1">
+                    <span style="font-size:13px;">Résultats: {{page_indication}} {{ total }}</span>
+                    <el-row>
+                        <el-col :span="5" v-loading="loading" v-for="(fnt, index) in furnits_current" v-bind:key="index"  style="margin-top:5px;margin-right:5px;">
+                            <!-- <el-card class="card" style="height:23vh;"> -->
+                                <div :class="{ description: hover === index, displayPicture: hover !== index }" style="height: 23vh; font-family: Jazz LET;border-radius:2px;" @mouseover="hover = index" @mouseleave="hover = null">
+                                    <!-- <img class="img pointer opacity" :src="imgUrl[index]"> -->
+                                    <el-image v-if="hover !== index" :src="imgUrl[fnt.order]" fit="contain" style="height: 23vh;" @click="display(fnt)"></el-image>
+                                    <div v-else style="height: 19vh; cursor: pointer;padding: 1.5vh;position:relative;" @click="display(fnt)">
+                                        <span class="title" style="font-weight: bold;position:absolute;">{{ fnt.name.toUpperCase() }}</span>
+                                        <!-- <div class="details" style="margin-bottom:10px;color:white;"> -->
+                                            <span style="font-size:14px;text-align:center;position:absolute;bottom:30%;color:white;">{{ fnt.price }} €/ MOIS</span>
+                                        <!-- </div> -->
+                                    
+                                            <span style="font-size:14px;text-align:center;position:absolute;bottom:0;float:center;color:white;">
+                                                <!-- <el-tag type="primary" size="mini">{{ fnt.city }}</el-tag> -->
+                                               
+                                                 <i class=" el-icon-location"></i>
+                                                 {{ fnt.city.toUpperCase() }}
+                                           </span>
+                                      
+                                    </div>
+                                </div>
+                                <!-- <div class="center" style="padding: 12px;">
+                                    <span class="title cursor" style="font-size:12px;padding:3px;font-weight: bold;">{{ fnt.name }}</span>
+                                    <div class="bottom clearfix">
+                                        <time style="font-size:12px;float:left;margin-top: 4px;font-style: italic;" class="time">{{ toFormat(fnt.loanstart)}} - {{ toFormat(fnt.loanend) }}</time>
+                                        <el-tag type="primary" size="mini" style="float: right">{{ fnt.city }}</el-tag>
+                                    </div>
+                                </div> -->
+                            <!-- </el-card> -->
+                        </el-col>
+                     </el-row>
                 </el-col>
             </el-row>
         </el-main>
@@ -84,6 +122,7 @@ import NavComponent from './../Navigation/NavComponent';
 import BreadcrumpComponent from './../Utils/BreadcrumpComponent';
 import FooterComponent from './../Footer/FooterComponent';
 import FurnitService from './../../Service/FurnitService';
+import TitleComponent from './../Utils/TitleComponent';
 import moment from 'moment';
 
 export default {
@@ -91,28 +130,41 @@ export default {
     components: {
         NavComponent,
         FooterComponent,
-        BreadcrumpComponent
+        BreadcrumpComponent,
+        TitleComponent,
     },
     data() {
         return {
             furniture: {
-                city: localStorage.city,
-                type: localStorage.type,
-                word: localStorage.word
+                city: this.$route.params.city || localStorage.city || '',
+                type: this.$route.params.type || localStorage.type || '',
+                word: this.$route.params.word || localStorage.word || '',
+                order: localStorage.order
             },
+            loading: true,
+            // order: '',
+            criteriaSort: [{
+                  value: 1,
+                  label: 'Prix croissant'
+                }, {
+                  value: -1,
+                  label: 'Prix décroissant'
+                }, 
+                // {
+                //   value: 'startDate',
+                //   label: 'Date de début'
+                // }
+              ],
+            hover: null,
             current_page: 1,
-            page_size: 4,
+            page_size: 8,
             numberFurnits: 0,
             furnits: [],
             imgUrl: {},
             rulesFurniture: {},
-            imgCategories: ["./../assets/fauteuil.png", "./../../assets/machinealaver.png"]
         }
     },
     mounted() {
-        //   if (localStorage.city) this.furniture.city = localStorage.city;
-        //   if (localStorage.type) this.furniture.type = localStorage.type;
-        //   if (localStorage.name) this.furniture.name = localStorage.name;
     },
     async created() {
         console.log('This furniture');
@@ -163,6 +215,11 @@ export default {
             handler: function () {
                 this.searchFurnits();
             },
+        },
+        'furniture.order': {
+            handler: function () {
+                this.searchFurnits();
+            },
         }
     },
     methods: {
@@ -172,6 +229,7 @@ export default {
         async searchFurnits() {
             let context = this;
             console.log(this.furniture);
+            this.loading = true;
             FurnitService.getFurnit(this.furniture).then(function (furn) {
                 console.log('Furnits');
                 console.log(furn);
@@ -180,6 +238,7 @@ export default {
                 console.log(furn.imgUrl);
                 context.imgUrl = furn.imgUrl;
                 context.numberFurnits = furn.furnits.length;
+                context.loading = false;
             }).catch(function (err) {
                 console.log(err);
             });
@@ -214,33 +273,23 @@ export default {
 </script>
 
 <style lang="scss">
-@import "./../../style/element-variables.scss";
+// @import "./../../style/element-variables.scss";
 
-/* .el-button{
-    PADDING:
-} */
+.description{
+    font-family: Jazz LET;
+    background-color: #1E969D;
+    background-image: linear-gradient(90deg, rgba(255,255,255,.07) 50%, transparent 50%),
+    linear-gradient(90deg, rgba(255,255,255,.13) 50%, transparent 50%),
+    linear-gradient(90deg, transparent 50%, rgba(255,255,255,.17) 50%),
+    linear-gradient(90deg, transparent 50%, rgba(255,255,255,.19) 50%);
+    background-size: 13px, 29px, 37px, 53px;
+}
 
-// .el-card__body .img{
-//     display:block;
-//     margin:auto;
-//     height: 20vh;
-//     max-width: 16vw;
-//     cursor: pointer;
-// }
-
+.displayPicture{
+    background-color: #D6DCDD;
+}
 .search {
-    // border: 1px solid rgb(223, 224, 230);
-    // box-shadow: 0 2px 4px 0 rgba(0,0,0,.2);
-    // border-radius: 4px;
     padding: 8px;
-}
-
-.cursor {
-    cursor: pointer;
-}
-
-.card:hover {
-    color: $--color-primary;
 }
 
 .el-card__body {
@@ -249,6 +298,8 @@ export default {
 
 .el-input-group__prepend {
     width: 36%;
+    background-color: #1E969D;
+    color:white;
 }
 
 .center {
@@ -256,14 +307,13 @@ export default {
 }
 
 .title {
-    color: #1E969D;
-    text-align: center;
+    color: white;
+    font-size:18px;
 }
 
 .red {
     background-color: #851922;
     border-color: #851922;
-    /* cursor: pointer; */
     color: white;
 }
 
@@ -272,28 +322,6 @@ export default {
     border-color: #DB2A3B;
 }
 
-/* .el-select .el-input {
-    width: 26%;
-  } */
-
-/* .select{
-  color: red;
-} */
-
-/* .hovering:hover{
-    color: white !important;
-    opacity: 0.9;
-} */
-
-.clearfix:before,
-.clearfix:after {
-    display: table;
-    content: "";
-}
-
-.clearfix:after {
-    clear: both
-}
 
 .imgcarousel {
     height: 30vh;
@@ -302,6 +330,20 @@ export default {
 }
 </style>
 <style scoped>
+
+@media screen and (max-width: 850px) {
+    .title {
+        /* color: #1E969D; */
+        font-size:12px;
+    }
+}
+
+@media screen and (max-width: 450px) {
+    .details{
+      display:none;
+    }
+}
+
 .red,
     {
     color: white !important;

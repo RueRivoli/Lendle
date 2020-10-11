@@ -38,28 +38,29 @@ class FurnitService {
         })
     }
 
-    //get all the furnits from a city and with a name (Search Component)
+    //get all the furnits from a city, a name, a type (Search Component)
     static getFurnit(furnit){
         console.log('furnit of research');
         console.log(furnit);
-        let furnit0 = {
+        let queries = {
             params: {
               type: furnit.type,
               city: furnit.city,
-              word: furnit.word
+              word: furnit.word,
+            //   search: [furnit.type, furnit.city, furnit.word],
+              order: furnit.order
             }
         };
         this.defaultsHeaders();
         return new Promise(function(resolve, reject) {
             try {
-                axios.get(url + 'search/', furnit0).then(function (response) {
+                axios.get(url + 'search/', queries).then(function (response) {
                     // handle success
                     console.log('FurnitService ==>');
                     console.log(response);
                     const data = response.data;
                     resolve(data);
-                  })
-                  .catch(function (error) {
+                  }).catch(function (error) {
                     // handle error
                     console.log(error);
                   });

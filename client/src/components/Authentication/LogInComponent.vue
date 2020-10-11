@@ -21,7 +21,8 @@
                     <br><br>
                      <el-row>
                         <el-col class="flex sp-around" :span="8" :offset="8">
-                            <a href="http://localhost:5000/api/auth/google"><el-button value="submit" style="margin-top:5px;background-color:#6C7076;color:white;" size="mini">Connectez-vous avec Gmail</el-button>          </a>
+                            <a href="http://localhost:5000/api/auth/google">
+                                <el-button id="gm" value="submit" style="margin-top:5px;background-color:#6C7076;color:white;" size="mini">Connectez-vous avec Gmail</el-button>          </a>
                         </el-col>
                     </el-row>
                     <el-row>
@@ -224,8 +225,9 @@ export default {
 
 @import "./../../style/element-variables.scss";
 
-#fb:hover{
-  background-color:#7490B8 !important;
+#fb:hover, #gm:hover{
+//   background-color:#7490B8 !important;
+  opacity:0.8;
 }
 
 .line-thru {

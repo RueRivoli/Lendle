@@ -224,7 +224,7 @@ export default {
       console.log(this.interlocutor_id);
       return {
         chat_it: true,
-        cursor: true,
+        pointer: true,
         flex: true,
         selected: itl.interlocutor_id === this.interlocutor_id
       }

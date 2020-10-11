@@ -94,7 +94,7 @@
         </el-row>
            
      
-         <footer-component></footer-component>
+         <footer-component position="relative"></footer-component>
     </div>
 </template>
 
@@ -227,7 +227,6 @@ export default {
       height: 200px;
       padding: 10px !important;
   }
-
 }
 
 @media screen and (min-width: 800px) and (max-width: 1400px) {

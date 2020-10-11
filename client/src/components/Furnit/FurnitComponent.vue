@@ -3,7 +3,7 @@
     <nav-component :displayTitles="true"></nav-component>
     <BreadcrumpComponent v-bind:field1="{title: 'Meubles', path: '/search'}" v-bind:field2="{title: furnit.name + ' ' + furnit._id , path: '/furniture/' + furnit._id}"></BreadcrumpComponent>
     <el-container style="height:680px;">
-        <el-main style="width:100%">
+        <el-main style="width:100%;margin:auto;">
             <el-dialog title="Profile incomplet" :visible.sync="dialogProfileVisible" width="50%">
                 <span>Votre profil est incomplet. Pour demander une location, remplissez les champs suivants:</span>
                 <div v-for="(fd, ind) in fieldsMissings" :key="ind">
@@ -22,10 +22,11 @@
                 </span>
             </el-dialog>
             <el-row>
-                <el-col :span="10">
-                    <el-row style="font-size:18px;margin-bottom: 5vh;font-weight:bold;">
-                        <span>{{furnit.name }}</span>
+                <el-col :span="11" :offset="1">
+                    <el-row style="font-size:18px;margin-bottom: 5vh;">
+                        <BigTitleComponent :text="furnit.name" />
                     </el-row>
+
                     <el-carousel trigger="click" height="30vh">
                         <el-carousel-item class="opacity" v-for="(img, index) in imgUrl" :key="index">
                             <h3 class="small">
@@ -42,25 +43,26 @@
                             </el-form-item>
                         </el-form>
                     </el-row>
-                    <el-row style="margin-top:30px;" v-if="loaner">
+                    <!-- <el-row style="margin-top:30px;" v-if="loaner">
                         <el-form :inline="true" style="text-align:left;">
-
                             <el-form-item>
-                                <el-button v-if="authentificated" size="small" value="submit" type="success" @click="makeAnOffer">
+                                <el-button v-if="authentificated" size="mini" value="submit" type="danger" round @click="makeAnOffer">
                                     Faire une demande de location
                                 </el-button>
                             </el-form-item>
                         </el-form>
-                    </el-row>
+                    </el-row> -->
                 </el-col>
-                <el-col :span="8" :offset="3">
+                <el-col :span="10" :offset="1">
                     <el-row>
-                        <h4>{{furnit.price}} €/MOIS</h4>
-                        <tag-component state="furnit.state"></tag-component>
+                        <!-- <h4>{{furnit.price}} €/MOIS</h4> -->
+                          <span style="float:left;">{{furnit.price}} €/MOIS</span>
+                        <tag-component state="furnit.state" style="float:right;"></tag-component>
+                        <!-- <span style="float:right;">{{furnit.state}}</span> -->
                     </el-row>
-                    <el-row>
-                        <h4>Le propriétaire</h4>
-                        <el-card class="pointer opacity" style="padding: 5px;height:8vh;line-height:8vh;background-color:#1E969D">
+                    <el-row style="margin-top:5vh;">
+                        <TitleComponent text="Le propriétaire" />
+                        <el-card class="pointer description" style="padding: 5px;height:8vh;line-height:8vh;color:white;">
                             <span style="margin-right:10px;float:left;">
                                 <avatar-component :name="nameOwner(furnit)" :size="40"></avatar-component>
                             </span>
@@ -76,8 +78,8 @@
 
                         </el-card>
                     </el-row>
-                    <el-row>
-                        <h4>Description</h4>
+                    <el-row style="margin-top:5vh;">
+                          <TitleComponent text="Description" />
                         <p style="font-size:14px">{{ furnit.description}}</p>
                     </el-row>
                     <el-row>
@@ -88,12 +90,22 @@
                 </el-col>
             </el-row>
 
-            <el-row style="margin-top:5vh;">
+            <!-- <el-row style="margin-top:5vh;">
                 <el-col :span="10" style="">
 
                 </el-col>
-            </el-row>
-
+            </el-row> -->
+                 <el-row style="margin-top:30px;" v-if="loaner">
+                     <el-col :span="6" :offset="4">
+                        <el-form :inline="true" style="text-align:left;">
+                            <el-form-item>
+                                <el-button v-if="authentificated" size="small" value="submit" type="danger" round @click="makeAnOffer">
+                                    Faire une demande de location
+                                </el-button>
+                            </el-form-item>
+                        </el-form>
+                        </el-col>
+                    </el-row>
         </el-main>
     </el-container>
     <footer-component></footer-component>
@@ -110,6 +122,8 @@ import RentalService from '../../Service/RentalService';
 import './../../style/style.css';
 import FooterComponent from '../Footer/FooterComponent';
 import AvatarComponent from './../Utils/AvatarComponent';
+import TitleComponent from './../Utils/TitleComponent';
+import BigTitleComponent from './../Utils/BigTitleComponent';
 import {
     mapGetters
 } from 'vuex'
@@ -121,7 +135,9 @@ export default {
         FooterComponent,
         AvatarComponent,
         TagComponent,
-        BreadcrumpComponent
+        BreadcrumpComponent,
+        TitleComponent,
+        BigTitleComponent
     },
     data() {
         return {
@@ -269,6 +285,19 @@ export default {
 //   padding: 0px !important;
 //   line-height: 10px !important;
 // }
+
+.title{
+
+}
+.description{
+    font-family: Jazz LET;
+    background-color: #1E969D;
+    background-image: linear-gradient(90deg, rgba(255,255,255,.07) 50%, transparent 50%),
+    linear-gradient(90deg, rgba(255,255,255,.13) 50%, transparent 50%),
+    linear-gradient(90deg, transparent 50%, rgba(255,255,255,.17) 50%),
+    linear-gradient(90deg, transparent 50%, rgba(255,255,255,.19) 50%);
+    background-size: 13px, 29px, 37px, 53px;
+}
 
 .el-card__body {
     display: flex !important;

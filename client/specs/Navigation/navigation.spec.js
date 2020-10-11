@@ -25,6 +25,11 @@
 // let wrapper = null;
 
 // beforeEach(() => {
+//     store = new Vuex.Store({
+//       actions
+//     })
+//   })
+// beforeEach(() => {
 //   wrapper = mount(NavComponent,
 //     {
 //       stubs: {

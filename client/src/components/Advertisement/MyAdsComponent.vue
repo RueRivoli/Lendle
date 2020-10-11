@@ -15,16 +15,19 @@
             <el-row style="margin-top:5vh;font-size:14px;">
                 <el-col :span="18" :offset="3">
                     <div>
-                        <h4>
-                            Vos annonces à pourvoir <el-tag :type="typeOfQuantity" size="mini" style="margin-left: 15px;">{{quantity}}</el-tag>
-                        </h4>
+                        <!-- <h4>
+                            Vos annonces à pourvoir <el-tag :type="typeOfQuantity" size="mini" style="margin-left: 15px;">{{ quantity }}</el-tag>
+                        </h4> -->
+                        <div style="border-bottom: 1px solid #1E969D;color: #1E969D;margin-bottom:10px;">
+                            <span class="title font-17">VOS ANNONCES A POURVOIR</span>
+                        </div>
                         <div class="block">
                         <div v-for="(ft, index) in furnits" v-bind:key="index">
-                            <el-row class="pointer green" style="height:90px;padding: 10px;margin-bottom:7px;">
+                            <el-row class="pointer green" style="padding: 2px;margin-bottom:2vh;height: 11vh;">
                                 <el-col  class="full_height" :span="24">
-                                    <el-card class="box-card" :body-style="{ padding: '2px', height: '90px'}">
+                                    <el-card class="m-b-5 card" :body-style="{ padding: '2px', height: '11vh'}">
                                         <el-col class="full_height" :span="4">
-                                            <div class="full_height" style="background-color: #D6DCDD;max-height: 100px;">
+                                            <div class="full_height" style="background-color: #D6DCDD;">
                                                 <el-image v-if="url[index] !== 'null'"
                                                     class="pointer full_height"
                                                     :src="url[index]"
@@ -33,10 +36,10 @@
                                             </div>
                                         </el-col>
                                         <el-col :span="5" :offset="1">
-                                            <div style="margin-top: 20px;"><span class= "pointer" style="font-weight:bold;">{{ ft.name }}</span></div>
+                                            <div style="margin-top: 20px;"><span class= "pointer">{{ ft.name.toUpperCase() }}</span></div>
                                         </el-col>
                                         <el-col :span="6" :offset="1">
-                                            <div style="margin-top: 20px;">
+                                            <div style="margin-top: 20px;justify-content:center; font-style:italic;color: #1E969D;">
                                                 <time class="time"> {{ toFormat(ft.loanstart) }}</time> - 
                                                 <time class="time">
                                                     <!-- <i class="el-icon-minus"></i>  -->
@@ -44,13 +47,20 @@
                                     
                                             </div>
                                         </el-col>
-                                        <el-col class="flex column" :span="6" :offset="1" style="border-left: 1px solid rgb(223, 224, 230);height: 100%;">
+                                        <el-col class="flex column" :span="6" :offset="1" style="height:100%;">
                                             <!-- <div class="m-auto">
                                                 <time class="time"> Mensualité 0 €/mois</time>
                                             </div> -->
-                                            <div class="m-auto flex">
+                                            <!-- <div class="m-auto flex">
                                                 <el-button icon="el-icon-view" size="mini" type="primary" class="button cursor" plain @click="details(ft._id)">Consulter</el-button>
                                                 <el-button icon="el-icon-edit" size="mini" type="success" class="button cursor" plain @click="edit(ft._id)">Editer</el-button>
+                                            </div> -->
+                                             <div class="m-auto">
+                                                <el-button icon="el-icon-view" size="mini" type="primary" class="button cursor opacity screen_small" circle @click="details(ft._id)"></el-button>
+                                                <el-button icon="el-icon-edit" size="mini" type="success" class="button cursor opacity screen_small" circle @click="edit(ft._id)"></el-button>
+                                                
+                                                
+                                                <!-- <el-button icon="el-icon-view" type="primary" class="button cursor opacity screen_small"  size="mini" circle @click="details(rt, 0)"></el-button> -->
                                             </div>
                                         </el-col>
                                     </el-card>
@@ -146,9 +156,18 @@ export default {
 
 <style lang="scss" scoped>
 
-@import "./../../style/element-variables.scss";
+// @import "./../../style/element-variables.scss";
 
 
+.card {
+    height: 11vh;
+}
+
+.card:hover {
+    opacity: 0.85;
+    border: 1px solid grey;
+    font-weight:bold;
+}
 
 .box-card{
     margin-bottom: 5px;
@@ -168,15 +187,17 @@ export default {
     max-height: 100px;
 }
 
-.el-image:hover{
-    opacity: 0.95;
-}
 
 // .el-card.box-card{
 //     height: 90px;
 // }
 
-.el-card:hover{
-    color: #1E969D !important;
+.title{
+   color: #1E969D;
 }
+
+.el-card.is-always-shadow{
+    box-shadow: none;
+}
+
 </style>

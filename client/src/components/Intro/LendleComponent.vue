@@ -4,7 +4,7 @@
             <div class="slogan">
                 PRÊTEZ VOS MEUBLES A CEUX QUI EN CHERCHENT
                 <router-link to="/signup/loaner">
-                     <el-button type="primary" value="submit"  style="float:center" size="mini">S'inscrire</el-button>
+                     <el-button type="primary" value="submit"  round style="float:center" size="mini">S'inscrire</el-button>
                 </router-link>
                 
             </div>
@@ -13,34 +13,44 @@
             </div>
         </el-container>
         <div style="height:2px;"></div>
-        <el-container style="height:50vh;">
-                <div class="flex" style="background-color:#252627;width:68%;padding:25px;color:white;text-align:right;">
-                    <div style="margin:auto;">
-                        <h2>PRÊTEUR</h2>
-                        Trouvez la personne près de chez vous qui saura prendre soin de vos meubles.
-                        Entrez vos dates de prêt, partagez vos photos de frigo, machine à laver, sèche-linge ...<br>
-                        Et choisissez parmi toutes les personnes intéressées
-                        <h3 class="pointer hovering" style="color:#1E969D;margin-top:40px;text-decoration: underline;"><router-link to="/signup/renter">Prêter des meubles</router-link></h3>
+        <el-row class="ad_container">
+                    <div class="text_container" style="background-color:#252627;padding:10px;color:white;text-align:right;display: table;">
+                        <span style="vertical-align: middle;display:table-cell;">
+                            <h2>PRÊTEUR</h2>
+                            <p>
+                                Trouvez la personne près de chez vous qui saura prendre soin de vos meubles.
+                                Entrez vos dates de prêt, partagez vos photos de frigo, machine à laver, sèche-linge ...<br>
+                                Et choisissez parmi toutes les personnes intéressées
+                             </p>
+                            <router-link to="/signup/renter" style="color:white;text-decoration:none;">
+                                <!-- <el-button type="primary" @click="$route" round size="mini">Prêter des meubles</el-button> -->
+                                <el-button type="primary" @click="$route" icon="el-icon-arrow-right" circle size="mini" style="margin-right:5px;"></el-button>Prêter des meubles
+                            </router-link>
+                        </span>
                     </div>
-                </div>
-                <div class="flex margin-auto">
-                    <img class="m-auto" src="./../../assets/meuble.png" alt="" style="padding: 20px;">
-                </div>
-        </el-container>
+                    <div class="img_container" style="text-align:center;">
+                        <img class="m-auto" src="./../../assets/meuble.png" alt="" style="padding: 10px;">
+                    </div>
+                </el-row>
         <div style="height:2px;"></div>
-           <el-container style="height:50vh;">
-               <div class="flex m-auto">
-                    <img class="m-auto" src="./../../assets/preteur.png" alt="" style="padding: 20px;">
+       <el-row class="ad_container">
+               <div class="img_container" style="text-align:center;">
+                    <img src="./../../assets/preteur.png" alt="" style="padding:10px;">
                 </div>
-                <div class="flex" style="background-color:#1F939B;width:68%;padding:25px;color:white;text-align:left;">
-                    <div style="margin:auto;">
+                <div class="text_container" style="background-color:#1F939B;padding:10px;color:white;text-align:left;display: table;">
+                    <span style="vertical-align: middle;display:table-cell;">
                         <h2>EMPRUNTEUR</h2>
-                        Trouvez des meubles pour votre stage, votre année d'étude ou tout autre séjour à durée moyenne.
-                        Entrez vos dates d'emprunt et cherchez un propriétaire qui sera content de vous prêter son mobilier.
-                        <h3 class="pointer hovering" style="color:black;margin-top:40px;text-decoration: underline;"><router-link to="/signup/loaner">Trouver des meubles</router-link></h3>
-                    </div>
+                        <p>
+                            Trouvez des meubles pour votre stage, votre année d'étude ou tout autre séjour à durée moyenne.
+                            Entrez vos dates d'emprunt et cherchez un propriétaire qui sera content de vous prêter son mobilier.
+                        </p>
+                        <router-link to="/signup/loaner" style="color:white;text-decoration:none;">
+                            <!-- <el-button type="success" @click="$route" round size="mini">Trouver des meubles</el-button> -->
+                            <el-button type="success" @click="$route" icon="el-icon-arrow-right" circle size="mini" style="margin-right:5px;"></el-button>Trouver des meubles
+                        </router-link>
+                    </span>
                 </div>
-        </el-container>
+        </el-row>
         <div style="height:2px;"></div>
         </div>
 </template>
@@ -80,5 +90,59 @@ export default {
     padding: 20px;
 }
 
+.text_container, .img_container{
+    float: left;
+    box-sizing: border-box;
+}
+
+.text_container{
+    width: 66.66667%;
+}
+.img_container{
+    width:33.33333%;
+}
+
+.ad_container{
+    height:200px;
+}
+
+@media screen and (max-width: 800px) {
+  p {
+    font-size:12px;
+  }
+  .img_container{
+      display:none;
+  }
+  .text_container{
+      width: 100% !important;
+      height: 200px;
+      padding: 10px !important;
+  }
+}
+
+@media screen and (min-width: 800px) and (max-width: 1400px) {
+    .ad_container, .text_container{
+        height:250px;
+    }
+    .img_container img{
+        height: 230px;
+    }
+}
+
+
+@media screen and (min-width: 1400px){
+    .ad_container, .text_container{
+        height:400px;
+    }
+    p {
+        font-size:20px;
+    }
+    .router-link{
+        font-size: 20px;
+    }
+    .img_container img{
+        height: 380px;
+    }
+}
 
 </style>
