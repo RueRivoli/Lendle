@@ -1,6 +1,6 @@
 <template>
 <nav class="full_width underligned">
-    <ul role="menubar" style="height: 50px;">
+    <ul role="menubar" style="height: 5vh;">
         <li tabindex="0" class="mleft selected pointer lendle">
             <router-link to="/" tag="span">LENDLE</router-link>
         </li>

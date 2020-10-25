@@ -4,7 +4,7 @@
     <BreadcrumpComponent v-if="loaner" v-bind:field1="{title: 'Mes meubles', path: '/myrentals'}" :field2="{title: typeofRental ? 'Locations' : 'Propositions', path: '/myrentals/' + typeofRental }"></BreadcrumpComponent>
     <BreadcrumpComponent v-else :field1="{title: 'Mes locations', path: '/myrentals'}" :field2="{title: typeofRental ? 'Locations' : 'Propositions', path: '/myrentals/' + typeofRental }"></BreadcrumpComponent>
     <el-container>
-        <el-main style="margin-top: 4vh;">
+        <el-main style="margin-top: 4vh;min-height:77vh;">
             <div class="m-auto" style="width: 353px;">
                 <el-switch v-model="typeofRental" :width="40" active-text="LOCATIONS" inactive-text="PROPOSITIONS DE LOCATION" size="mini">
                 </el-switch>

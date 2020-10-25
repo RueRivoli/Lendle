@@ -1,6 +1,6 @@
 <template>
     <nav style="border-bottom: 1px solid #dfe0e6; width: 100%;">
-        <ul role="menubar" class="" style="height: 50px;">
+        <ul role="menubar" class="" style="height: 5vh;">
             <li tabindex="0" class="mright selected pointer lendle"><router-link to="/" tag="span">LENDLE</router-link></li>
             <div class="white_space" v-if="displayTitles"></div>
             <div class="f-auto" v-if="displayTitles">

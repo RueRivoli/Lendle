@@ -4,7 +4,7 @@
              <!-- <BreadcrumpComponent :field1="{title: 'Messagerie', path: '/chat'}" :field2="{title: name(this.interlocutor_id), path: '/chat/' + interlocutor_id}"></BreadcrumpComponent> -->
        <BreadcrumpComponent :field1="{title: 'Messagerie', path: '/chat'}" :field2="{title: usernameInt, path: '/chat/' + interlocutor_id}"></BreadcrumpComponent>
       
-        <el-container height="70vh;">
+        <el-container style="min-height:81vh;">
         
         <el-main>
         

@@ -2,7 +2,7 @@
     <div>
         <nav-component :displayTitles="true"></nav-component>
         <BreadcrumpComponent :field1="{title: 'Chercher', path: '/search'}" :field2="{title: furniture.city, path: `/search`}" :field3="{title: furniture.type, path: `/search`}" :field4="{title: furniture.word, path: `/search`}"></BreadcrumpComponent>
-    <el-container>
+    <el-container style="min-height:95vh;">
         <el-header>
             <el-row style="margin-top:2vh;">
                 <el-form class="search" ref="furniture" name="furniture" :inline="true" :model="furniture" :rules="rulesFurniture" enctype="multipart/form-data">
@@ -107,12 +107,14 @@
                      </el-row>
                 </el-col>
             </el-row>
-        </el-main>
-    </el-container>
-    <div style="text-align:center;margin:2vh;">
+             <div style="text-align:center;margin:2vh;">
         <el-pagination background :page-size="page_size" :total="numberFurnits" layout="prev, pager, next" :current-page.sync="current_page" @current-change="new_page">
         </el-pagination>
     </div>
+        </el-main>
+           
+    </el-container>
+
     <footer-component></footer-component>
 </div>
 </template>
