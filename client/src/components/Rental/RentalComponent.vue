@@ -3,7 +3,7 @@
     <nav-component></nav-component>
     <BreadcrumpComponent :field1="{title: loaner? 'Mes meubles' : 'Mes locations', path: '/myrentals/' + pathToMyRentals[0] }" :field2="{title: pathToMyRentals[0], path: '/myrentals/' + pathToMyRentals[0]}" :field3="{title: pathToMyRentals[1]}"></BreadcrumpComponent>
     <el-container>
-        <el-main style="width:100%; height:76.3vh;">
+        <el-main style="width:100%; height: 76.3vh;">
             <el-dialog :title="titleDialog" :visible.sync="dialogVisible" width="55%">
                 <span>{{ message }}</span>
                 <span slot="footer" class="dialog-footer">
@@ -16,8 +16,8 @@
 
             <el-form label-position="top" label-width="80px">
                 <el-row style="height:50vh;">
-                    <el-col :span="7">
-                        <el-calendar v-model="today">
+                    <el-col :span="9">
+                        <el-calendar :class="$mq" v-model="today" :range="[, ]">
                             <template slot="dateCell" slot-scope="{date, data}">
                                 <p :class="isIndisponible(data) ? 'is-selected' : ''">
                                     {{ data.day.split('-').slice(2).join('') }} {{ data.isSelected ? 'x' : ''}}
@@ -26,10 +26,10 @@
                         </el-calendar>
                     </el-col>
 
-                    <el-col :span="14" :offset="2">
-
+                    <el-col :span="14" :offset="1">
                         <el-row style="font-size:18px;margin-bottom: 5vh;font-weight:bold;">
-                            <span class="f-left">Vos demandes</span>
+                            <!-- <span class="f-left">Vos demandes</span> -->
+                             <TitleComponent text="Vos demandes" />
                         </el-row>
                         <table-demands-component :rentals="rentals" :dateProposition="dateProposition" @display-dialog="displayDialog" @change-rental="changeRental" v-if="$route.params.isLocation === '0'">
                         </table-demands-component>
@@ -52,6 +52,8 @@ import BreadcrumpComponent from './../Utils/BreadcrumpComponent';
 import TableDemandsComponent from './Tables/TableDemandsComponent';
 import TableLocationsComponent from './Tables/TableLocationsComponent';
 import RentalService from './../../Service/RentalService';
+import TitleComponent from './../Utils/TitleComponent';
+
 import {
     mapGetters
 } from 'vuex';
@@ -65,6 +67,7 @@ export default {
         FooterComponent,
         BreadcrumpComponent,
         TableDemandsComponent,
+        TitleComponent,
         TableLocationsComponent
     },
     data() {
@@ -333,5 +336,10 @@ td p {
 <style>
 .el-calendar-table .el-calendar-day {
     height: 8vh !important;
+}
+
+
+.el-calendar.laptop .el-calendar__button-group .el-button-group .el-button{
+     padding: 7px 12px; 
 }
 </style>

@@ -503,7 +503,7 @@ table {
 }
 </style>
 <style>
-.el-form-item__label {
+/* .el-form-item__label {
     float: left !important;
-}
+} */
 </style>

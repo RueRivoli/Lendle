@@ -1,76 +1,81 @@
 <template>
     <div>
         <nav-component></nav-component>
-            <div style="height:70vh;">
-            <el-tabs type="border-card" style="margin-left:15vh;margin-right:15vh;margin-top:5vh;">
+            <BreadcrumpComponent v-bind:field1="{title: 'Profile', path: '/profile'}"></BreadcrumpComponent>
+            <div style="min-height:70vh;">
+            
+            <el-tabs type="border-card" :class="$mq" style="" :stretch="true">
                 <el-tab-pane style="background-color:#1E969D;">
                     <span slot="label">Profil</span>
                     <el-form  style="width:100%;" label-position="left" label-width="130px">
                         <el-row v-if="!fromSocialOauth">
-                            <el-col :span="6" :offset="2">
+                            <el-col :span="$mq | mq({mobile: 24, tablet: 22, laptop: 10, desktop: 8})" :offset="$mq | mq({mobile: 0, tablet: 0, laptop: 0, desktop: 0})">
                                 <el-form-item label="Nom" prop="lastname">
                                     <span>{{ profile.lastname }}</span>
                                 </el-form-item>
                             </el-col>
-                            <el-col :span="6" :offset="4">
+                            <el-col :span="$mq | mq({mobile: 24, tablet: 22, laptop: 10, desktop: 8})" :offset="$mq | mq({mobile: 0, tablet: 0, laptop: 2, desktop: 2})">
                                 <el-form-item label="Prénom" prop="firstname">
                                     <span>{{ profile.firstname }}</span>
                                 </el-form-item>
                             </el-col>
                         </el-row>
                             <el-row v-else-if="fromSocialOauth">
-                            <el-col :span="6" :offset="2">
+                            <el-col :span="$mq | mq({mobile: 24, tablet: 22, laptop: 10, desktop: 8})" :offset="$mq | mq({mobile: 0, tablet: 0, laptop: 0, desktop: 0})">
                                 <el-form-item label="Nom" prop="username">
                                     <span>{{ profile.username }}</span>
                                 </el-form-item>
                             </el-col>
                         </el-row>
                         <el-row v-if="!fromSocialOauth">
-                            <el-col :span="6" :offset="2">
+                            <el-col :span="$mq | mq({mobile: 24, tablet: 22, laptop: 10, desktop: 8})" :offset="$mq | mq({mobile: 0, tablet: 0, laptop: 0, desktop: 0})">
                                 <el-form-item label="Nom d'usage" prop="username">
                                     <span>{{ profile.username }}</span>
                                 </el-form-item>
                             </el-col>
-                            <el-col :span="6" :offset="4">
+                            <el-col :span="$mq | mq({mobile: 24, tablet: 22, laptop: 10, desktop: 8})" :offset="$mq | mq({mobile: 0, tablet: 0, laptop: 2, desktop: 2})">
                                 <el-form-item label="Email" prop="email">
                                     <span>{{ profile.mail }}</span>
                                 </el-form-item>
                             </el-col>
                         </el-row>
                         <el-row>
-                            <el-col :span="6" :offset="2">
+                            <el-col :span="$mq | mq({mobile: 24, tablet: 22, laptop: 10, desktop: 8})" :offset="$mq | mq({mobile: 0, tablet: 0, laptop: 0, desktop: 0})">
                                 <el-form-item label="Inscrit en tant que" >
                                     <el-checkbox v-model="profile.loaner" disabled label="Emprunteur">Emprunteur</el-checkbox>
                                     <el-checkbox v-model="profile.renter" disabled label="Prêteur">Prêteur</el-checkbox>
                                 </el-form-item>
                             </el-col>
-                            <el-col :span="6" :offset="4">
+                            <el-col :span="$mq | mq({mobile: 24, tablet: 22, laptop: 10, desktop: 8})" :offset="$mq | mq({mobile: 0, tablet: 0, laptop: 2, desktop: 2})">
                                 <el-form-item label="Membre depuis" prop="email">
                                     <span>{{ toFormat(profile.subscription) }}</span>
                                 </el-form-item>
                             </el-col>
                         </el-row>
                         <el-row>
-                            <el-col :span="10" :offset="2">
+                            <el-col :span="$mq | mq({mobile: 24, tablet: 22, laptop: 24, desktop: 24})" :offset="$mq | mq({mobile: 0, tablet: 0, laptop: 0, desktop: 0})">
                                 <el-form-item label="Adresse" >
                                     <span>{{ profile.address }} {{ profile.postcode }} {{ profile.city }}</span>
                                 </el-form-item>
                             </el-col>
                         </el-row>
                         <el-row>
-                            <el-col :span="12" :offset="2">
+                            <el-col :span="$mq | mq({mobile: 24, tablet: 22, laptop: 24, desktop: 24})" :offset="$mq | mq({mobile: 0, tablet: 0, laptop: 0, desktop: 0})">
                                 <el-form-item label="Présentation">
                                     <span>{{ profile.description }}</span>
                                 </el-form-item>
                             </el-col>
                         </el-row>
                         <el-row>
-                        <el-col :span="6" :offset="2">
-                                <el-form-item label="Note">
+                        <el-col :span="$mq | mq({mobile: 24, tablet: 22, laptop: 10, desktop: 8})" :offset="$mq | mq({mobile: 0, tablet: 0, laptop: 0, desktop: 0})">
+                                <el-form-item v-if="profile.mark" label="Note">
                                     {{ profile.mark }} / 5.0
                                 </el-form-item>
+                                <el-form-item else label="Note">
+                                    Vous n'avez pas reçu de note
+                                </el-form-item>
                             </el-col>
-                              <el-col :span="6" :offset="4">
+                              <el-col :span="$mq | mq({mobile: 24, tablet: 22, laptop: 10, desktop: 8})" :offset="$mq | mq({mobile: 0, tablet: 0, laptop: 2, desktop: 2})">
                                 <el-form-item label="Langue" prop="language">
                                     <span>{{ profile.language }}</span>
                                 </el-form-item>
@@ -80,38 +85,38 @@
                     </el-tab-pane>
                     
                     <el-tab-pane> <span slot="label"><i class="el-icon-edit"></i> Editer</span>
-                        <el-form ref="profile" name="profile" style="width:100%;" :model="profile" :rules="rulesProfile" label-position="left" label-width="130px">
+                        <el-form ref="profile" name="profile" style="width:100%;" :model="profile" :rules="rulesProfile" :label-position="$mq | mq({mobile: 'top', tablet: 'left', laptop: 'left', desktop: 'left'})" :label-width="$mq | mq({mobile: '50px', tablet: '113px', laptop: '117px', desktop: '150px'})" enctype="multipart/form-data">
                             <el-row v-if="!fromSocialOauth">
-                                <el-col :span="7" :offset="2">
+                                <el-col :span="$mq | mq({mobile: 24, tablet: 22, laptop: 10, desktop: 8})" :offset="$mq | mq({mobile: 0, tablet: 0, laptop: 0, desktop: 0})">
                                     <el-form-item label="Nom" prop="lastname">
                                         <el-input placeholder="Nom" size="mini" v-model="profile.lastname"></el-input>
                                     </el-form-item>
                                     </el-col>
-                                    <el-col :span="6" :offset="4">
+                                    <el-col :span="$mq | mq({mobile: 24, tablet: 22, laptop: 10, desktop: 8})" :offset="$mq | mq({mobile: 0, tablet: 0, laptop: 2, desktop: 2})">
                                     <el-form-item label="Prénom" prop="firstname">
                                         <el-input placeholder="Prénom" size="mini" v-model="profile.firstname"></el-input>
                                     </el-form-item>
                                 </el-col>
                             </el-row>
                             <el-row v-if="!fromSocialOauth">
-                                 <el-col :span="7" :offset="2">
+                                <el-col :span="$mq | mq({mobile: 24, tablet: 22, laptop: 10, desktop: 8})" :offset="$mq | mq({mobile: 0, tablet: 0, laptop: 0, desktop: 0})">
                                     <el-form-item label="Nom d'usage" prop="username">
                                         <el-input placeholder="Nom d'usage" size="mini" v-model="profile.username"></el-input>
                                     </el-form-item>
                                     </el-col>
-                                <el-col :span="6" :offset="4">
+                                 <el-col :span="$mq | mq({mobile: 24, tablet: 22, laptop: 10, desktop: 8})" :offset="$mq | mq({mobile: 0, tablet: 0, laptop: 2, desktop: 2})">
                                     <el-form-item label="Email" prop="email">
                                         <span>{{ profile.mail }}</span>
                                     </el-form-item>
                                     </el-col>
                             </el-row>
                             <el-row v-if="fromSocialOauth">
-                                <el-col :span="7" :offset="2">
+                                <el-col :span="$mq | mq({mobile: 24, tablet: 22, laptop: 10, desktop: 8})" :offset="$mq | mq({mobile: 0, tablet: 0, laptop: 0, desktop: 0})">
                                     <el-form-item label="Nom" prop="username">
                                         <el-input placeholder="Nom" size="mini" v-model="profile.username"></el-input>
                                     </el-form-item>
-                                    </el-col>
-                                   <el-col :span="6" :offset="4">
+                                </el-col>
+                                   <!-- <el-col :span="6" :offset="4">
                                         <el-form-item label="Langue" prop="language">
                                             <el-select v-model="profile.language" size="mini" placeholder="">
                                                 <el-option label="Français" value="fr"></el-option>
@@ -119,86 +124,76 @@
                                                 <el-option label="Español" value="sp"></el-option>
                                             </el-select>
                                         </el-form-item>
+                                </el-col> -->
+                            </el-row>
+                            <el-row>
+                                 <el-col :span="$mq | mq({mobile: 24, tablet: 22, laptop: 10, desktop: 8})" :offset="$mq | mq({mobile: 0, tablet: 0, laptop: 0, desktop: 0})">
+                                    <el-form-item label="Inscrit en tant que">
+                                        <el-button id="loaner_button" class="desactivate" v-if="activeLoaner" size="mini" value="submit" icon="el-icon-receiving" @click="changeMode('loaner')" round>Emprunteur</el-button>
+                                        <el-button v-else size="mini" value="submit" icon="el-icon-receiving" disabled round>Emprunteur</el-button>
+                                        <el-button id="renter_button" class="desactivate"  v-if="activeRenter" size="mini" value="submit" icon="el-icon-sell"  @click="changeMode('renter')" round>Prêteur</el-button>
+                                        <el-button v-else size="mini" value="submit" icon="el-icon-sell" disabled round>Prêteur</el-button>
+                                    </el-form-item>
+                                </el-col>
+                                    <el-col :span="$mq | mq({mobile: 24, tablet: 22, laptop: 10, desktop: 8})" :offset="$mq | mq({mobile: 0, tablet: 0, laptop: 2, desktop: 2})">
+                                        <el-form-item label="Langue" prop="language">
+                                            <el-select v-model="profile.language" size="mini" placeholder="">
+                                                <el-option label="Français" value="fr"></el-option>
+                                                <el-option label="English" value="eng"></el-option>
+                                                <el-option label="Español" value="sp"></el-option>
+                                            </el-select>
+                                        </el-form-item>
+                                
                                 </el-col>
                             </el-row>
                             <el-row>
-                                <el-col :span="7" :offset="2">
-                                    <el-form-item label="Inscrit en tant que">
-                                        <el-checkbox v-if="activeLoaner" v-model="profile.loaner"  label="Emprunteur">Emprunteur</el-checkbox>
-                                        <el-checkbox v-else v-model="profile.loaner" disabled label="Emprunteur">Emprunteur</el-checkbox>
-                                        <el-checkbox v-if="activeRenter" v-model="profile.renter" label="Prêteur">Prêteur</el-checkbox>
-                                        <el-checkbox v-else v-model="profile.renter" disabled label="Prêteur">Prêteur</el-checkbox>
-                                    </el-form-item>
-                                    </el-col>
-                            </el-row>
-                            <el-row>
-                                <el-col :span="9" :offset="2">
+                                <el-col :span="$mq | mq({mobile: 22, tablet: 22, laptop: 10, desktop: 10})" >
                                     <el-form-item label="Adresse" >
                                         <el-input placeholder="" size="mini" v-model="profile.address"></el-input>
                                     </el-form-item>
                                 </el-col>
                             </el-row>
                             <el-row>
-                                <el-col :span="7" :offset="2">
+                                <el-col :span="$mq | mq({mobile: 22, tablet: 22, laptop: 10, desktop: 10})">
                                     <el-form-item label="Code postal" prop="postcode">
                                         <el-input ref="postcode" placeholder="" size="mini" v-model="profile.postcode"></el-input>
                                     </el-form-item>
                                 </el-col>
-                            </el-row>
-                            <el-row>
-                                <el-col :span="7" :offset="2">
+                                <el-col :span="$mq | mq({mobile: 22, tablet: 22, laptop: 10, desktop: 10})" :offset="$mq | mq({mobile: 0, tablet: 0, laptop: 2, desktop: 2})">
                                     <el-form-item label="Ville" prop="city">
                                         <el-input ref="city" placeholder="" size="mini" v-model="profile.city"></el-input>
                                     </el-form-item>
                                 </el-col>
                             </el-row>
                     <el-row>
-                        <el-col :span="12" :offset="2">
+                        <el-col :span="$mq | mq({mobile: 22, tablet: 22, laptop: 22, desktop: 22})" :offset="$mq | mq({mobile: 0, tablet: 0, laptop: 0, desktop: 0})">
                             <el-form-item label="Présentation">
                                 <el-input placeholder="Présentez-vous" type="textarea" size="mini" :rows="3" v-model="profile.description"></el-input>
                             </el-form-item>
                         </el-col>
                     </el-row>
                     <el-row>
-                              <el-col :span="7" :offset="2">
-                                        <el-form-item label="Langue" prop="language">
-                                            <el-select v-model="profile.language" size="mini" placeholder="">
-                                                <el-option label="Français" value="fr"></el-option>
-                                                <el-option label="English" value="eng"></el-option>
-                                                <el-option label="Español" value="sp"></el-option>
-                                            </el-select>
-                                        </el-form-item>
-                                </el-col>
+                        
                      </el-row>
-                    <el-button type="success" value="submit" plain @click="editProfile()" style="display:block;margin:auto;" size="mini">Valider</el-button>
+                        <!-- <el-button type="success" value="submit" plain @click="editProfile()" style="display:block;margin:auto;" size="mini">Valider</el-button> -->
+                         <el-button size="mini" value="submit" icon="el-icon-arrow-right" @click="editProfile()" round>Editer</el-button>
                     </el-form>
                 </el-tab-pane>
                 <el-tab-pane v-if="!fromSocialOauth"> <span slot="label"><i class="el-icon-key"></i>Changer le mot de passe</span>
-                    <el-form ref="password" name="password" style="width:100%;" :model="password" :rules="rulesPassword" label-position="left" label-width="160px" enctype="multipart/form-data">
-                        <el-row>
-                            <el-col :span="10" :offset="4">
-                                <el-form-item label="Mot de passe actuel" prop="actualpswd">
-                                    <el-input ref="actualpswd" placeholder="Mot de passe actuel" size="mini" :show-password="true" v-model="password.actualpswd"></el-input>
-                                </el-form-item>
+                    <el-form id="password" ref="password" name="password" style="width:100%;" :model="password" :rules="rulesPassword"  :label-position="$mq | mq({mobile: 'top', tablet: 'top', laptop: 'left', desktop: 'left'})" :label-width="$mq | mq({mobile: '100px', tablet: '200px', laptop: '200px', desktop: '250px'})" enctype="multipart/form-data">
+                       <el-row>
+                            <el-form-item label="Mot de passe actuel" prop="actualpswd">
+                                <el-input class="input_pswd" :class="$mq" ref="actualpswd" size="mini" placeholder="Mot de passe actuel" :show-password="true" v-model="password.actualpswd" ></el-input>
+                            </el-form-item>
+                            <el-form-item label="Nouveau mot de passe" prop="pswd">
+                                <el-input ref="pswd" class="input_pswd" :class="$mq"  placeholder="Nouveau mot de passe" size="mini" :show-password="true" v-model="password.pswd"></el-input>
+                            </el-form-item>
+                            <el-form-item label="Confirmez" prop="pswdCf">
+                                <el-input ref="pswdCf" class="input_pswd" :class="$mq" placeholder="Confirmez le nouveau mot de passe" :show-password="true" size="mini" v-model="password.pswdCf"></el-input>
+                            </el-form-item>
+                            <el-col>
+                              <el-button size="mini" value="submit" icon="el-icon-arrow-right" @click="editPassword()" round>Modifier</el-button>
                             </el-col>
-                            </el-row>
-                            <el-row>
-                            <el-col :span="10" :offset="4">
-                                <el-form-item label="Nouveau mot de passe" prop="pswd">
-                                    <el-input ref="pswd" placeholder="Nouveau mot de passe" size="mini" :show-password="true" v-model="password.pswd"></el-input>
-                                </el-form-item>
-                            </el-col>
-                            </el-row>
-                            <el-row>
-                            <el-col :span="10" :offset="4">
-                                <el-form-item label="Confirmez" prop="pswdCf">
-                                    <el-input ref="pswdCf" placeholder="Confirmez le nouveau mot de passe" :show-password="true" size="mini" v-model="password.pswdCf"></el-input>
-                                </el-form-item>
-                            </el-col>
-                            <el-col :span="10" :offset="4">
-                                <el-button type="success" value="submit" plain style="display:block;margin:auto;" @click="editPassword()"  size="mini">Valider</el-button>
-                            </el-col>
-                              
                         </el-row>
                     </el-form>
                 </el-tab-pane>
@@ -223,6 +218,7 @@
 <script>
 // import VueCookies from 'vue-cookies'
 import NavComponent from './../Navigation/NavComponent';
+import BreadcrumpComponent from './../Utils/BreadcrumpComponent';
 import FooterComponent from './../Footer/FooterComponent';
 import UserService from './../../Service/UserService';
 import moment from 'moment';
@@ -230,7 +226,7 @@ import moment from 'moment';
 
 export default {
   name: 'ProfileComponent',
-  components: { NavComponent, FooterComponent },
+  components: { NavComponent, FooterComponent, BreadcrumpComponent },
   data() {
     var validatePass = (rule, value, callback) => {
       if (value === '') {
@@ -252,6 +248,7 @@ export default {
       }
     }
       return {
+        initialRole: [],
         centerDialogVisible: false,
         activeLoaner: true,
         activeRenter: true,
@@ -339,8 +336,14 @@ export default {
         // }
         UserService.getProfile().then(function(profile) {
             context.profile = profile;
-            if (profile.renter) context.activeRenter = false;
-            if (profile.loaner) context.activeLoaner = false;
+            if (profile.renter) {
+                context.activeRenter = false;
+                context.initialRole.push('Proprietaire')
+            }
+            if (profile.loaner) {
+                context.activeLoaner = false;
+                 context.initialRole.push('Emprunteur')
+            }
             //if we auth with Google or Fb
             if (context.$route.query.token) {
                 if (profile.renter && profile.loaner) context.centerDialogVisible = true
@@ -356,12 +359,15 @@ export default {
     });
     },
     computed: {
-    // ...mapGetters({
-    //   token: 'GET_TOKEN'
-    // }),
-    fromSocialOauth: function () {
-        return this.profile.facebookId || this.profile.googleId;
-    }
+        fromSocialOauth: function () {
+            return this.profile.facebookId || this.profile.googleId;
+        },
+        // role: function () {
+        //     let rl = []
+        //     if (!this.activeRenter) rl.push('Proprietaire')
+        //     if (!this.activeLoaner) rl.push('Emprunteur')
+        //     return rl
+        // }
     },
     methods: {
         toRent() {
@@ -381,6 +387,17 @@ export default {
                 UserService.updateUser(this.profile);
             }
             this.centerDialogVisible = false;
+        },
+        changeMode(mode) {
+            let button = document.getElementById(mode + '_button')
+            if (!this.profile[mode]) {
+                button.classList.add("activate");
+                button.classList.remove("desactivate");
+            } else {
+                button.classList.add("desactivate");
+                button.classList.remove("activate");
+            }
+            this.profile[mode] = !this.profile[mode]
         },
         async editProfile() {
             let context = this;
@@ -430,6 +447,10 @@ export default {
   }
 }
 </script>
+
+<style lang="postcss">
+
+</style>
 
 <style lang="scss" scoped>
 
@@ -481,6 +502,30 @@ export default {
 //     color:white !important;
 // }
 
+.el-checkbox.is-bordered.is-checked[data-v-8de71b74] {
+    border-color: white !important;
+}
+
+.el-checkbox__input.is-checked .el-checkbox__inner{
+    background-color: white  !important;
+    border-color:white  !important;
+}
+
+
+
+  .input_pswd{
+    &.desktop { width: 300px; }
+    &.laptop { width: 250px; }
+    &.tablet { width: 196px; }
+    &.mobile { width: 120px; }
+  }
+
+.el-tabs{
+    &.desktop { margin: 5vh 15vh 2vh 15vh; }
+    &.laptop { margin: 5vh 15vh 2vh 15vh; }
+    &.tablet { margin: 5vh 10px 2vh 10px;  }
+    &.mobile { margin: 5vh 10px 2vh 10px; }
+  }
 
 </style>
 
@@ -492,11 +537,28 @@ export default {
 }
 
 .el-tabs__content .el-form-item__label{
-    color:lightgrey;
+    /* color:lightgrey; */
+    color:white;
 }
 
 .el-tabs__item.is-top{
     color: #1E969D;
 }
 
+.el-button.activate{
+    background-color: cornflowerblue !important;
+    color: black !important;
+}
+
+/* .el-checkbox.is-checked {
+    padding: 3px 15px 3px 10px;
+    border-radius: 3px;
+    height: 28px;
+    border-color: white !important;
+} */
+
+
 </style>
+
+
+

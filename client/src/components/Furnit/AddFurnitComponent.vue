@@ -2,148 +2,141 @@
  <div>
   <nav-component :displayTitles="true"></nav-component>
     <BreadcrumpComponent v-bind:field1="{title: 'Créer une annonce', path: '/search'}"></BreadcrumpComponent>
-  <el-main>
-    <!-- <el-header>
-      <el-row>
-        <el-col :span="24" style="margin-bottom:50px;">
-          <span class="add_furnit_title">AJOUTER VOTRE MEUBLE</span>
-        </el-col>
-      </el-row>
-    </el-header> -->
-      <el-dialog
-      title="Profile incomplet"
-      :visible.sync="dialogProfileVisible"
-      width="50%"
-      >
-      <span>Pour créer une annonce, veuillez d'abord renseigner dans votre profil : </span>
-      <div v-for="(fd, ind) in fieldsMissings" :key="ind">
-         <span>{{fd}}</span>
-        </div>
-      <span slot="footer" class="dialog-footer">
-      <el-button @click="dialogProfileVisible = false">Annuler</el-button>
-      <el-button type="primary" @click="fillProfile">Compléter le profil</el-button>
-     </span>
-    </el-dialog>
-      <el-form ref="furniture" name="furniture" :model="furniture" :rules="rulesFurniture" label-position="top" label-width="130px" enctype="multipart/form-data">
-        <el-row>
-          <el-col :span="6">
-            <el-form-item label="Nom du meuble" prop="name">
-              <el-input type="text" size="mini" v-model="furniture.name" required></el-input>
-            </el-form-item>
-          </el-col>
-          <el-col :span="6" :offset="2">
-            <el-form-item label="Type de meuble" prop="type">
-              <el-select v-model="furniture.type" size="mini" placeholder="Type de meuble">
-                <el-option label="Table" value="table"></el-option>
-                <el-option label="Chaise" value="chaise"></el-option>
-                <el-option label="Frigidaire" value="frigidaire"></el-option>
-                <el-option label="Machine à laver" value="machinealaver"></el-option>
-                <el-option label="Armoire" value="armoire"></el-option>
-                <el-option label="Placard" value="placard"></el-option>
-                <el-option label="Fauteuil" value="fauteuil"></el-option>
-                <el-option label="Canapé" value="canape"></el-option>
-                <el-option label="Lampe" value="lampe"></el-option>
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <el-col :span="4" :offset="1">
-            <el-form-item label="Ville de location" prop="city">
-              <el-select v-model="furniture.city" size="mini" placeholder="Ville">
-                <el-option label="Lille" value="Lille"></el-option>
-                <el-option label="Lyon" value="Lyon"></el-option>
-                <el-option label="Paris" value="Paris"></el-option>
-              </el-select>
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="8">
-        <el-form-item label="Début de disponibilité" prop="loanstart">
-          <el-date-picker ref="loanstart" type="date" v-model="furniture.loanstart" size="mini" style="width: 100%;"></el-date-picker>
-        </el-form-item>
-        </el-col>
-         <el-col :span="8" :offset="4">
-        <el-form-item label="Fin de disponibilité" prop="loanend">
-            <el-date-picker ref="loanend" type="date" v-model="furniture.loanend" size="mini" style="width: 100%;"></el-date-picker>
-        </el-form-item>
-         </el-col>
-        </el-row>
-
-        <el-row>
-          <el-col :span="3">
-            <el-form-item label="Prix de location" prop="price">
-                  <el-input type="text" size="mini" v-model="furniture.price" placeholder="Prix" required>
-                    <span  slot="suffix">€/mois</span>
-                  </el-input>
-            </el-form-item>
-        </el-col>
-        <el-col :span="5" :offset="2">
-            <el-form-item label="Etat de l'objet" prop="state">
-                  <el-select v-model="furniture.state" size="mini" placeholder="Etat">
-                  <el-option label="Moyen" value="25"></el-option>
-                  <el-option label="Correct" value="50"></el-option>
-                  <el-option label="Excellent" value="75"></el-option>
-                  <el-option label="Comme neuf" value="100"></el-option>
-              </el-select>
-            </el-form-item>
-        </el-col>
-        </el-row>
-        <el-row style="text-align: left;margin-bottom: 20px;">
-          <el-col :span="12">
-          </el-col>
-          <el-upload
-            ref="elUpload"
-            action="#"
-            list-type="picture-card"
-            :auto-upload="false"
-            :file-list="filesData"
-            accept=" .jpg, .jpeg, .png,"
-            multiple
-            :limit="10"
-            :on-remove="handleRemove"
-            :on-change="handleChange"
-            :on-exceed="handleExceed">
-            <i slot="default" class="el-icon-plus"></i>
-            <div class="el-upload__tip" slot="tip">Format jpg/png/jpeg</div>
-            <div slot="file" slot-scope="{file}">
-              <img
-                class="el-upload-list__item-thumbnail"
-                :src="file.url" alt="">
-              <span class="el-upload-list__item-actions">
-              <span
-                class="el-upload-list__item-preview"
-                @click="handlePictureCardPreview(file)">
-                <i class="el-icon-zoom-in"></i>
-              </span>
-              <span
-                v-if="!disabled"
-                class="el-upload-list__item-delete"
-                @click="handleRemove(file)">
-              <i class="el-icon-delete"></i>
-              </span>
-            </span>
-            </div>
-          </el-upload>
-          <el-dialog :visible.sync="dialogVisible">
-            <img width="100%" :src="dialogImageUrl" alt="">
-          </el-dialog>
-        </el-row>
-         <el-row>
-           <el-col :span="20">
-            <el-form-item label="Description">
-              <el-input type="textarea" :rows="3" v-model="furniture.description"></el-input>
-            </el-form-item>
+    <el-main>
+        <el-dialog
+        title="Profile incomplet"
+        :visible.sync="dialogProfileVisible"
+        width="50%"
+        >
+        <span>Pour créer une annonce, veuillez d'abord renseigner dans votre profil : </span>
+        <div v-for="(fd, ind) in fieldsMissings" :key="ind">
+           <span>{{fd}}</span>
+          </div>
+        <span slot="footer" class="dialog-footer">
+        <el-button @click="dialogProfileVisible = false">Annuler</el-button>
+        <el-button type="primary" @click="fillProfile">Compléter le profil</el-button>
+       </span>
+      </el-dialog>
+        <el-form ref="furniture" name="furniture" :model="furniture" :rules="rulesFurniture" label-position="top" label-width="130px" enctype="multipart/form-data">
+          <el-row>
+            <el-col :span="6">
+              <el-form-item label="Nom du meuble" prop="name">
+                <el-input type="text" size="mini" v-model="furniture.name" required></el-input>
+              </el-form-item>
+            </el-col>
+            <el-col :span="5" :offset="1">
+              <el-form-item label="Type de meuble" prop="type">
+                <el-select v-model="furniture.type" size="mini" placeholder="Type de meuble">
+                  <el-option label="Table" value="table"></el-option>
+                  <el-option label="Chaise" value="chaise"></el-option>
+                  <el-option label="Frigidaire" value="frigidaire"></el-option>
+                  <el-option label="Machine à laver" value="machinealaver"></el-option>
+                  <el-option label="Armoire" value="armoire"></el-option>
+                  <el-option label="Placard" value="placard"></el-option>
+                  <el-option label="Fauteuil" value="fauteuil"></el-option>
+                  <el-option label="Canapé" value="canape"></el-option>
+                  <el-option label="Lampe" value="lampe"></el-option>
+                </el-select>
+              </el-form-item>
+            </el-col>
+            <el-col :span="5" :offset="1">
+              <el-form-item label="Ville de location" prop="city">
+                <el-select v-model="furniture.city" size="mini" placeholder="Ville">
+                  <el-option label="Lille" value="Lille"></el-option>
+                  <el-option label="Lyon" value="Lyon"></el-option>
+                  <el-option label="Paris" value="Paris"></el-option>
+                </el-select>
+              </el-form-item>
             </el-col>
           </el-row>
-        <el-row>
-          <el-button  class="f-left" v-if="$route.params.furnit_id" type="primary" value="submit" @click="submitFormUpdate()" size="mini">Editer l'annonce</el-button>
-          <el-button class="f-left" v-else type="primary" value="submit" @click="submitForm()" size="mini">Créer une annonce</el-button>
-        </el-row>
-      </el-form>
-      <img :src="imageprov" alt="">
-  </el-main>
-  <footer-component></footer-component>
-</div>
+          <el-row>
+            <el-col :span="8">
+          <el-form-item label="Début de disponibilité" prop="loanstart">
+            <el-date-picker ref="loanstart" type="date" v-model="furniture.dateStart" size="mini" style="width: 100%;"></el-date-picker>
+          </el-form-item>
+          </el-col>
+           <el-col :span="8" :offset="4">
+          <el-form-item label="Fin de disponibilité" prop="loanend">
+              <el-date-picker ref="loanend" type="date" v-model="furniture.dateEnd" size="mini" style="width: 100%;"></el-date-picker>
+          </el-form-item>
+           </el-col>
+          </el-row>
+
+          <el-row>
+            <el-col :span="5">
+              <el-form-item label="Prix de location" prop="price">
+                    <el-input type="text" size="mini" v-model="furniture.price" placeholder="Prix" required>
+                      <span  slot="suffix">€/mois</span>
+                    </el-input>
+              </el-form-item>
+          </el-col>
+          <el-col :span="5" :offset="2">
+              <el-form-item label="Etat de l'objet" prop="state">
+                    <el-select v-model="furniture.state" size="mini" placeholder="Etat">
+                    <el-option label="Moyen" value="25"></el-option>
+                    <el-option label="Correct" value="50"></el-option>
+                    <el-option label="Excellent" value="75"></el-option>
+                    <el-option label="Comme neuf" value="100"></el-option>
+                </el-select>
+              </el-form-item>
+          </el-col>
+          </el-row>
+          <el-row style="text-align: left;margin-bottom: 20px;">
+            <el-col :span="12">
+            </el-col>
+            <el-upload
+              ref="elUpload"
+              action="#"
+              list-type="picture-card"
+              :auto-upload="false"
+              :file-list="filesData"
+              accept=" .jpg, .jpeg, .png,"
+              multiple
+              :limit="10"
+              :on-remove="handleRemove"
+              :on-change="handleChange"
+              :on-exceed="handleExceed">
+              <i slot="default" class="el-icon-plus"></i>
+              <div class="el-upload__tip" slot="tip">Format jpg/png/jpeg</div>
+              <div slot="file" slot-scope="{file}">
+                <img
+                  class="el-upload-list__item-thumbnail"
+                  :src="file.url" alt="">
+                <span class="el-upload-list__item-actions">
+                <span
+                  class="el-upload-list__item-preview"
+                  @click="handlePictureCardPreview(file)">
+                  <i class="el-icon-zoom-in"></i>
+                </span>
+                <span
+                  v-if="!disabled"
+                  class="el-upload-list__item-delete"
+                  @click="handleRemove(file)">
+                <i class="el-icon-delete"></i>
+                </span>
+              </span>
+              </div>
+            </el-upload>
+            <el-dialog :visible.sync="dialogVisible">
+              <img width="100%" :src="dialogImageUrl" alt="">
+            </el-dialog>
+          </el-row>
+           <el-row>
+             <el-col :span="20">
+              <el-form-item label="Description">
+                <el-input type="textarea" :rows="3" v-model="furniture.description"></el-input>
+              </el-form-item>
+              </el-col>
+            </el-row>
+          <el-row>
+            <el-button  class="f-left" v-if="$route.params.furnit_id" type="primary" value="submit" @click="submitFormUpdate()" size="mini">Editer l'annonce</el-button>
+            <el-button class="f-left" v-else type="primary" value="submit" @click="submitForm()" size="mini">Créer une annonce</el-button>
+          </el-row>
+        </el-form>
+        <img :src="imageprov" alt="">
+    </el-main>
+    <footer-component></footer-component>
+  </div>
 </template>
 
 <script>
@@ -188,8 +181,8 @@ export default {
         name: '',
         type: '',
         city: '',
-        loanstart: '',
-        loanend: '',
+        dateStart: '',
+        dateEnd: '',
         description: '',
         picture_ids: []
       },
@@ -213,11 +206,11 @@ export default {
          city: [
           { required: true, message: 'Choisissez une ville', trigger: 'change' }
         ],
-        loanstart: [
+        dateStart: [
           { required: true, message: 'Inscrivez le début de disponibilité', trigger: 'blur' },
           { validator: validateDates, trigger: 'blur' }
         ],
-        loanend: [
+        dateEnd: [
           { required: true, message: 'Inscrivez la fin de disponibilité', trigger: 'blur' },
           //  { type: Date, message: 'Inscrivez la fin de disponibilité', trigger: 'blur' },
           { validator: validateDates, trigger: 'blur' }
@@ -281,8 +274,6 @@ export default {
     },
     async submitFormUpdate () {
       let context = this;
-      console.log('submitFU');
-      // console.log(this.$refs['furniture']);
        this.$refs['furniture'].validate((valid) => {
          console.log('refs');
         if (valid) {
@@ -296,6 +287,8 @@ export default {
               console.log(picture_ids);
               let pic_ids = context.furniture.picture_ids.filter(pid => !context.pic_ids_deleted.includes(pid));
               console.log(pic_ids);
+              console.log('Le furniture en question ::');
+              console.log(context.furniture);
               context.furniture.picture_ids =  pic_ids.concat(picture_ids);
               FurnitService.updateFurniture(context.furniture).then(function(result) {
               console.log('result updateFurniture');

@@ -2,7 +2,7 @@
 <div>
     <nav-component :displayTitles="true"></nav-component>
     <BreadcrumpComponent v-bind:field1="{title: 'Meubles', path: '/search'}" v-bind:field2="{title: furnit.name + ' ' + furnit._id , path: '/furniture/' + furnit._id}"></BreadcrumpComponent>
-    <el-container style="height:680px;">
+    <el-container style="min-height: 70vh;">
         <el-main style="width:100%;margin:auto;">
             <el-dialog title="Profile incomplet" :visible.sync="dialogProfileVisible" width="50%">
                 <span>Votre profil est incomplet. Pour demander une location, remplissez les champs suivants:</span>
@@ -96,10 +96,10 @@
                 </el-col>
             </el-row> -->
                  <el-row style="margin-top:30px;" v-if="loaner">
-                     <el-col :span="6" :offset="4">
+                     <el-col :span="6" :offset="1">
                         <el-form :inline="true" style="text-align:left;">
                             <el-form-item>
-                                <el-button v-if="authentificated" size="small" value="submit" type="danger" round @click="makeAnOffer">
+                                <el-button v-if="authentificated" icon="el-icon-arrow-right" size="small" value="submit" type="danger" round @click="makeAnOffer">
                                     Faire une demande de location
                                 </el-button>
                             </el-form-item>
@@ -348,6 +348,13 @@ export default {
 .el-form--label-top .el-form-item__label {
     padding: 0px !important;
 }
+
+.el-button--danger {
+    color: #851922;
+    background-color: white !important;
+    // border-color: #851922;
+}
+
 </style>
 <style>
 

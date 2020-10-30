@@ -12,6 +12,9 @@ import VueAuthenticate from 'vue-authenticate'
 import router from './router/routes.js'
 import VueCookie from 'vue-cookie'
 import store from './store/'
+import VueMq from 'vue-mq'
+import VueLodash from 'vue-lodash'
+import lodash from 'lodash'
 // import VueSocketIO from 'vue-socket.io'
 // import io from 'socket.io-client'
 
@@ -33,7 +36,18 @@ Vue.use(ElementUI, { locale });
 Vue.use(Vuex);
 Vue.use(moment);
 Vue.use(VueCookie);
+Vue.use(VueLodash, { name: 'custom' , lodash: lodash })
 // Vue.Prototype.$cookie = VueCookies;
+
+Vue.use(VueMq, {
+  breakpoints: {
+    mobile: 450,
+    tablet: 900,
+    laptop: 1250,
+    desktop: Infinity,
+  }
+})
+
 Vue.use(VueAuthenticate, {
   baseUrl: 'http://localhost:5000', // Your API domain
   

@@ -49,21 +49,21 @@
                     <el-row>
                         <el-col :span="8" :offset="8">
                             <el-form-item label="" prop="email">
-                                <el-input type="email" size="mini" placeholder="Email"  v-model="registration.email" required></el-input>
+                                <el-input type="email" size="mini" prefix-icon="el-icon-user" placeholder="Email"  v-model="registration.email" required></el-input>
                             </el-form-item>
                         </el-col>
                     </el-row>
                     <el-row>
                         <el-col :span="8" :offset="8">
                             <el-form-item label="" prop="password">
-                                <el-input type="text" size="mini" placeholder="Mot de passe" :show-password="true" v-model="registration.password" required></el-input>
+                                <el-input type="text" size="mini" prefix-icon="el-icon-lock" placeholder="Mot de passe" :show-password="true" v-model="registration.password" required></el-input>
                             </el-form-item>
                         </el-col>
                     </el-row>
                     <el-row>
                         <el-col :span="8" :offset="8">
                             <el-form-item label="" prop="passwordConfirmed" style="margin-bottom: 30px;">
-                                <el-input type="text" size="mini" placeholder="Confirmez le mot de passe" :show-password="true" v-model="registration.passwordConfirmed" required></el-input>
+                                <el-input type="text" size="mini" prefix-icon="el-icon-lock" placeholder="Confirmez le mot de passe" :show-password="true" v-model="registration.passwordConfirmed" required></el-input>
                             </el-form-item>
                         </el-col>
                     </el-row>

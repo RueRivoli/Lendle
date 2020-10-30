@@ -47,12 +47,12 @@
                 </h4>
             </el-row> -->
         </el-header>
-        <el-main style="margin-top:6vh;">
+        <div style="margin-top:6vh;padding:10px;">
              <el-row text-align="left">
-                 <el-col :span="4" style="">
+                 <el-col :span="5">
                     <!-- <span style="font-size:13px;">Nbre de meubles/page: {{page_indication}}</span> -->
                     <TitleComponent text="Meubles/page" />
-                    <el-radio-group v-model="page_size" size="mini">
+                    <el-radio-group :class="$mq" v-if="$mq === 'laptop' || $mq === 'desktop'" v-model="page_size" size="mini">
                        <el-radio-button label="4"></el-radio-button>
                       <el-radio-button label="8"></el-radio-button>
                       <!-- <el-radio-button label="12"></el-radio-button> -->
@@ -60,6 +60,13 @@
                       <el-radio-button label="20"></el-radio-button>
                       <el-radio-button label="24"></el-radio-button>
                     </el-radio-group>
+                     <el-select v-if="$mq === 'mobile' || $mq === 'tablet'" v-model="page_size" placeholder="Select" size="mini">
+                        <el-option key="4" label="4" value="4"></el-option>
+                        <el-option key="8" label="8" value="8"></el-option>
+                        <el-option key="16" label="16" value="16"></el-option>
+                        <el-option key="20" label="20" value="20"></el-option>
+                        <el-option key="24" label="24" value="24"></el-option>
+                      </el-select>
                         <TitleComponent text="Trier par" style="margin-top:5px"/>
                         <el-form class="search" ref="order" name="order" :inline="true" :model="furniture" :rules="rulesFurniture" enctype="multipart/form-data">
                         <el-select v-model="furniture.order" placeholder="Critère" size="mini">
@@ -72,49 +79,36 @@
                         </el-select>
                         </el-form>
                 </el-col>
-                <el-col :span="19" :offset="1">
-                    <span style="font-size:13px;">Résultats: {{page_indication}} {{ total }}</span>
+                <el-col :span="19" :offset="0" v-loading="loading">
                     <el-row>
-                        <el-col :span="5" v-loading="loading" v-for="(fnt, index) in furnits_current" v-bind:key="index"  style="margin-top:5px;margin-right:5px;">
-                            <!-- <el-card class="card" style="height:23vh;"> -->
-                                <div :class="{ description: hover === index, displayPicture: hover !== index }" style="height: 23vh; font-family: Jazz LET;border-radius:2px;" @mouseover="hover = index" @mouseleave="hover = null">
-                                    <!-- <img class="img pointer opacity" :src="imgUrl[index]"> -->
+                        <el-col :offset="1" style="font-size:13px;">
+                            <span v-if="!numberFurnits || numberFurnits === 0" >Résultats: 0 <i class="el-icon-arrow-right"></i> 0 / 0</span>
+                            <span v-else>Résultats: {{first_furnit + 1}} <i class="el-icon-arrow-right"></i> {{totalFurnits()}} / {{total}} </span>
+                        </el-col>
+                        <el-col :span="$mq | mq({mobile: 20, tablet: 7, laptop: 5, desktop: 5})" :offset="$mq | mq({mobile: 1, tablet: 1, laptop: 1, desktop: 1})" v-for="(fnt, index) in furnits_current" v-bind:key="index"  style="margin-top:5px;">
+                            <div :class="{ description: hover === index, displayPicture: hover !== index }" style="height: 23vh; font-family: Jazz LET;border-radius:2px;" @mouseover="hover = index" @mouseleave="hover = null">
                                     <el-image v-if="hover !== index" :src="imgUrl[fnt.order]" fit="contain" style="height: 23vh;" @click="display(fnt)"></el-image>
                                     <div v-else style="height: 19vh; cursor: pointer;padding: 1.5vh;position:relative;" @click="display(fnt)">
                                         <span class="title" style="font-weight: bold;position:absolute;">{{ fnt.name.toUpperCase() }}</span>
-                                        <!-- <div class="details" style="margin-bottom:10px;color:white;"> -->
                                             <span style="font-size:14px;text-align:center;position:absolute;bottom:30%;color:white;">{{ fnt.price }} €/ MOIS</span>
-                                        <!-- </div> -->
-                                    
-                                            <span style="font-size:14px;text-align:center;position:absolute;bottom:0;float:center;color:white;">
-                                                <!-- <el-tag type="primary" size="mini">{{ fnt.city }}</el-tag> -->
-                                               
+                                            <span style="font-size:14px;text-align:center;position:absolute;bottom:0;float:center;color:white;"> 
                                                  <i class=" el-icon-location"></i>
                                                  {{ fnt.city.toUpperCase() }}
                                            </span>
-                                      
                                     </div>
                                 </div>
-                                <!-- <div class="center" style="padding: 12px;">
-                                    <span class="title cursor" style="font-size:12px;padding:3px;font-weight: bold;">{{ fnt.name }}</span>
-                                    <div class="bottom clearfix">
-                                        <time style="font-size:12px;float:left;margin-top: 4px;font-style: italic;" class="time">{{ toFormat(fnt.loanstart)}} - {{ toFormat(fnt.loanend) }}</time>
-                                        <el-tag type="primary" size="mini" style="float: right">{{ fnt.city }}</el-tag>
-                                    </div>
-                                </div> -->
-                            <!-- </el-card> -->
                         </el-col>
+                    
                      </el-row>
+                           <div style="text-align:center;margin:2vh;">
+        <el-pagination background :page-size="page_size" :total="numberFurnits" layout="prev, pager, next" :current-page.sync="current_page" @current-change="new_page"></el-pagination>
+    </div>
                 </el-col>
             </el-row>
-             <div style="text-align:center;margin:2vh;">
-        <el-pagination background :page-size="page_size" :total="numberFurnits" layout="prev, pager, next" :current-page.sync="current_page" @current-change="new_page">
-        </el-pagination>
-    </div>
-        </el-main>
+           
+        </div>
            
     </el-container>
-
     <footer-component></footer-component>
 </div>
 </template>
@@ -188,15 +182,15 @@ export default {
         last_furnit: function () {
             return this.first_furnit + this.page_size;
         },
-        page_indication: function () {
-            if (!this.numberFurnits || this.numberFurnits === 0) return "0 --> 0 sur ";
-            else {
-                let first = this.first_furnit + 1;
-                let last = this.last_furnit;
-                if (this.numberFurnits < last) last = this.numberFurnits;
-                return first.toString() + " --> " + last.toString() + " sur ";
-            }
-        },
+        // page_indication: function () {
+        //     if (!this.numberFurnits || this.numberFurnits === 0) return "0 --> 0 sur ";
+        //     else {
+        //         let first = this.first_furnit + 1;
+        //         let last = this.last_furnit;
+        //         if (this.numberFurnits < last) last = this.numberFurnits;
+        //         return first.toString() + " --> " + last.toString() + " sur ";
+        //     }
+        // },
         total: function () {
             if (this.numberFurnits) return this.numberFurnits;
             else return "0";
@@ -225,6 +219,10 @@ export default {
         }
     },
     methods: {
+        totalFurnits () {
+            if (this.numberFurnits < this.last_furnit) return this.numberFurnits
+            else return this.last_furnit 
+        },
         new_page() {
             console.log('NOUVELLE PAGE');
         },
@@ -302,6 +300,10 @@ export default {
     width: 36%;
     background-color: #1E969D;
     color:white;
+}
+
+.el-radio-group.laptop .el-radio-button__inner{
+     padding: 7px 12px; 
 }
 
 .center {

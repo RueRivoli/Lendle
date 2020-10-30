@@ -47,14 +47,14 @@
                     <el-row>
                         <el-col :span="8" :offset="8">
                             <el-form-item label="" prop="email">
-                                <el-input type="email" size="mini" placeholder="Email"  v-model="registration.email" required></el-input>
+                                <el-input type="email" size="mini" placeholder="Email"  prefix-icon="el-icon-user" v-model="registration.email" required></el-input>
                             </el-form-item>
                         </el-col>
                     </el-row>
                     <el-row>
                         <el-col :span="8" :offset="8">
                             <el-form-item label="" prop="password">
-                                <el-input type="text" size="mini" :show-password="true" placeholder="Mot de passe" v-model="registration.password" required></el-input>
+                                <el-input type="text" size="mini" :show-password="true" prefix-icon="el-icon-lock" placeholder="Mot de passe" v-model="registration.password" required></el-input>
                             </el-form-item>
                         </el-col>
                     </el-row>

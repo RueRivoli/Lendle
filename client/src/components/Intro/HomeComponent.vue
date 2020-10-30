@@ -52,9 +52,10 @@
                      </div>
                 </div>
             </el-row>
+
             </el-container>
-            <div style="height:2px;"></div>
-                <el-row class="ad_container">
+                                 <div style="height:2px;"></div>
+                <el-row class="post_container">
                     <div class="text_container" style="background-color:#252627;padding:10px;color:white;text-align:right;display: table;">
                         <span style="vertical-align: middle;display:table-cell;">
                             <h2>PRÊTEUR</h2>
@@ -74,7 +75,7 @@
                     </div>
                 </el-row>
         <div style="height:2px;"></div>
-           <el-row class="ad_container">
+           <el-row class="post_container">
                <div class="img_container" style="text-align:center;">
                     <img src="./../../assets/preteur.png" alt="" style="padding:10px;">
                 </div>
@@ -94,7 +95,7 @@
         </el-row>
            
      
-         <footer-component position="relative"></footer-component>
+         <footer-component></footer-component>
     </div>
 </template>
 
@@ -211,7 +212,7 @@ export default {
     width:33.33333%;
 }
 
-.ad_container{
+.post_container{
     height:200px;
 }
 
@@ -230,7 +231,7 @@ export default {
 }
 
 @media screen and (min-width: 800px) and (max-width: 1400px) {
-    .ad_container, .text_container{
+    .post_container, .text_container{
         height:250px;
     }
     .img_container img{
@@ -240,7 +241,7 @@ export default {
 
 
 @media screen and (min-width: 1400px){
-    .ad_container, .text_container{
+    .post_container, .text_container{
         height:400px;
     }
     p {

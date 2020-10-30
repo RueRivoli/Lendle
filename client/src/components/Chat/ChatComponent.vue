@@ -44,7 +44,7 @@
 
         <el-col  :span="19" style="height: 70vh;border: 1px solid #1E969D; border-radius: 2px;">
             <el-header class="flex" style="justify-content:center;height:8vh;line-height:8vh;background-color:#1E969D;color:white;">
-                <div :key="30">
+                <div v-if="interlocutors && interlocutors.length > 0"  :key="30">
                   <avatar-component :name="usernameInt" :size="30"></avatar-component>
                 </div>
                 <!-- <span v-if="interlocutors && interlocutors.length > 0">{{usernameInt}}</span> -->
@@ -115,13 +115,14 @@
 
                   </el-row>
                   <el-row style="height:17vh;">
-                    <div class="textareacont" style="" v-if="interlocutors && interlocutors.length > 0">
+                    <div class="textareacont" style="">
                       <!-- <el-button slot="append" icon="el-icon-paperclip" size="small"></el-button> -->
                         <!-- <el-input prefix-icon="el-icon-search" placeholder="Message + Entrer"  :rows="3" type="textarea" v-model="msg" @change="sendMessage" class="input-with-select">
                         </el-input> -->
                     
                         <!-- <div theme="deepwater" class="feedback__btn">Envoyer</div> -->
-                        <el-button class="feedback__btn"  icon="el-icon-s-promotion" type="success" plain size="mini" @click="sendMessage">Envoyer</el-button>
+                        <el-button v-if="interlocutors && interlocutors.length > 0" class="feedback__btn"  icon="el-icon-s-promotion" type="success" plain size="mini" @click="sendMessage">Envoyer</el-button>
+                        <el-button v-else class="feedback__btn"  icon="el-icon-s-promotion" type="success" plain size="mini" @click="sendMessage">Envoyer</el-button>
                         <textarea class="txtarea" v-model="msg" ></textarea>
                     </div>
                      
