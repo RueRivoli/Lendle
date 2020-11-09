@@ -13,7 +13,4 @@ vrouter
 MongoDB
 Express js
 
-
-https://www.youtube.com/watch?v=eAA8pxRFp9k
-
 [![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/eAA8pxRFp9k/0.jpg)](https://www.youtube.com/watch?v=eAA8pxRFp9k)
