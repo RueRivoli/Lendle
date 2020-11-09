@@ -7,8 +7,8 @@
         <el-container style="min-height:81vh;">
         
         <el-main>
-        
-        <el-col class="aside" :span="5" :offset="0" style="height:70vh;overflow-y: scroll;">
+          <el-col :span="18" :offset="3">
+        <el-col class="aside" :span="6" :offset="0" style="height:70vh;overflow-y: scroll;">
 
           <!-- a search input -->
           <!-- <div style="padding:8px;border-bottom: 1px solid #03A59D">
@@ -21,7 +21,7 @@
                 </el-input>
             </div>
           </div> -->
-          <div v-if="interlocutors && interlocutors.length > 0" style="padding:4px;">
+          <div v-if="interlocutors && interlocutors.length > 0" style="padding:4px;border:1px solid #1E969D;border-radius:2px;">
             <div :class="isSelected(itl)" v-for="(itl, index) in interlocutors" :key="index" @click="changeChat(itl)" style="padding:4px;">
               <div :key="30" style="align-self: flex-start;margin-right:10px;">
                 <avatar-component :name="nameInterlocutor(itl)" :size="30"></avatar-component>
@@ -42,7 +42,7 @@
          
         </el-col>
 
-        <el-col  :span="19" style="height: 70vh;border: 1px solid #1E969D; border-radius: 2px;">
+        <el-col  :span="18" style="height: 70vh;border: 1px solid #1E969D; border-radius: 2px;">
             <el-header class="flex" style="justify-content:center;height:8vh;line-height:8vh;background-color:#1E969D;color:white;">
                 <div v-if="interlocutors && interlocutors.length > 0"  :key="30">
                   <avatar-component :name="usernameInt" :size="30"></avatar-component>
@@ -133,6 +133,7 @@
        </el-col>
        <el-col :span="6"></el-col>
       <el-row style="height:5vh;"></el-row>
+      </el-col>
 </el-main>
   </el-container>
     <footer-component></footer-component>
@@ -424,14 +425,14 @@ textarea:focus { outline:0 !important; }
 }
 
 .aside {
-  background-color:#1E969D;
-  color: white;
+  background-color:white;
+  color: #1E969D;
   /* background: linear-gradient(to right,#B0C4DE, #1E969D); */
 }
   
 .aside ul li{
-  background-color:#1E969D;
-  color: white;
+  background-color:white;
+  color: #1E969D;
   /* background: linear-gradient(to right,#B0C4DE, #1E969D); */
 }
 

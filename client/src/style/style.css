@@ -69,6 +69,10 @@
   margin-bottom: 5px;
 }
 
+.m-t-10{
+  margin-top: 10px;
+}
+
 .m-l-10{
 
 }
@@ -80,6 +84,23 @@
 .m-auto{
   margin: auto;
 }
+
+/* padding */
+
+.p-10{
+  padding: 10px !important;
+}
+
+/* border */
+
+.bdr-r{
+  border-right: 1px solid black;
+}
+
+.bdr-b{
+  border-bottom: 1px solid black;
+}
+
 
 
 .full_height{
@@ -109,7 +130,7 @@
   overflow-y: auto;
 }
 
-opacity:hover{
+.opacity:hover{
     opacity: 0.95;
 }
 
@@ -122,3 +143,74 @@ opacity:hover{
 }
 
 
+/* background colors */
+
+.backgndred{
+  background-color:red;
+}
+
+.background-red{
+  background-color:red !important;
+}
+
+.background-yellow{
+  background-color:yellow !important;
+}
+
+.background-blue{
+  background-color:blue !important;
+}
+
+.background-indigo{
+  background-color:indigo !important;
+}
+
+.background-pink{
+  background-color:pink !important;
+}
+
+.background-green{
+  background-color:green !important;
+}
+
+.background-orange{
+  background-color:orange !important;
+}
+
+.background-cyan{
+  background-color:cyan !important;
+}
+
+.background-skyblue{
+  background-color:skyblue !important;
+}
+
+.backgndblue{
+  background-color:blue !important;
+}
+
+.backgndgreen{
+  background-color:green;
+}
+
+.backgndindigo{
+  background-color:indigo;
+}
+
+.backgnddeep-purple{
+  background-color:deep-purple;
+}
+
+.backgndcyan{
+  background-color:cyan;
+}
+
+.description{
+  font-family: Jazz LET;
+  background-color: #1E969D;
+  background-image: linear-gradient(90deg, rgba(255,255,255,.07) 50%, transparent 50%),
+  linear-gradient(90deg, rgba(255,255,255,.13) 50%, transparent 50%),
+  linear-gradient(90deg, transparent 50%, rgba(255,255,255,.17) 50%),
+  linear-gradient(90deg, transparent 50%, rgba(255,255,255,.19) 50%);
+  background-size: 13px, 29px, 37px, 53px;
+}

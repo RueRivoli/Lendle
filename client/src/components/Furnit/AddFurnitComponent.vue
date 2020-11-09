@@ -2,7 +2,10 @@
  <div>
   <nav-component :displayTitles="true"></nav-component>
     <BreadcrumpComponent v-bind:field1="{title: 'Créer une annonce', path: '/search'}"></BreadcrumpComponent>
+     <el-container>
     <el-main>
+      <el-col :span="18" :offset="3">
+      <TitleComponent text="Annonce de meuble" />
         <el-dialog
         title="Profile incomplet"
         :visible.sync="dialogProfileVisible"
@@ -134,7 +137,9 @@
           </el-row>
         </el-form>
         <img :src="imageprov" alt="">
+        </el-col>
     </el-main>
+     </el-container>
     <footer-component></footer-component>
   </div>
 </template>
@@ -149,11 +154,12 @@ import BreadcrumpComponent from './../Utils/BreadcrumpComponent';
 import FormData from 'form-data';
 import moment from 'moment';
 import FooterComponent from '../Footer/FooterComponent';
+import TitleComponent from './../Utils/TitleComponent';
 import { mapGetters } from 'vuex'
 
 export default {
   name: 'AddFurnitComponent',
-  components: { NavComponent, FooterComponent, BreadcrumpComponent },
+  components: { NavComponent, FooterComponent, BreadcrumpComponent, TitleComponent },
   data() {
     var validateDates = (rule, value, callback) => {
       let loanstart = this.$refs.loanstart.value;

@@ -167,6 +167,6 @@ export default {
 
 <style lang="scss" scoped>
 
-@import "./../../style/element-variables.scss";
+// @import "./../../style/element-variables.scss";
 
 </style>

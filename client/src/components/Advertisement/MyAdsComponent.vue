@@ -39,7 +39,7 @@
                                             <div style="margin-top: 20px;"><span class= "pointer">{{ ft.name.toUpperCase() }}</span></div>
                                         </el-col>
                                         <el-col :span="6" :offset="1">
-                                            <div style="margin-top: 20px;justify-content:center; font-style:italic;color: #1E969D;">
+                                            <div style="margin-top: 20px;justify-content:center;color: #1E969D;">
                                                 <time class="time"> {{ toFormat(ft.loanstart) }}</time> - 
                                                 <time class="time">
                                                     <!-- <i class="el-icon-minus"></i>  -->

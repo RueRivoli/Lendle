@@ -3,41 +3,37 @@ import Vuex from 'vuex'
 import App from './App.vue'
 import ElementUI from 'element-ui';
 // import 'element-ui/lib/theme-chalk/index.css';
+import VCalendar from 'v-calendar';
 import './style/style.css';
 import "./style/element-variables.scss";
 import locale from 'element-ui/lib/locale/lang/en'
 import moment from 'moment'
 import VueRouter from 'vue-router'
-import VueAuthenticate from 'vue-authenticate'
 import router from './router/routes.js'
-import VueCookie from 'vue-cookie'
 import store from './store/'
 import VueMq from 'vue-mq'
 import VueLodash from 'vue-lodash'
 import lodash from 'lodash'
-// import VueSocketIO from 'vue-socket.io'
-// import io from 'socket.io-client'
+// import Materials from 'vue-material'
+// import 'vue-material/dist/vue-material.min.css'
+// import 'vue-material/dist/theme/default.css'
+// import 'vuetify/dist/vuetify.min.css'
 
-// const options = { path: 'components/ChatComponent' };
 
-// var socket = io('http://localhost:3000');
-// console.log(socket);
-// Vue.use(new VueSocketIO({
-//   debug: true,
-//   connection: SocketIO('http://localhost:3000', options),
-//   vuex: {
-//       store,
-//       actionPrefix: 'SOCKET_',
-//       mutationPrefix: 'SOCKET_'
-//   }
-// }));
 Vue.use(VueRouter);
 Vue.use(ElementUI, { locale });
 Vue.use(Vuex);
 Vue.use(moment);
-Vue.use(VueCookie);
+Vue.use(VCalendar, {
+  componentPrefix: 'vc',  // Use <vc-calendar /> instead of <v-calendar />
+  screens: {
+    tablet: '450px',
+    laptop: '900px',
+    desktop: '1250px',
+  },
+});
+// Vue.use(Materials);
 Vue.use(VueLodash, { name: 'custom' , lodash: lodash })
-// Vue.Prototype.$cookie = VueCookies;
 
 Vue.use(VueMq, {
   breakpoints: {
@@ -48,22 +44,15 @@ Vue.use(VueMq, {
   }
 })
 
-Vue.use(VueAuthenticate, {
-  baseUrl: 'http://localhost:5000', // Your API domain
-  
-  providers: {
-    github: {
-      clientId: '',
-      redirectUri: 'http://localhost:8080/auth/callback' // Your client app URL
-    }
-  }
-})
-
+Vue.config.silent = true
 Vue.config.productionTip = false
+// const opts = {}
 
+// export default new Vuetify(opts)
 
 new Vue({
   render: h => h(App),
+  // vuetify: new Vuetify(),
   store,
   router
 }).$mount('#app')

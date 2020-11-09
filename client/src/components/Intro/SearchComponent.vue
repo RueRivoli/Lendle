@@ -89,7 +89,7 @@
                             <div :class="{ description: hover === index, displayPicture: hover !== index }" style="height: 23vh; font-family: Jazz LET;border-radius:2px;" @mouseover="hover = index" @mouseleave="hover = null">
                                     <el-image v-if="hover !== index" :src="imgUrl[fnt.order]" fit="contain" style="height: 23vh;" @click="display(fnt)"></el-image>
                                     <div v-else style="height: 19vh; cursor: pointer;padding: 1.5vh;position:relative;" @click="display(fnt)">
-                                        <span class="title" style="font-weight: bold;position:absolute;">{{ fnt.name.toUpperCase() }}</span>
+                                        <span class="title-object" style="font-weight: bold;position:absolute;">{{ fnt.name.toUpperCase() }}</span>
                                             <span style="font-size:14px;text-align:center;position:absolute;bottom:30%;color:white;">{{ fnt.price }} €/ MOIS</span>
                                             <span style="font-size:14px;text-align:center;position:absolute;bottom:0;float:center;color:white;"> 
                                                  <i class=" el-icon-location"></i>
@@ -275,15 +275,7 @@ export default {
 <style lang="scss">
 // @import "./../../style/element-variables.scss";
 
-.description{
-    font-family: Jazz LET;
-    background-color: #1E969D;
-    background-image: linear-gradient(90deg, rgba(255,255,255,.07) 50%, transparent 50%),
-    linear-gradient(90deg, rgba(255,255,255,.13) 50%, transparent 50%),
-    linear-gradient(90deg, transparent 50%, rgba(255,255,255,.17) 50%),
-    linear-gradient(90deg, transparent 50%, rgba(255,255,255,.19) 50%);
-    background-size: 13px, 29px, 37px, 53px;
-}
+
 
 .displayPicture{
     background-color: #D6DCDD;
@@ -310,7 +302,7 @@ export default {
     text-align: center;
 }
 
-.title {
+.title-object {
     color: white;
     font-size:18px;
 }
@@ -336,7 +328,7 @@ export default {
 <style scoped>
 
 @media screen and (max-width: 850px) {
-    .title {
+    .title-object {
         /* color: #1E969D; */
         font-size:12px;
     }
@@ -348,8 +340,7 @@ export default {
     }
 }
 
-.red,
-    {
+.red{
     color: white !important;
     border-color: #bce0e2;
     background-color: red;

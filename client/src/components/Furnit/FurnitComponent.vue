@@ -1,7 +1,7 @@
 <template>
-<div>
-    <nav-component :displayTitles="true"></nav-component>
-    <BreadcrumpComponent v-bind:field1="{title: 'Meubles', path: '/search'}" v-bind:field2="{title: furnit.name + ' ' + furnit._id , path: '/furniture/' + furnit._id}"></BreadcrumpComponent>
+    <div>
+        <nav-component :displayTitles="true"></nav-component>
+        <BreadcrumpComponent v-bind:field1="{title: 'Meubles', path: '/search'}" v-bind:field2="{title: furnit.name + ' ' + furnit._id , path: '/furniture/' + furnit._id}"></BreadcrumpComponent>
     <el-container style="min-height: 70vh;">
         <el-main style="width:100%;margin:auto;">
             <el-dialog title="Profile incomplet" :visible.sync="dialogProfileVisible" width="50%">
@@ -62,7 +62,7 @@
                     </el-row>
                     <el-row style="margin-top:5vh;">
                         <TitleComponent text="Le propriétaire" />
-                        <el-card class="pointer description" style="padding: 5px;height:8vh;line-height:8vh;color:white;">
+                        <el-card class="pointer description" style="padding: 5px;height:8vh;line-height:8vh;">
                             <span style="margin-right:10px;float:left;">
                                 <avatar-component :name="nameOwner(furnit)" :size="40"></avatar-component>
                             </span>
@@ -119,7 +119,6 @@ import FurnitService from '../../Service/FurnitService';
 import BreadcrumpComponent from './../Utils/BreadcrumpComponent';
 import UserService from '../../Service/UserService';
 import RentalService from '../../Service/RentalService';
-import './../../style/style.css';
 import FooterComponent from '../Footer/FooterComponent';
 import AvatarComponent from './../Utils/AvatarComponent';
 import TitleComponent from './../Utils/TitleComponent';
@@ -281,23 +280,7 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 
 <style lang="scss" scoped>
-// .el-form-item__label{
-//   padding: 0px !important;
-//   line-height: 10px !important;
-// }
 
-.title{
-
-}
-.description{
-    font-family: Jazz LET;
-    background-color: #1E969D;
-    background-image: linear-gradient(90deg, rgba(255,255,255,.07) 50%, transparent 50%),
-    linear-gradient(90deg, rgba(255,255,255,.13) 50%, transparent 50%),
-    linear-gradient(90deg, transparent 50%, rgba(255,255,255,.17) 50%),
-    linear-gradient(90deg, transparent 50%, rgba(255,255,255,.19) 50%);
-    background-size: 13px, 29px, 37px, 53px;
-}
 
 .el-card__body {
     display: flex !important;

@@ -6,14 +6,14 @@
     <el-container>
         <el-main style="margin-top: 4vh;min-height:77vh;">
             <div class="m-auto" style="width: 353px;">
-                <el-switch v-model="typeofRental" :width="40" active-text="LOCATIONS" inactive-text="PROPOSITIONS DE LOCATION" size="mini">
+                <el-switch v-model="typeofRental" :width="40" active-text="LOCATIONS" inactive-text="DEMANDES" size="mini">
                 </el-switch>
             </div>
             <el-row style="margin-top:5vh;font-size:14px;">
                 <el-col :span="18" :offset="3">
                     <div v-if="typeofRental === false">
-                        <TitleComponent text="propositions de locations" v-if="!loaner"/>
-                        <TitleComponent text="vos propositions de locations" v-else/>
+                        <TitleComponent text="demandes" v-if="!loaner"/>
+                        <TitleComponent text="demandes" v-else/>
                         <div class="block">
                             <el-row v-if="proposition_id" style="margin-bottom:7px;">
                                 <el-card class="m-b-5 card pointer" style="padding: 2px;border:1px solid grey;color:white;background-color:#1E969D;border-radius: 5px;margin-top:2vh;">
@@ -55,8 +55,8 @@
                                     <el-card class="m-b-5 card rentalcard" :body-style="{ padding: '2px', height: '11vh'}">
                                         <el-col class="full_height" :span="$mq | mq({mobile: 0, tablet: 4, laptop: 4, desktop: 4})">
                                             <div class="full_height" style="background-color: #D6DCDD;">
-                                                <el-image class="pointer full_height" :src="imgUrl[index]" fit="contain">{{imgUrl[index]}}
-                                                </el-image>
+                                                <el-image v-if="imgUrl[index]" class="pointer full_height" :src="imgUrl[index]" fit="contain">{{imgUrl[index]}}</el-image>
+                                                <el-image v-else class="pointer full_height" src="./../../assets/imagegrise.jpg" fit="contain">{{imgUrl[index]}}</el-image>
                                             </div>
                                         </el-col>
                                         <el-col class="name" :span="$mq | mq({mobile: 7, tablet: 6, laptop: 6, desktop: 6})" :offset="$mq | mq({mobile: 1, tablet: 1, laptop: 1, desktop: 1})" >
@@ -66,19 +66,19 @@
                                                 </span>
                                             </div>
                                         </el-col>
-                                        <el-col class="flex column full_height state_demand" :span="$mq | mq({mobile: 11, tablet: 9, laptop: 10, desktop: 10})" :offset="$mq | mq({mobile: 1, tablet: 1, laptop: 1, desktop: 1})" style="justify-content:center; font-style:italic">
+                                        <el-col class="flex column full_height state_demand" :span="$mq | mq({mobile: 11, tablet: 9, laptop: 10, desktop: 10})" :offset="$mq | mq({mobile: 1, tablet: 1, laptop: 1, desktop: 1})" style="justify-content:center;">
                                             <div v-if="loaner">
                                                 <div v-if="rt.totalDemands">
-                                                    <span style="color: #1E969D;">Une demande a été envoyée au propriétaire</span>
+                                                    <span style="color: #1E969D;">Une demande envoyée</span>
                                                 </div>
                                                 <div v-if="rt.totalDemandsAccepted">
-                                                    <span style="color: #666633;">Une demande a été acceptée. Confirmez-la pour valider la location</span>
+                                                    <span style="color: #666633;">Une demande acceptée. Confirmez-la</span>
                                                 </div>
                                                 <div v-if="rt.totalLoansConfirmedRecently">
                                                     <span style="color: #4287f5">Vous avez conclu une location récemment.</span>
                                                 </div>
                                                 <div v-if="rt.totalLoansRefusedByRenter">
-                                                    <span style="color: purple;">Une demande a été refusée</span>
+                                                    <span style="color: purple;">Une demande refusée</span>
                                                 </div>
                                             </div>
                                             <div v-else>
@@ -106,8 +106,8 @@
                                 </el-row>
                             </div>
                             </div>
-                            <div v-else style="font-style:italic;">
-                                <span>Vous n'avez pas effectué de demande de location pour l'instant</span>
+                            <div v-else style="">
+                                <span>Pas de demande de location pour l'instant</span>
                             </div>
                         </div>
                     </div>
@@ -133,7 +133,7 @@
                                                 </span>
                                             </div>
                                         </el-col>
-                                        <el-col class="flex column full_height" :span="10" :offset="1" style="justify-content:center;font-style:italic">
+                                        <el-col class="flex column full_height" :span="10" :offset="1" style="justify-content:center;">
                                             <div>
                                                 <div>
                                                     <span style="color: #1E969D;"> {{rt.totalLoansConfirmed}} location(s) prévue(s)</span>
@@ -147,14 +147,14 @@
                                             <div class="m-auto">
                                                 <!-- <el-button icon="el-icon-view" size="mini" type="primary" class="button cursor opacity" @click="details(rt, 1)">Consulter</el-button> -->
 
-                                                <el-button icon="el-icon-view" type="primary" class="button cursor opacity screen_small"  size="mini" circle @click="details(rt, 0)"></el-button>
+                                                <el-button icon="el-icon-view" type="primary" class="button cursor opacity screen_small"  size="mini" circle @click="details(rt, 1)"></el-button>
                                             </div>
                                         </el-col>
                                     </el-card>
                                 </el-row>
                             </div>
                             </div>
-                            <div v-else style="font-style:italic;">
+                            <div v-else style="">
                                 <span>Vous n'avez pas de location en cours</span>
                             </div>
                         </div>
@@ -258,7 +258,6 @@ export default {
             let context = this;
             RentalService.getStatisticsForRentals(this.loaner).then(function (rentals) {
                 console.log('getStatisticsForRentals =>');
-                console.log(rentals);
                 context.rentals = rentals.rentals;
                 console.log(context.rentals);
                 let index = context.rentals.length;
@@ -270,13 +269,15 @@ export default {
                 context.rentals.forEach(function (rt) {
                     console.log('Rentals');
                     console.log(rt);
-                    if (rt.totalLoansConfirmed || rt.totalLoansFinished) this.isLoanInProcess = true
+                    console.log('I :==> ' + i + ' / ' + index)
+                    if (rt.totalLoansConfirmed || rt.totalLoansFinished) context.isLoanInProcess = true
                     context.quantity[0] = context.quantity[0] + rt.totalDemands + rt.totalDemandsAccepted;
                     context.quantity[1] = context.quantity[1] + rt.totalLoansConfirmed;
                     if (rt.furnit[0].picture_ids.length > 0) {
                         context.picture_ids.push(rt.furnit[0].picture_ids[0]);
                     }
                     if (i === index - 1) {
+                        console.log('TESTY')
                         FurnitService.getImagesUrlFromPicIds(context.picture_ids).then(function (urls) {
                             console.log('URL');
                             console.log(urls);

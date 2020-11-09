@@ -454,7 +454,7 @@ export default {
 
 <style lang="scss" scoped>
 
-@import "./../../style/element-variables.scss";
+// @import "./../../style/element-variables.scss";
 
 #fb:hover{
   background-color:#7490B8 !important;
@@ -493,14 +493,10 @@ export default {
     z-index: -2;
 }
 
-.green{
-    color: $--color-primary;
-}
-
-// .el-tabs__item.is-active, .el-tabs__content{
-//     background-color: #1E969D !important;
-//     color:white !important;
+// .green{
+//     color: $--color-primary;
 // }
+
 
 .el-checkbox.is-bordered.is-checked[data-v-8de71b74] {
     border-color: white !important;
@@ -510,8 +506,6 @@ export default {
     background-color: white  !important;
     border-color:white  !important;
 }
-
-
 
   .input_pswd{
     &.desktop { width: 300px; }
@@ -549,14 +543,6 @@ export default {
     background-color: cornflowerblue !important;
     color: black !important;
 }
-
-/* .el-checkbox.is-checked {
-    padding: 3px 15px 3px 10px;
-    border-radius: 3px;
-    height: 28px;
-    border-color: white !important;
-} */
-
 
 </style>
 

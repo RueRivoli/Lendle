@@ -13,29 +13,37 @@
                     <el-button v-if="refuseLoan" type="primary" @click="confirmCancel()">Refuser la proposition</el-button>
                 </span>
             </el-dialog>
-
             <el-form label-position="top" label-width="80px">
                 <el-row style="height:50vh;">
-                    <el-col :span="9">
-                        <el-calendar :class="$mq" v-model="today" :range="[, ]">
-                            <template slot="dateCell" slot-scope="{date, data}">
-                                <p :class="isIndisponible(data) ? 'is-selected' : ''">
-                                    {{ data.day.split('-').slice(2).join('') }} {{ data.isSelected ? 'x' : ''}}
-                                </p>
-                            </template>
-                        </el-calendar>
-                    </el-col>
-
-                    <el-col :span="14" :offset="1">
-                        <el-row style="font-size:18px;margin-bottom: 5vh;font-weight:bold;">
-                            <!-- <span class="f-left">Vos demandes</span> -->
-                             <TitleComponent text="Vos demandes" />
-                        </el-row>
-                        <table-demands-component :rentals="rentals" :dateProposition="dateProposition" @display-dialog="displayDialog" @change-rental="changeRental" v-if="$route.params.isLocation === '0'">
-                        </table-demands-component>
-                        <table-locations-component :rentals="rentals" @display-dialog="displayDialog" @change-rental="changeRental" v-if="$route.params.isLocation === '1'">
-                        </table-locations-component>
-
+                    <el-col :span="22" :offset="1">
+                        <TitleComponent text="Vos demandes" />
+                            <el-row>
+                              <el-button v-if="!loaner && tableFocus" icon="el-icon-notebook-1" type="success" size="mini" @click="tableFocus = false" round>Agenda</el-button>
+                              <el-button v-if="!loaner && !tableFocus" icon="el-icon-monitor" type="primary" size="mini" @click="tableFocus = true" round>Tableau</el-button>
+                              <div v-if="!loaner && !tableFocus" style="float:right;">
+                                <el-row v-if="isLocation !== '1' && demandsattributes.length > 0" style="margin-bottom:5px;">
+                                    <span style="margin-right:20px;">Demandes</span>
+                                    <!-- <md-chip class="md-primary" md-deletable>Deletable</md-chip> -->
+                                    <template v-for="(d, ind) in demandsattributes" >
+                                        <el-button :key="ind" icon="el-icon-user-solid" :class="'background-'+ d.dot" style="color: grey" size="mini" @click="tableFocus = true" round>{{d.key}}</el-button>
+                                        <!-- <el-button icon="el-icon-user-solid" type="info" size="mini" @click="tableFocus = true" round>Marie Frue</el-button> -->
+                                    </template>
+                                </el-row>
+                                 <el-row v-if="locationsattributes.length > 0">
+                                    <span style="margin-right:20px;">Locations</span>
+                                        <template v-for="(d, ind) in locationsattributes" >
+                                        <el-button :key="ind" icon="el-icon-user-solid" :class="'background-'+ d.highlight.color" size="mini" @click="tableFocus = true" round>{{d.key}}</el-button>
+                                          </template>
+                                </el-row>
+                              </div>
+                            </el-row>
+                          <div class="m-t-10" v-if="tableFocus">
+                             <table-demands-component v-if="$route.params.isLocation === '0'" :colors="colorsSelected" :rentals="demands" :dateProposition="dateProposition" @display-dialog="displayDialog" @change-rental="changeRental"></table-demands-component>
+                            <table-locations-component v-if="$route.params.isLocation === '1'" :rentals="locations" @display-dialog="displayDialog" @change-rental="changeRental"></table-locations-component>
+                          </div>
+                          <div class="m-t-10" v-else>
+                             <vc-calendar :rows="2" :dates="dates" :attributes="selectAttributes()" :columns="$screens({ default: 1, desktop: 2 })" is-dark is-expanded title-position="left"/>
+                          </div>
                     </el-col>
                 </el-row>
             </el-form>
@@ -54,10 +62,7 @@ import TableLocationsComponent from './Tables/TableLocationsComponent';
 import RentalService from './../../Service/RentalService';
 import TitleComponent from './../Utils/TitleComponent';
 
-import {
-    mapGetters
-} from 'vuex';
-import './../../style/style.css';
+import { mapGetters } from 'vuex';
 const moment = require('moment');
 
 export default {
@@ -68,7 +73,8 @@ export default {
         BreadcrumpComponent,
         TableDemandsComponent,
         TitleComponent,
-        TableLocationsComponent
+        TableLocationsComponent,
+
     },
     data() {
         return {
@@ -85,13 +91,55 @@ export default {
             validExpression: '',
             message: '',
             titleDialog: '',
-            dateProposition: []
+            dateProposition: [],
+            dates: [
+                { start: new Date(2020, 11, 10), end: new Date(2020, 11, 17) },
+                { start: new Date(2020, 11, 5), span: 3 } // # of days
+            ],
+            tableFocus: true,
+            attributes: [
+                  {
+                    key: 'today',
+                    highlight: {
+                      color: 'red',
+                      fillMode: 'light',
+                      contentClass: 'italic',
+                    },
+                    dates: new Date()
+                  },
+                //   {
+                //       dot: 'blue',
+                //       dates: { start: new Date(2020, 10, 10), end: new Date(2020, 10, 17) }
+                //   },
+                //   {
+                //       dot: {
+                //         color: 'orange',
+                //         // fillMode: 'none',
+                //       },
+                //       dates: { start: new Date(2020, 10, 15), end: new Date(2020, 10, 25) }
+                //   },
+            ],
+            value: '',
+            colors: ['indigo', 'pink', 'orange', 'blue', 'cyan', 'skyblue', 'red', 'yellow', 'green', ],
+            colorsSelected: []
         }
     },
     computed: {
         ...mapGetters({
             loaner: 'GET_LOAN',
         }),
+        demandsattributes() {
+            return this.attributes.filter(att => att.dot);
+        },
+        locationsattributes() {
+            return this.attributes.filter(att => att.highlight && att.key !== 'today');
+        },
+        demands () {
+             return this.rentals.filter(rt => rt.status < 2);
+        },
+        locations () {
+            return this.rentals.filter(rt => rt.status >= 2);
+        },
         pathToMyRentals() {
             let path = [];
             this.isLocation ? path[0] = 'Locations' : path[0] = 'Demands';
@@ -124,6 +172,57 @@ export default {
             context.indisponibility = context.rentals[0].furnit[0].indisponible;
             context.limitStartLoan = context.rentals[0].furnit[0].loanstart;
             context.limitEndLoan = context.rentals[0].furnit[0].loan_end;
+        console.log('RENTALS');
+        console.log(context.rentals);
+       
+      if (!context.loaner) {
+          let i = 0;
+          while (context.rentals[i]) {
+              console.log(i);
+              let status = context.rentals[i].status;
+              console.log('status ' + status)
+              if (status >= 0) {
+                console.log(i % 10);
+                let color = context.colors[i % 10];
+                context.colorsSelected.push(color);
+                let new_attribute = { 
+                    key: context.rentals[i].loaner[0].username,
+                    dates: {
+                        start: context.rentals[i].loan_start,
+                        end: context.rentals[i].loan_end,
+                  }
+                }
+                if (status >= 2) {
+                      new_attribute.highlight = {
+                      color: color,
+                      fillMode: 'light',
+                      contentClass: 'italic',
+                    }
+                } else {
+                    new_attribute.dot = color
+                }
+                context.attributes.push(new_attribute)
+              }
+            i++;
+          } } else {
+          let i = 0;
+          while (context.rentals[i]) {
+              let status = context.rentals[i].status;
+              console.log('status ' + status)
+              if (status >= 0) {
+                context.attributes.push({
+                  key: 'Proposition',
+                  title: context.rentals[i].renter[0].username,
+                  highlight: context.colors[status],
+                  dates: {
+                      start: context.rentals[i].loan_start,
+                      end: context.rentals[i].loan_end,
+                  }
+                })
+              }
+            i++;
+          }
+      }
         }).catch(function (err) {
             console.log(err);
         });
@@ -131,6 +230,9 @@ export default {
     methods: {
         displayDialog(payload) {
             console.log('DISPLAY DIALOG');
+            console.log(payload.index_modified);
+            this.rental_id = payload.rental_id;
+            this.index_modified = payload.index_modified;
             this.dialogVisible = payload.dialogVisible;
             this.titleDialog = payload.titleDialog;
             this.refuseLoan = payload.refuseLoan;
@@ -141,6 +243,16 @@ export default {
         changeRental(payload) {
             this.index_modified = payload.index_modified;
             this.rental_id = payload.rental_id;
+        },
+        selectAttributes() {
+            console.log('select  Attri');
+             console.log(this.isLocation);
+            if (this.isLocation === '1') {
+                console.log('les locations');
+                console.log(this.locations);
+                return this.locationsattributes
+            }
+            else return this.demandsattributes
         },
         isIndisponible(data) {
             let date = data.day;
@@ -153,6 +265,7 @@ export default {
             if (i === this.indisponibility.length) return false
         },
         confirm(rental_id) {
+            console.log('RENTAL ID' + rental_id);
             let params = {
                 _id: rental_id
             };
@@ -167,6 +280,10 @@ export default {
             RentalService.updateRental(params).then(function (rt) {
                 console.log('Update rental');
                 console.log(rt.rental);
+                 console.log('index modif');
+                console.log(context.index_modified);
+                console.log(context.rentals[context.index_modified]);
+                 console.log(params);
                 context.rentals[context.index_modified].status = params.status;
                 context.dialogVisible = false;
             }).catch(function (err) {
@@ -232,28 +349,7 @@ thead tr th {
     font-weight: lighter;
 }
 
-th,
-td {
-    // border: 1px solid #eee;
-    // vertical-align: middle !important;
-}
 
-// tr.isProposed td{
-//   background-color: #d4cb92;
-// }
-
-// tr.isConfirmed td{
-//   background-color: #92cae0;
-// }
-
-// tr.isAccepted td{
-//   background-color: #c6a9d6;
-// }
-
-// tr.isRefused td{
-//   background-color: #c48974;
-//   // background-color: red !important;
-// }
 
 .el-form-item {
     margin-bottom: 2px !important;
@@ -263,66 +359,6 @@ td {
     padding: 0px !important;
 }
 
-// .width-150{
-//   width: 150px;
-// }
-
-/*table*/
-
-// body {
-//   /* font-family: Helvetica Neue, Arial, sans-serif; */
-//   font-size: 12px;
-//   color: #1E969D;
-// }
-
-// table {
-//   /* border: 2px solid #42b983;*/
-//   table-layout: fixed;
-//   border-radius: 2px; 
-//   background-color: #fff;
-//   border-collapse: collapse;
-// }
-
-// table.el-calendar-table tbody tr{
-//   height: 10px;
-// }
-
-// th {
-//   background-color: #1E969D;
-//   color: rgba(255, 255, 255, 0.66);
-// }
-
-// td {
-//   background-color: #f9f9f9;
-//   text-align: center;
-// }
-
-// th.width1, td.width1 {
-//   width: 140px;
-// } 
-
-// th.width3, td.width3 {
-//   width: 120px;
-// } 
-
-// th.width2, td.width2 {
-//   width: 190px;
-// } 
-
-// th, td {
-//   min-width: 40px;
-//   padding: 5px 10px;
-// }
-
-// th.active {
-//   color: #fff;
-// }
-
-// .actions{
-//     display: flex;
-//     justify-content: center;
-//      width: 150px;
-// }
 
 td p.is-selected {
     color: red !important;
@@ -331,9 +367,33 @@ td p.is-selected {
 td p {
     color: #1E969D;
 }
+
+
+
+h1,
+h2 {
+  font-weight: normal;
+}
+ul {
+  list-style-type: none;
+  padding: 0;
+}
+li {
+  display: inline-block;
+  margin: 0 10px;
+}
+a {
+  color: #42b983;
+}
+
 </style>
 
 <style>
+
+.family{
+    background-color:red !important;
+}
+
 .el-calendar-table .el-calendar-day {
     height: 8vh !important;
 }

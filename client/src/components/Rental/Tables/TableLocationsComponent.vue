@@ -7,7 +7,7 @@
             <span></span>
             <div v-for="(msg, ind) in msgConfirmation" :key="ind">
                 <span>{{ msg }}</span>
-                </div>
+            </div>
             <span slot="footer" class="dialog-footer">
             <el-button @click="dialogConfirmation = false; rental = null">Annuler</el-button>
             <el-button type="primary" @click="sendReview">Confirmer la notation</el-button>

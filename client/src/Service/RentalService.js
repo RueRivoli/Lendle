@@ -217,8 +217,7 @@ class RentalService {
                     const data = response.data;
                     console.log(data);
                     resolve(data);
-                  })
-                  .catch(function (error) {
+                  }).catch(function (error) {
                     console.log('Error');
                     console.log(error);
                   });
