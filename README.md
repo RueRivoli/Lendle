@@ -13,8 +13,10 @@ vrouter
 MongoDB
 Express js
 
-Subscribe and ask for a loan /n
+Subscribe and ask for a loan   
+
 [![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/eAA8pxRFp9k/0.jpg)](https://www.youtube.com/watch?v=eAA8pxRFp9k)
 
-Create a furniture ad
+Create a furniture ad   
+
 [![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/SmFU9ZI0nMI/0.jpg)](https://youtu.be/SmFU9ZI0nMI)
